@@ -13,16 +13,16 @@ import rx.Observable
  * stream some State data from the node.
  */
 fun main(args: Array<String>) {
-    TemplateClientRPC().main(args)
+    IOUClient().main(args)
 }
 
-private class TemplateClientRPC {
+private class IOUClient {
     companion object {
-        val logger: Logger = loggerFor<TemplateClientRPC>()
+        val logger: Logger = loggerFor<IOUClient>()
     }
 
     fun main(args: Array<String>) {
-        require(args.size == 1) { "Usage: TemplateClientRPC <node address>" }
+        require(args.size == 1) { "Usage: IOUClient <node address>" }
         val nodeAddress = HostAndPort.fromString(args[0])
         val client = CordaRPCClient(nodeAddress)
 

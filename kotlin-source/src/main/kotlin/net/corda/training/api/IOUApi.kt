@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response
 
 // This API is accessible from /api/template. The endpoint paths specified below are relative to it.
 @Path("template")
-class TemplateApi(val services: CordaRPCOps) {
+class IOUApi(val services: CordaRPCOps) {
     /**
      * Accessible at /api/template/templateGetEndpoint.
      */
