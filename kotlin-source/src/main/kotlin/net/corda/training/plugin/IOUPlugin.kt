@@ -1,7 +1,8 @@
 package net.corda.training.plugin
 
-import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.StateRef
+import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.crypto.CompositeKey
 import net.corda.core.crypto.Party
 import net.corda.training.api.IOUApi
 import net.corda.training.flow.IOUIssueFlow
@@ -12,6 +13,7 @@ import net.corda.core.serialization.SerializationCustomization
 import net.corda.core.transactions.SignedTransaction
 import net.corda.training.flow.CollectSignatureFlow
 import net.corda.training.flow.IOUTransferFlow
+import net.corda.training.state.IOUState
 import java.util.function.Function
 
 class IOUPlugin : CordaPluginRegistry() {
@@ -24,9 +26,13 @@ class IOUPlugin : CordaPluginRegistry() {
      * A list of flows required for this CorDapp.
      */
     override val requiredFlows: Map<String, Set<String>> = mapOf(
-            IOUIssueFlow::class.java.name to setOf(ContractState::class.java.name, Party::class.java.name),
-            IOUTransferFlow::class.java.name to setOf(StateRef::class.java.name, Party::class.java.name),
-            CollectSignatureFlow.Initiator::class.java.name to setOf(SignedTransaction::class.java.name, Party::class.java.name)
+            IOUIssueFlow::class.java.name to setOf(IOUState::class.java.name, Party::class.java.name),
+            IOUTransferFlow::class.java.name to setOf(UniqueIdentifier::class.java.name, Party::class.java.name),
+            CollectSignatureFlow.Initiator::class.java.name to setOf(
+                    SignedTransaction::class.java.name,
+                    Set::class.java.name,
+                    Party::class.java.name
+            )
     )
 
     /**
