@@ -191,8 +191,9 @@ class IOUTransferTests {
 
     /**
      * Task 5.
-     * It is fairly obvious that in a transfer IOU transaction the lender must change.
+     * It is fairly obvious that in a transfer IOU transaction the lender must change!
      * TODO: Add a constraint to check the lender has changed in the output IOU.
+     * Hint: The input sender cannot be the output sender!
      */
     @Test
     fun allParticipantsMustSign() {

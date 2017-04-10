@@ -56,6 +56,8 @@ object CollectSignatureFlow {
      * Receives a partially signed transaction [ptx] from another party [otherParty] for signing. It checks the
      * validity of the transaction and any existing signatures, signs and sends back a [DigitalSignature.WithKey]
      * in response.
+     *
+     * We don't need this flow to return anything.
      */
     class Responder(val otherParty: Party) : FlowLogic<Unit>() {
         @Suspendable

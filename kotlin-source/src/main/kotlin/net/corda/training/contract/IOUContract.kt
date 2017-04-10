@@ -7,8 +7,8 @@ import net.corda.training.state.IOUState
 
 /**
  * The IOUContract can handle a three transaction types involving [IOUState]s.
- * - Issuances: Issuing a new [IOUState] on the ledger, which is a bilateral agreement between two parties.
- * - Transfers: Re-assinging the lender/beneficiary.
+ * - Issuance: Issuing a new [IOUState] on the ledger, which is a bilateral agreement between two parties.
+ * - Transfer: Re-assinging the lender/beneficiary.
  * - Settle: Fully or partially settling the [IOUState] using the Corda [Cash] contract.
  */
 open class IOUContract : Contract {

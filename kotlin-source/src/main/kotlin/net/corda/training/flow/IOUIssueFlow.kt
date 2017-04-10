@@ -11,9 +11,13 @@ import net.corda.flows.FinalityFlow
 import net.corda.training.contract.IOUContract
 
 /**
- * Define your flow here.
+ * This is the flow which handles issuance of new IOUs on the ledger.
+ * This flow doesn't come in an Initiator and Responder pair as messaging across the network is handled by a [subFlow]
+ * call to [CollectSignatureFlow.Initiator].
+ * Notarisation (if required) and commitment to the ledger is handled vy the [FinalityFlow].
+ * The flow returns the [SignedTransaction] that was committed to the ledger.
  */
-class IOUIssueFlow(val iou: ContractState, val otherParty: Party): FlowLogic<SignedTransaction>() {
+class IOUIssueFlow(val state: ContractState, val otherParty: Party): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
         // Step 1. Get a reference to the notary service on our network and our key pair.
@@ -21,11 +25,11 @@ class IOUIssueFlow(val iou: ContractState, val otherParty: Party): FlowLogic<Sig
         val myKeyPair = serviceHub.legalIdentityKey
         // Step 2. Create a new issue command.
         // Remember that a command is a CommandData object and a list of CompositeKeys
-        val issueCommand = Command(IOUContract.Commands.Issue(), iou.participants)
+        val issueCommand = Command(IOUContract.Commands.Issue(), state.participants)
         // Step 3. Create a new TransactionBuilder object.
         val builder = TransactionType.General.Builder(notary)
         // Step 4. Add the iou as an output state, as well as a command to the transaction builder.
-        builder.withItems(iou, issueCommand)
+        builder.withItems(state, issueCommand)
         // Step 5. Sign the transaction.
         builder.signWith(myKeyPair)
         // Step 6. Convert to a signed transaction and don't check that we have collected all the signatures.

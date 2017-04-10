@@ -8,6 +8,7 @@ import net.corda.testing.node.MockNetwork
 import net.corda.training.contract.IOUContract
 import net.corda.core.flows.FlowLogic
 import net.corda.training.state.IOUState
+import net.corda.training.plugin.IOUPlugin
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -81,6 +82,7 @@ class CollectSignatureFlowTests {
     /**
      * Task 2.
      * Now the flow is complete, you need to register a flow initiator for the [CollectSignatureFlow].
+     * If you forget to do the below then your CorDapp won't work!
      * TODO: Paste the following code inside the [CollectSignatureFlow] object.
      *
      *     class Service(services: PluginServiceHub) {
@@ -94,6 +96,13 @@ class CollectSignatureFlowTests {
      *  This code tells the Corda node running this CorDapp that when it receives a message concerning the
      *  [CollectSignatureFlow.Initiator] flow over the wire, it should respond by starting the
      *  [CollectSignatureFlow.Responder] flow.
+     *
+     *  Next: add the following entry to the [IOUPlugin.requiredFlows] map:
+     *
+     *      CollectSignatureFlow.Initiator::class.java.name to setOf(SignedTransaction::class.java.name,
+     *                                                               Party::class.java.name)
+     *
+     *  This code whitelists the [CollectSignatureFlow.Initiator] flow, so that it can be invokved from a node.
      */
 }
 
