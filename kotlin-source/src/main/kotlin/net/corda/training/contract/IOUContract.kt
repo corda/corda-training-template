@@ -11,7 +11,7 @@ import net.corda.training.state.IOUState
  * - Transfer: Re-assinging the lender/beneficiary.
  * - Settle: Fully or partially settling the [IOUState] using the Corda [Cash] contract.
  */
-open class IOUContract : Contract {
+class IOUContract : Contract {
     /**
      * Legal prose reference. This is just a dummy string for the time being.
      */
@@ -49,7 +49,7 @@ open class IOUContract : Contract {
                 "An IOU transfer transaction should only create one output state." by (tx.outputs.size == 1)
                 val input = tx.inputs.single() as IOUState
                 val output = tx.outputs.single() as IOUState
-                "Only the lender property may change." by (input.withoutLender() == output.withoutLender())
+                "Only the lender property may change." by (input == output.withNewLender(input.lender))
                 "The lender property must change in a transfer." by (input.lender != output.lender)
                 "The borrower, old lender and new lender only must sign an IOU transfer transaction" by
                         (command.signers.toSet() == (input.participants.toSet() `union` output.participants.toSet()))

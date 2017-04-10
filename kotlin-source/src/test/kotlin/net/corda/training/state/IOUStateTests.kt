@@ -28,7 +28,7 @@ import kotlin.test.assertNotEquals
 class IOUStateTests {
     // An IOUState we can use for the unit tests.
     // In this IOU, Alice is lending £1 to Bob.
-    val iouState = IOUState(1.POUNDS, ALICE, BOB, IOUContract())
+    val iouState = IOUState(1.POUNDS, ALICE, BOB)
 
     /**
      * Task 1.
@@ -163,9 +163,8 @@ class IOUStateTests {
         assertEquals(fields[0], IOUState::class.java.getDeclaredField("amount"))
         assertEquals(fields[1], IOUState::class.java.getDeclaredField("lender"))
         assertEquals(fields[2], IOUState::class.java.getDeclaredField("borrower"))
-        assertEquals(fields[3], IOUState::class.java.getDeclaredField("contract"))
-        assertEquals(fields[4], IOUState::class.java.getDeclaredField("paid"))
-        assertEquals(fields[5], IOUState::class.java.getDeclaredField("linearId"))
+        assertEquals(fields[3], IOUState::class.java.getDeclaredField("paid"))
+        assertEquals(fields[4], IOUState::class.java.getDeclaredField("linearId"))
     }
 
     /**
@@ -188,7 +187,7 @@ class IOUStateTests {
      */
     @Test
     fun checkIOUStateToStringMethod() {
-        assertEquals(iouState.toString(), "Bob owes Alice 1.00 GBP and has paid 0.00 GBP so far.")
+        assertEquals(iouState.toString(), "IOU(${iouState.linearId}): Bob owes Alice 1.00 GBP and has paid 0.00 GBP so far.")
     }
 
     /**
@@ -198,7 +197,7 @@ class IOUStateTests {
      */
     @Test
     fun checkPayHelperMethod() {
-        val iou = IOUState(10.DOLLARS, ALICE, BOB, IOUContract())
+        val iou = IOUState(10.DOLLARS, ALICE, BOB)
         assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
         assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
         assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)

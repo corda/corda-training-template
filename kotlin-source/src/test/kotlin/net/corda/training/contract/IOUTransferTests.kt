@@ -16,7 +16,7 @@ import org.junit.Test
  */
 class IOUTransferTests {
     // A pre-made IOU we will use for this exercise.
-    val iou = IOUState(10.POUNDS, ALICE, BOB, IOUContract())
+    val iou = IOUState(10.POUNDS, ALICE, BOB)
     // A pre-made dummy state we may need for some of the tests.
     class DummyState : ContractState {
         override val contract get() = DUMMY_PROGRAM_ID
@@ -122,15 +122,10 @@ class IOUTransferTests {
 
     /**
      * Task 3.
-     * Before you begin this task, add a new method to [IOUState] called [withoutLender]:
-     *
-     *     fun withoutLender() = copy(lender = Party("", NullPublicKey))
-     *
-     * This function creates a copy of a state with a NULL lender property, enabling to you easily check that all
-     * properties in the [IOUState] are the same apart from the lender.
      * TODO: Add a constraint to the contract code to ensure only the lender property can change when transferring IOUs.
      * Hint:
-     * - Use the [IOUState.withoutLender] method.
+     * - You can use the [IOUState.copy] method.
+     * - You can compare a copy of the input to the output with the lender of the output as the lender of the input.
      * - You'll need references to the input and output ious.
      * - Remember you need to cast the [ContractState]s to [IOUState]s.
      * - It's easier to take this approach then check all properties other than the lender haven't changed, including
@@ -140,20 +135,20 @@ class IOUTransferTests {
     fun onlyTheLenderMayChange() {
         ledger {
             transaction {
-                input { IOUState(10.DOLLARS, ALICE, BOB, IOUContract()) }
-                output { IOUState(1.DOLLARS, ALICE, BOB, IOUContract()) }
+                input { IOUState(10.DOLLARS, ALICE, BOB) }
+                output { IOUState(1.DOLLARS, ALICE, BOB) }
                 command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
                 this `fails with` "Only the lender property may change."
             }
             transaction {
-                input { IOUState(10.DOLLARS, ALICE, BOB, IOUContract()) }
-                output { IOUState(10.DOLLARS, ALICE, CHARLIE, IOUContract()) }
+                input { IOUState(10.DOLLARS, ALICE, BOB) }
+                output { IOUState(10.DOLLARS, ALICE, CHARLIE) }
                 command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
                 this `fails with` "Only the lender property may change."
             }
             transaction {
-                input { IOUState(10.DOLLARS, ALICE, BOB, IOUContract(), 5.DOLLARS) }
-                output { IOUState(10.DOLLARS, ALICE, BOB, IOUContract(), 10.DOLLARS) }
+                input { IOUState(10.DOLLARS, ALICE, BOB, 5.DOLLARS) }
+                output { IOUState(10.DOLLARS, ALICE, BOB, 10.DOLLARS) }
                 command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
                 this `fails with` "Only the lender property may change."
             }

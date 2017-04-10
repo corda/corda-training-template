@@ -16,7 +16,7 @@ import kotlin.collections.single
  */
 class IOUIssueTests {
     // A pre-made IOU we will use for this exercise.
-    val iou = IOUState(1.POUNDS, ALICE, BOB, IOUContract())
+    val iou = IOUState(1.POUNDS, ALICE, BOB)
     // A pre-made dummy state we may need for some of the tests.
     val dummyState = object : ContractState {
         override val contract get() = DUMMY_PROGRAM_ID
@@ -154,22 +154,22 @@ class IOUIssueTests {
         ledger {
             transaction {
                 command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-                output { IOUState(0.POUNDS, ALICE, BOB, IOUContract()) } // Zero amount fails.
+                output { IOUState(0.POUNDS, ALICE, BOB) } // Zero amount fails.
                 this `fails with` "A newly issued IOU must have a positive amount."
             }
             transaction {
                 command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-                output { IOUState(100.SWISS_FRANCS, ALICE, BOB, IOUContract()) }
+                output { IOUState(100.SWISS_FRANCS, ALICE, BOB) }
                 this.verifies()
             }
             transaction {
                 command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-                output { IOUState(1.POUNDS, ALICE, BOB, IOUContract()) }
+                output { IOUState(1.POUNDS, ALICE, BOB) }
                 this.verifies()
             }
             transaction {
                 command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-                output { IOUState(10.DOLLARS, ALICE, BOB, IOUContract()) }
+                output { IOUState(10.DOLLARS, ALICE, BOB) }
                 this.verifies()
             }
         }
@@ -238,7 +238,7 @@ class IOUIssueTests {
      */
     @Test
     fun lenderAndBorrowerCannotBeTheSame() {
-        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE, IOUContract())
+        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
         ledger {
             transaction {
                 command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
