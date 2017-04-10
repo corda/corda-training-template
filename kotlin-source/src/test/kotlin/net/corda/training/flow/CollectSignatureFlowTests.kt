@@ -63,13 +63,14 @@ class CollectSignatureFlowTests {
      */
     @Test
     fun checkCollectSignatureFlowResponderRespondsWithSignature() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity, IOUContract())
+        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
         val issueCommand = Command(IOUContract.Commands.Issue(),
                 listOf(a.info.legalIdentity.owningKey, b.info.legalIdentity.owningKey))
         val builder = TransactionType.General.Builder(DUMMY_NOTARY)
         builder.withItems(iou, issueCommand)
         val ptx = builder.signWith(a.services.legalIdentityKey).toSignedTransaction(false)
-        val future = a.services.startFlow(CollectSignatureFlow.Initiator(ptx, b.info.legalIdentity)).resultFuture
+        val payload = CollectSignatureFlow.Payload(ptx, setOf(b.info.legalIdentity.owningKey))
+        val future = a.services.startFlow(CollectSignatureFlow.Initiator(payload, b.info.legalIdentity)).resultFuture
         net.runNetwork()
         val signature = future.get()
         val stx = ptx + signature
