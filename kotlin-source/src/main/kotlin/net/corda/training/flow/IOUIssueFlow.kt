@@ -2,13 +2,13 @@ package net.corda.training.flow
 
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.Command
-import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.TransactionType
 import net.corda.core.crypto.Party
 import net.corda.core.flows.FlowLogic
 import net.corda.core.transactions.SignedTransaction
 import net.corda.flows.FinalityFlow
 import net.corda.training.contract.IOUContract
+import net.corda.training.state.IOUState
 
 /**
  * This is the flow which handles issuance of new IOUs on the ledger.
@@ -17,7 +17,7 @@ import net.corda.training.contract.IOUContract
  * Notarisation (if required) and commitment to the ledger is handled vy the [FinalityFlow].
  * The flow returns the [SignedTransaction] that was committed to the ledger.
  */
-class IOUIssueFlow(val state: ContractState, val otherParty: Party): FlowLogic<SignedTransaction>() {
+class IOUIssueFlow(val state: IOUState, val otherParty: Party): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
         // Step 1. Get a reference to the notary service on our network and our key pair.
@@ -38,7 +38,7 @@ class IOUIssueFlow(val state: ContractState, val otherParty: Party): FlowLogic<S
         // convert it to a LedgerTransaction.
         ptx.tx.toLedgerTransaction(serviceHub).verify()
         // Step 8. Collect the other party's signature.
-        val sig = subFlow(CollectSignatureFlow.Initiator(ptx, otherParty))
+        val sig = subFlow(CollectSignatureFlow.Initiator(ptx, setOf(serviceHub.myInfo.legalIdentity.owningKey), otherParty))
         // Step 9. Add the signature to the partially signed transaction.
         val stx = ptx + sig
         // Step 10. Verify all signatures apart from the notary's

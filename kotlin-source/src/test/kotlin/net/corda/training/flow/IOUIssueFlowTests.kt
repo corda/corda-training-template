@@ -42,7 +42,7 @@ class IOUIssueFlowTests {
     /**
      * Task 1.
      * Build out the [IOUIssueFlow]!
-     * TODO: Implement the [IOUIssueFlow] flow which builds returns a [SignedTransaction].
+     * TODO: Implement the [IOUIssueFlow] flow which builds and returns a partially [SignedTransaction].
      * Hint:
      * - There's a whole bunch of things you need to do to get this unit test to pass!
      * - Look at the comments in the [IOUIssueFlow] object for how to complete this task as well as the unit test below.
@@ -63,7 +63,7 @@ class IOUIssueFlowTests {
      */
     @Test
     fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity, IOUContract())
+        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
         val flow = IOUIssueFlow(iou, b.info.legalIdentity)
         val future = a.services.startFlow(flow).resultFuture
         net.runNetwork()
@@ -94,31 +94,24 @@ class IOUIssueFlowTests {
     @Test
     fun flowReturnsVerifiedPartiallySignedTransaction() {
         // Check that a zero amount IOU fails.
-        val zeroIou = IOUState(0.POUNDS, a.info.legalIdentity, b.info.legalIdentity, IOUContract())
+        val zeroIou = IOUState(0.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
         val futureOne = a.services.startFlow(IOUIssueFlow(zeroIou, b.info.legalIdentity)).resultFuture
         net.runNetwork()
         assertFailsWith<TransactionVerificationException> { futureOne.getOrThrow() }
         // Check that an IOU with the same participants fails.
-        val borrowerIsLenderIou = IOUState(10.POUNDS, a.info.legalIdentity, a.info.legalIdentity, IOUContract())
+        val borrowerIsLenderIou = IOUState(10.POUNDS, a.info.legalIdentity, a.info.legalIdentity)
         val futureTwo = a.services.startFlow(IOUIssueFlow(borrowerIsLenderIou, b.info.legalIdentity)).resultFuture
         net.runNetwork()
         assertFailsWith<TransactionVerificationException> { futureTwo.getOrThrow() }
-        // Check a wrong state type fails.
-        val wrongTypeState = object : ContractState {
-            override val contract = DUMMY_PROGRAM_ID
-            override val participants: List<CompositeKey> = listOf()
-        }
-        val futureThree = a.services.startFlow(IOUIssueFlow(wrongTypeState, b.info.legalIdentity)).resultFuture
-        net.runNetwork()
-        assertFailsWith<IllegalArgumentException> { futureThree.getOrThrow() }
         // Check a good IOU passes.
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity, IOUContract())
-        val futureFour = a.services.startFlow(IOUIssueFlow(iou, b.info.legalIdentity)).resultFuture
+        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
+        val futureThree = a.services.startFlow(IOUIssueFlow(iou, b.info.legalIdentity)).resultFuture
         net.runNetwork()
-        futureFour.getOrThrow()
+        futureThree.getOrThrow()
     }
 
     /**
+     * IMPORTANT: Complete the [CollectSignatureFlowTests] tests before continuing here.
      * Task 3.
      * Now we need to collect the signature from the [otherParty] using the [CollectSignatureFlow] which you have just
      * developed.
@@ -134,7 +127,7 @@ class IOUIssueFlowTests {
      */
     @Test
     fun flowReturnsTransactionSignedByBothParties() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity, IOUContract())
+        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
         val flow = IOUIssueFlow(iou, b.info.legalIdentity)
         val future = a.services.startFlow(flow).resultFuture
         net.runNetwork()
@@ -155,7 +148,7 @@ class IOUIssueFlowTests {
      */
     @Test
     fun flowRecordsTheSameTransactionInBothPartyVaults() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity, IOUContract())
+        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
         val flow = IOUIssueFlow(iou, b.info.legalIdentity)
         val future = a.services.startFlow(flow).resultFuture
         net.runNetwork()
