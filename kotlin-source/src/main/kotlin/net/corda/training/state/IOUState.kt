@@ -1,6 +1,7 @@
 package net.corda.training.state
 
 import net.corda.core.contracts.Amount
+import net.corda.core.contracts.Contract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.crypto.Party
@@ -25,7 +26,6 @@ import java.util.*
 data class IOUState(val amount: Amount<Currency>,
                val lender: Party,
                val borrower: Party,
-               override val contract: IOUContract,
                val paid: Amount<Currency> = Amount(0, amount.token),
                override val linearId: UniqueIdentifier = UniqueIdentifier()): LinearState {
     /**
@@ -46,7 +46,12 @@ data class IOUState(val amount: Amount<Currency>,
     /**
      * A toString() helper method for displaying IOUs in the console.
      */
-    override fun toString() = "${borrower.name} owes ${lender.name} $amount and has paid $paid so far."
+    override fun toString() = "IOU($linearId): ${borrower.name} owes ${lender.name} $amount and has paid $paid so far."
+
+    /**
+     * A Contract code reference to the IOUCoontract.
+     */
+    override val contract get() = IOUContract()
 
     /**
      * A helper methods for when building transactions for settling and transferring IOUs.
@@ -57,5 +62,4 @@ data class IOUState(val amount: Amount<Currency>,
      */
     fun pay(amountToPay: Amount<Currency>) = copy(paid = paid.plus(amountToPay))
     fun withNewLender(newLender: Party) = copy(lender = newLender)
-    fun withoutLender() = copy(lender = Party("", NullPublicKey))
 }
