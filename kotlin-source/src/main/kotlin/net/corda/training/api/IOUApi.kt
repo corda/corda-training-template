@@ -51,7 +51,6 @@ class IOUApi(val services: CordaRPCOps) {
 
     @GET
     @Path("transfer-iou")
-    @Produces(MediaType.APPLICATION_JSON)
     fun transferIOU(@QueryParam(value = "id") id: String,
                   @QueryParam(value = "party") party: String): Response {
         val linearId = UniqueIdentifier.fromString(id)
