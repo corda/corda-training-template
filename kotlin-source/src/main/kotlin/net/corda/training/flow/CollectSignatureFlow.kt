@@ -52,10 +52,13 @@ object CollectSignatureFlow {
      * Sends a partially signed transaction [ptx] to another party [otherParty] for signing. It expects to receive
      * a [DigitalSignature.WithKey] in response.
      */
-    class Initiator(val payload: Payload, val otherParty: Party): FlowLogic<DigitalSignature.WithKey>() {
+    class Initiator(val ptx: SignedTransaction,
+                    val collected: Set<CompositeKey>,
+                    val otherParty: Party): FlowLogic<DigitalSignature.WithKey>() {
         @Suspendable
         override fun call(): DigitalSignature.WithKey {
             // Step 1. Send the partially signed transaction to the other party and receive a signature in return.
+            val payload = Payload(ptx, collected)
             return sendAndReceive<DigitalSignature.WithKey>(otherParty, payload).unwrap { it }
         }
     }
@@ -90,7 +93,7 @@ object CollectSignatureFlow {
                 ptx.verifySignatures(*exclusions.toTypedArray())
                 ptx
             }
-            // Step 6. Add our signature and send it back to the other party.
+            // Step 7. Add our signature and send it back to the other party.
             val myKeyPair = serviceHub.legalIdentityKey
             send(otherParty, ptx.signWithECDSA(myKeyPair))
         }

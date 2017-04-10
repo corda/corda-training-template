@@ -50,7 +50,7 @@ class CollectSignatureFlowTests {
      *   [DigitalSignature.WithKey].
      * - Implementing the responder requires a you to write a few lines of code...
      * - Most importantly, you'll need to [receive] the [SignedTransaction] from the [otherParty]. This method can be
-     *   found here [FlowLogic.receive]
+     *   found here: [FlowLogic.receive]
      * - Next, you'll need to [verify] the [SignedTransaction] and check the [otherParty]'s signature is valid.
      * - To [verify] a [SignedTransaction], you need to convert its [SignedTransaction.tx] property to a
      *   [LedgerTransaction].
@@ -69,8 +69,7 @@ class CollectSignatureFlowTests {
         val builder = TransactionType.General.Builder(DUMMY_NOTARY)
         builder.withItems(iou, issueCommand)
         val ptx = builder.signWith(a.services.legalIdentityKey).toSignedTransaction(false)
-        val payload = CollectSignatureFlow.Payload(ptx, setOf(b.info.legalIdentity.owningKey))
-        val future = a.services.startFlow(CollectSignatureFlow.Initiator(payload, b.info.legalIdentity)).resultFuture
+        val future = a.services.startFlow(CollectSignatureFlow.Initiator(ptx, setOf(a.info.legalIdentity.owningKey), b.info.legalIdentity)).resultFuture
         net.runNetwork()
         val signature = future.get()
         val stx = ptx + signature
