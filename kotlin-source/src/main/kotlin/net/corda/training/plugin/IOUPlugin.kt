@@ -1,5 +1,6 @@
 package net.corda.training.plugin
 
+import net.corda.core.contracts.Amount
 import net.corda.core.contracts.StateRef
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.crypto.CompositeKey
@@ -11,8 +12,10 @@ import net.corda.core.node.CordaPluginRegistry
 import net.corda.core.node.PluginServiceHub
 import net.corda.core.serialization.SerializationCustomization
 import net.corda.core.transactions.SignedTransaction
-import net.corda.training.flow.CollectSignatureFlow
+import net.corda.core.transactions.WireTransaction
+import net.corda.training.flow.SignTransactionFlow
 import net.corda.training.flow.IOUTransferFlow
+import net.corda.training.flow.SelfIssueCashFlow
 import net.corda.training.state.IOUState
 import java.util.function.Function
 
@@ -28,17 +31,14 @@ class IOUPlugin : CordaPluginRegistry() {
     override val requiredFlows: Map<String, Set<String>> = mapOf(
             IOUIssueFlow::class.java.name to setOf(IOUState::class.java.name, Party::class.java.name),
             IOUTransferFlow::class.java.name to setOf(UniqueIdentifier::class.java.name, Party::class.java.name),
-            CollectSignatureFlow.Initiator::class.java.name to setOf(
-                    SignedTransaction::class.java.name,
-                    Set::class.java.name,
-                    Party::class.java.name
-            )
+            SignTransactionFlow.Initiator::class.java.name to setOf(WireTransaction::class.java.name),
+            SelfIssueCashFlow::class.java.name to setOf(Amount::class.java.name)
     )
 
     /**
      * A list of long-lived services to be hosted within the node.
      */
-    override val servicePlugins: List<Function<PluginServiceHub, out Any>> = listOf(Function(CollectSignatureFlow::Service))
+    override val servicePlugins: List<Function<PluginServiceHub, out Any>> = listOf(Function(SignTransactionFlow::Service))
 
     /**
      * A list of directories in the resources directory that will be served by Jetty under /web.
