@@ -30,20 +30,11 @@ class IOUIssueFlow(val state: IOUState, val otherParty: Party): FlowLogic<Signed
         val builder = TransactionType.General.Builder(notary)
         // Step 4. Add the iou as an output state, as well as a command to the transaction builder.
         builder.withItems(state, issueCommand)
-        // Step 5. Sign the transaction.
-        builder.signWith(myKeyPair)
-        // Step 6. Convert to a signed transaction and don't check that we have collected all the signatures.
-        val ptx = builder.toSignedTransaction(checkSufficientSignatures = false)
-        // Step 7. Verify the transaction. Use the tx property of SignedTransaction to get the WireTransaction and
-        // convert it to a LedgerTransaction.
-        ptx.tx.toLedgerTransaction(serviceHub).verify()
-        // Step 8. Collect the other party's signature.
-        val sig = subFlow(CollectSignatureFlow.Initiator(ptx, setOf(serviceHub.myInfo.legalIdentity.owningKey), otherParty))
-        // Step 9. Add the signature to the partially signed transaction.
-        val stx = ptx + sig
-        // Step 10. Verify all signatures apart from the notary's
-        stx.verifySignatures()
-        // Step 11. Now we are happy that the transaction is valid, we can record it.
+        // Step 5. Convert it to a WireTransaction.
+        val wtx = builder.toWireTransaction()
+        // Step 6. Collect the other party's signature using the SignTransactionFlow.
+        val stx = subFlow(SignTransactionFlow.Initiator(wtx))
+        // Step 7. Assuming no exceptions, we can now finalise the transaction.
         subFlow(FinalityFlow(stx, setOf(serviceHub.myInfo.legalIdentity, otherParty)))
         return stx
     }

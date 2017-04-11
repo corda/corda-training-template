@@ -23,7 +23,7 @@ class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): Flo
         val me = serviceHub.myInfo.legalIdentity
         // Stage 1. Retrieve IOU specified by linearId from the vault.
         val iouStates = serviceHub.vaultService.linearHeadsOfType<IOUState>()
-        val iouStateAndRef = iouStates[linearId]!!
+        val iouStateAndRef = iouStates[linearId] ?: throw Exception("IOUState with linearId $linearId not found.")
         val inputIou = iouStateAndRef.state.data
         // Stage 2. This flow can only be initiated by the current recipient.
         if (serviceHub.myInfo.legalIdentity != inputIou.lender) {
@@ -32,30 +32,19 @@ class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): Flo
         // Stage 3. Create the new IOU state reflecting a new lender.
         val outputIou = inputIou.withNewLender(newLender)
         // Stage 4. Create the transfer command.
-        val signers = inputIou.participants.plus(newLender.owningKey)
+        val signers = inputIou.participants + newLender.owningKey
         val transferCommand = Command(IOUContract.Commands.Transfer(), signers)
         // Stage 5. Get a reference to a transaction builder.
         val notary = serviceHub.networkMapCache.notaryNodes.single().notaryIdentity
         val builder = TransactionType.General.Builder(notary)
         // Stage 6. Create the transaction which comprises: one input, one output and one command.
         builder.withItems(iouStateAndRef, outputIou, transferCommand)
-        // Stage 7. Verify and sign.
-        builder.toWireTransaction().toLedgerTransaction(serviceHub).verify()
-        val keyPair = serviceHub.legalIdentityKey
-        val ptx = builder.signWith(keyPair).toSignedTransaction(false)
-        // Stage 8. Collect signature from borrower and add it to the transaction.
-        val borrowerSig = subFlow(CollectSignatureFlow.Initiator(
-                ptx,
-                mutableSetOf(me.owningKey),
-                inputIou.borrower))
-        val ptxTwo = ptx + borrowerSig
-        // Stage 9. Collected signatures from new lender and add it to the transaction.
-        val newLenderSig = subFlow(CollectSignatureFlow.Initiator(
-                ptxTwo,
-                mutableSetOf(me.owningKey, inputIou.borrower.owningKey),
-                newLender))
-        val stx = ptxTwo + newLenderSig
-        // Stage 9. Notarise and record,
+        // Stage 7. Make the transaction immutable by converting it to a WireTransaction.
+        val wtx = builder.toWireTransaction()
+        // Stage 8. Collect signature from borrower and the new lender and add it to the transaction.
+        // This also verifies the transaction and checks the signatures.
+        val stx = subFlow(SignTransactionFlow.Initiator(wtx))
+        // Stage 9. Notarise and record, the transaction in our vaults.
         subFlow(FinalityFlow(stx, setOf(inputIou.lender, inputIou.borrower, newLender)))
         return stx
     }
