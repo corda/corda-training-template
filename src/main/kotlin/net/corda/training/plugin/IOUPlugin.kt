@@ -1,16 +1,13 @@
 package net.corda.training.plugin
 
 import net.corda.core.contracts.Amount
-import net.corda.core.contracts.StateRef
 import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.crypto.CompositeKey
 import net.corda.core.crypto.Party
 import net.corda.training.api.IOUApi
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.node.CordaPluginRegistry
 import net.corda.core.node.PluginServiceHub
 import net.corda.core.serialization.SerializationCustomization
-import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.WireTransaction
 import net.corda.training.flow.*
 import net.corda.training.state.IOUState
@@ -50,7 +47,5 @@ class IOUPlugin : CordaPluginRegistry() {
     /**
      * Whitelisting the required types for serialisation by the Corda node.
      */
-    override fun customizeSerialization(custom: SerializationCustomization): Boolean {
-        return true
-    }
+    override fun customizeSerialization(custom: SerializationCustomization) = true
 }

@@ -4,7 +4,6 @@ import net.corda.contracts.asset.Cash
 import net.corda.core.contracts.Amount
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.messaging.CordaRPCOps
-import net.corda.training.contract.IOUContract
 import net.corda.training.flow.IOUIssueFlow
 import net.corda.training.flow.IOUSettleFlow
 import net.corda.training.flow.IOUTransferFlow
@@ -53,8 +52,8 @@ class IOUApi(val services: CordaRPCOps) {
      * Initiates a flow to agree an IOU between two parties.
      */
     @GET
-    @Path("create-iou")
-    fun createIOU(@QueryParam(value = "amount") amount: Int,
+    @Path("issue-iou")
+    fun issueIOU(@QueryParam(value = "amount") amount: Int,
                   @QueryParam(value = "currency") currency: String,
                   @QueryParam(value = "party") party: String): Response {
         // Get party objects for myself and the counterparty.
@@ -85,16 +84,18 @@ class IOUApi(val services: CordaRPCOps) {
     }
 
     /**
-     * Settles an IOU. Requires cash to be able to settle.
+     * Settles an IOU. Requires cash in the right currency to be able to settle.
      */
     @GET
     @Path("settle-iou")
     @Produces(MediaType.APPLICATION_JSON)
     fun settleIOU(@QueryParam(value = "id") id: String,
-                  @QueryParam(value = "amount") amount: Int): Response {
+                  @QueryParam(value = "amount") amount: Int,
+                  @QueryParam(value = "currency") currency: String): Response {
         val linearId = UniqueIdentifier.fromString(id)
-        services.startFlowDynamic(IOUSettleFlow::class.java, linearId, amount).returnValue.get()
-        return Response.status(Response.Status.CREATED).entity("$amount USD paid off on IOU id $id.").build()
+        val settleAmount = Amount(amount.toLong() * 100, Currency.getInstance(currency))
+        services.startFlowDynamic(IOUSettleFlow::class.java, linearId, settleAmount).returnValue.get()
+        return Response.status(Response.Status.CREATED).entity("$amount $currency paid off on IOU id $id.").build()
     }
 
     /**

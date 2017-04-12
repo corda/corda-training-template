@@ -28,9 +28,9 @@ object SignTransactionFlow {
         override fun call(): SignedTransaction {
             verify(wtx)
 
-            val allSigners = wtx.commands.flatMap { it.signers }
+            val allSigners = wtx.commands.flatMap { it.signers }.toSet()
             val myKey = serviceHub.myInfo.legalIdentity.owningKey
-            val signatures = if (allSigners == listOf(myKey)) {
+            val signatures = if (allSigners == setOf(myKey)) {
                 listOf(sign(serviceHub.legalIdentityKey))
             } else {
                 collectSignatures(allSigners)
@@ -58,7 +58,7 @@ object SignTransactionFlow {
         private fun sign(key: KeyPair) = key.signWithECDSA(wtx.id.bytes)
 
         @Suspendable
-        private fun collectSignatures(keys: List<CompositeKey>): List<DigitalSignature.WithKey> {
+        private fun collectSignatures(keys: Set<CompositeKey>): List<DigitalSignature.WithKey> {
             return keys.map {
                 val partyNode = serviceHub.networkMapCache.getNodeByLegalIdentityKey(it) ?:
                         throw IllegalStateException("Participant $it not found on the network.")

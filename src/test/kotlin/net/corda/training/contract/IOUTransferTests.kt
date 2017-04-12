@@ -61,7 +61,7 @@ class IOUTransferTests {
             transaction {
                 output { iou }
                 command(ALICE_PUBKEY, BOB_PUBKEY) { DummyCommand() }
-                this `fails with` "Required net.corda.training.contract.IOUContract.Commands command"
+                this `fails with` "Required IOUContract.Commands command"
             }
             transaction {
                 output { iou }

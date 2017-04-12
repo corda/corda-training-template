@@ -1,18 +1,18 @@
 package net.corda.training.flow
 
+import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.*
-import net.corda.core.crypto.DigitalSignature
 import net.corda.core.crypto.Party
 import net.corda.core.flows.FlowLogic
 import net.corda.core.node.services.linearHeadsOfType
 import net.corda.core.transactions.SignedTransaction
-import net.corda.core.transactions.TransactionBuilder
 import net.corda.flows.FinalityFlow
 import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import java.util.*
 
 class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>): FlowLogic<SignedTransaction>() {
+    @Suspendable
     override fun call(): SignedTransaction {
         val me: Party = serviceHub.myInfo.legalIdentity
         // Retrieve the IOU state from the vault.
@@ -26,7 +26,7 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
         serviceHub.vaultService.generateSpend(builder, amount, counterparty.owningKey)
         // Tx(Input cash, outputcash, cash pay command)
         // Add the IOU states and settle command to the transaction builder.
-        val settleCommand: Command = Command(IOUContract.Commands.Settle(), listOf(counterparty.owningKey, me.owningKey))
+        val settleCommand = Command(IOUContract.Commands.Settle(), listOf(counterparty.owningKey, me.owningKey))
         // Add the input IOU and IOU settle command.
         builder.addCommand(settleCommand)
         builder.addInputState(iouToSettle)

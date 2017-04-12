@@ -49,7 +49,7 @@ data class IOUState(val amount: Amount<Currency>,
     override fun toString() = "IOU($linearId): ${borrower.name} owes ${lender.name} $amount and has paid $paid so far."
 
     /**
-     * A Contract code reference to the IOUCoontract.
+     * A Contract code reference to the IOUCoontract. Make sure this is not part of the [IOUState] constructor.
      */
     override val contract get() = IOUContract()
 
@@ -57,8 +57,6 @@ data class IOUState(val amount: Amount<Currency>,
      * A helper methods for when building transactions for settling and transferring IOUs.
      * - [pay] adds an amount to the paid property. It does no validation.
      * - [withNewLender] creates a copy of the current state with a newly specified lender. For use when transferring.
-     * - [withoutLender] is useful for checking that all properties apart from the lender remain unchanged between
-     *   input and output states.
      */
     fun pay(amountToPay: Amount<Currency>) = copy(paid = paid.plus(amountToPay))
     fun withNewLender(newLender: Party) = copy(lender = newLender)

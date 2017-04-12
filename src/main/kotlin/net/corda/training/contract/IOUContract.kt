@@ -5,7 +5,6 @@ import net.corda.contracts.asset.sumCash
 import net.corda.core.contracts.*
 import net.corda.core.contracts.Requirements.by
 import net.corda.core.crypto.SecureHash
-import net.corda.core.crypto.keys
 import net.corda.training.state.IOUState
 
 /**
