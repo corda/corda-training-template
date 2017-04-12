@@ -19,9 +19,19 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
         val iouStates = serviceHub.vaultService.linearHeadsOfType<IOUState>()
         val iouToSettle = iouStates[linearId] ?: throw Exception("IOUState with linearId $linearId not found.")
         val counterparty: Party = iouToSettle.state.data.lender
+        if (me != iouToSettle.state.data.borrower) {
+            throw IllegalArgumentException("IOU settlement flow must be initiated by the borrower.")
+        }
         // Create a transaction builder.
         val notary = iouToSettle.state.notary
         val builder = TransactionType.General.Builder(notary)
+        // Check we have enough cash.
+        val cashBalance = serviceHub.vaultService.cashBalances[amount.token]
+        if (cashBalance == null) {
+            throw IllegalArgumentException("Borrower has no ${amount.token} to settle.")
+        } else if(cashBalance < amount) {
+            throw IllegalArgumentException("Borrower has only $cashBalance but needs $amount to settle.")
+        }
         // Get some cash from the vault and add a spend to our transaction builder.
         serviceHub.vaultService.generateSpend(builder, amount, counterparty.owningKey)
         // Tx(Input cash, outputcash, cash pay command)
@@ -40,7 +50,6 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
         val wtx = builder.toWireTransaction()
         val stx = subFlow(SignTransactionFlow.Initiator(wtx))
         // Finalize the transaction.
-        subFlow(FinalityFlow(stx, setOf(counterparty, me)))
-        return stx
+        return subFlow(FinalityFlow(stx, setOf(counterparty, me))).single()
     }
 }
