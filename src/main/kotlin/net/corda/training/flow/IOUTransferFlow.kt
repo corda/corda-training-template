@@ -45,7 +45,6 @@ class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): Flo
         // This also verifies the transaction and checks the signatures.
         val stx = subFlow(SignTransactionFlow.Initiator(wtx))
         // Stage 9. Notarise and record, the transaction in our vaults.
-        subFlow(FinalityFlow(stx, setOf(inputIou.lender, inputIou.borrower, newLender)))
-        return stx
+        return subFlow(FinalityFlow(stx, setOf(inputIou.lender, inputIou.borrower, newLender))).single()
     }
 }
