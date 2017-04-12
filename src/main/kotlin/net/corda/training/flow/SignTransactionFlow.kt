@@ -14,6 +14,9 @@ import net.corda.flows.ResolveTransactionsFlow
 import java.lang.IllegalStateException
 import java.security.KeyPair
 
+/**
+ * The [SignTransactionFlow] automates the process of getting a transaction signed by all the required counterparties.
+ */
 object SignTransactionFlow {
     class Service(services: PluginServiceHub) {
         init {
@@ -23,6 +26,9 @@ object SignTransactionFlow {
         }
     }
 
+    /**
+     * The [Initiator] collects all the signatures from the required parties defined within the [WireTransaction].
+     */
     class Initiator(val wtx: WireTransaction): FlowLogic<SignedTransaction>() {
         @Suspendable
         override fun call(): SignedTransaction {
@@ -82,6 +88,10 @@ object SignTransactionFlow {
         }
     }
 
+    /**
+     * The [Responder] receives a [WireTransaction], checks they need to sign, verifies the transaction, signs the
+     * transaction and returns their [DigitalSignature] to the [Initiator].
+     */
     class Responder(val otherParty: Party) : FlowLogic<Unit>() {
         @Suspendable
         override fun call(): Unit {
