@@ -124,42 +124,9 @@ class IOUTransferFlowTests {
 
     /**
      * Task 4.
-     * This is quite a tough one, so don't feel bad if you need to look at the solutions!
-     * As the [IOUTransferFlow] flow requires signatures from two remote parties, we need to amend the
-     * [CollectSignatureFlow] to handle collecting signatures from N parties.
-     * TODO: Amend the [CollectSignatureFlow] to handle collecting signatures from multiple parties.
-     * Hint:
-     * - The main focus of our changes is keeping track of which signatures we have collected vs which ones we need to
-     *   still collect.
-     * - We can do this by passing in a set of [CompositeKey]s into the flow which represents the [CompositeKey]s for
-     *   the signatures we have already collected.
-     * - We can then compare the signers in the Transfer command to those in the set to see which ones we need to
-     *   exclude when running [SignedTransaction.verifySignatures].
-     * - We can only send one object via the flow framework, so we need to wrap up the [SignedTransaction] and the [Set]
-     *   of [CompositeKeys] in a [Payload] object, we can use a "data" class to do this, e.g:
-     *
-     *       data class Payload(val stx: SignedTransaction, val collectedSigs: Set<CompositeKey)
-     *
-     *   This class needs to sit within the [CollectSignatureFlow].
-     * - We now need to add an additional parameter to the constructor of [CollectSignatureFlow.Initiator] so that it
-     *   takes a [Set] of [CompositeKey]s.
-     * - We can then build the [Payload] object within the [Initiator] flow and send it to the responder. The
-     *   [receive] method in the [Responder] flow will have to be updated to reflect the different type you are sending.
-     * - Now you need to get a list of all signers in the transaction, compare it to the list of [CompositeKey]s for
-     *   the signatrues you have already collected.
-     * - You will also need to add the notary's public key as you will not have obtained that yet either.
-     * - Pass the list of [CompositeKey]s not to check signatures for into the [SignedTransaction.verifySignatures]
-     *   method.
-     * - Now, when you call the [CollectSignatureFlow], you will need to pass it a [Set] of the [CompositeKey]s
-     *   you have already obtained signatures for.
-     * - Lastly... You'll need to change the parameter types for [CollectSignatureFlow.Initiator] in the
-     *   [IOUPlugin.requiredFlows] property by adding the [Set] of [CompositeKey]s:
-     *
-     *      CollectSignatureFlow.Initiator::class.java.name to setOf(SignedTransaction::class.java.name,
-     *                                                               Set::class.java.name,
-     *                                                               Party::class.java.name)
-     *
-     * - Feel free to look at the solutions if you need to!
+     * Get the borrowers and the new lenders signatures.
+     * TODO: Amend the [SignTransactionFlow] to handle collecting signatures from multiple parties.
+     * Hint: use the [SignTRansactionFlow] in the same way you did for the [IOUIssueFlow].
      */
     @Test
     fun flowReturnsTransactionSignedByAllParties() {
@@ -168,7 +135,22 @@ class IOUTransferFlowTests {
         val flow = IOUTransferFlow(inputIou.linearId, c.info.legalIdentity)
         val future = a.services.startFlow(flow).resultFuture
         net.runNetwork()
-        // Check that we can't transfer an IOU to ourselves.
         future.getOrThrow().verifySignatures(DUMMY_NOTARY.owningKey)
+    }
+
+    /**
+     * Task 5.
+     * Get the borrowers and the new lenders signatures.
+     * TODO: Amend the [SignTransactionFlow] to handle collecting signatures from multiple parties.
+     * Hint: use the [SignTRansactionFlow] in the same way you did for the [IOUIssueFlow].
+     */
+    @Test
+    fun flowReturnsTransactionSignedByAllPartiesAndNotary() {
+        val stx = issueIou(IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity))
+        val inputIou = stx.tx.outputs.single().data as IOUState
+        val flow = IOUTransferFlow(inputIou.linearId, c.info.legalIdentity)
+        val future = a.services.startFlow(flow).resultFuture
+        net.runNetwork()
+        future.getOrThrow().verifySignatures()
     }
 }
