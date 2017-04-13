@@ -22,7 +22,6 @@ class IOUIssueFlow(val state: IOUState, val otherParty: Party): FlowLogic<Signed
     override fun call(): SignedTransaction {
         // Step 1. Get a reference to the notary service on our network and our key pair.
         val notary = serviceHub.networkMapCache.notaryNodes.single().notaryIdentity
-        val myKeyPair = serviceHub.legalIdentityKey
         // Step 2. Create a new issue command.
         // Remember that a command is a CommandData object and a list of CompositeKeys
         val issueCommand = Command(IOUContract.Commands.Issue(), state.participants)
@@ -30,12 +29,13 @@ class IOUIssueFlow(val state: IOUState, val otherParty: Party): FlowLogic<Signed
         val builder = TransactionType.General.Builder(notary)
         // Step 4. Add the iou as an output state, as well as a command to the transaction builder.
         builder.withItems(state, issueCommand)
-        // Step 5. Convert it to a WireTransaction.
-        val wtx = builder.toWireTransaction()
+        // Step 5. Verify and aign it with our KeyPair.
+        builder.toWireTransaction().toLedgerTransaction(serviceHub).verify()
+        val ptx = builder.signWith(serviceHub.legalIdentityKey).toSignedTransaction(false)
         // Step 6. Collect the other party's signature using the SignTransactionFlow.
-        val stx = subFlow(SignTransactionFlow.Initiator(wtx))
+        val stx = subFlow(SignTransactionFlow.Initiator(ptx))
         // Step 7. Assuming no exceptions, we can now finalise the transaction.
-        subFlow(FinalityFlow(stx, setOf(serviceHub.myInfo.legalIdentity, otherParty)))
-        return stx
+        val ftx = subFlow(FinalityFlow(stx, setOf(serviceHub.myInfo.legalIdentity, otherParty))).single()
+        return ftx
     }
 }

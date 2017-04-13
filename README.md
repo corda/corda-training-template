@@ -1,31 +1,26 @@
 ![Corda](https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png)
 
-# Corda Training Solutions
+# Corda Training
 
-This is a temporary repo for Roger to build out the latest iteration of the Corda training.
+Pre-requrisites:
 
-Work done:
+* JDK 1.8 latest version
+* IntelliJ latest version (2017.1)( as of writing)
+* git
 
-* Rebased to M10
-* Added SignTransactionFlow
-* Added extensive helper comments in all unit test files
-* Added much improved unit tests
+Instructions:
 
-## Todo
+1. Clone this repo
+2. Open the repo in IntelliJ
+3. Import gradle project and wait for IntelliJ to index
+4. Navigate to the unit tests `src/test/kotlin/net/corda/training`
+5. Start with the state tests (You'll need to edit `IOUState.kt`)
+6. Move on to the contract tests (You'll need to edit `IOUContract.kt`)
+7. Move onto the flow tests (Issue, transfer, then Settle) 
 
-General:
-* Finish `SignTransactionFlow`: Add progress tracking steps, allow it to take a partially signed Tx
-* Update the web app to add UI components for dealing with transferring and settling IOUs
-* Port the CollectSignatureFlow into the main Corda repo (requires changes!) - figure out how to refactor some of the
-  existing flows
+To run the unit tests use the Green arrow in IntelliJ next to the test definition.
 
-Training specific:
-* Create the template branch to be used for training. Break out the solutions into a separate repo and stub out the
-  template with comments to help the delegates complete the tasks.
-* Add a proper set of instructions in this README.md for the exercises.
-* Update the training slides.
+Use the instructions above each unit test to complete the code in the required faile to get the unit tests to pass.
 
-Extra:
-* Add support for Bilateral netting of IOUs
-* Add support for defaulted IOUs - will require adding an ENUM to the IOUState - will need to change lots of the tests!
+
 

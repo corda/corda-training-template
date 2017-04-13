@@ -10,6 +10,7 @@ import net.corda.core.node.PluginServiceHub
 import net.corda.core.serialization.SerializationCustomization
 import net.corda.core.transactions.WireTransaction
 import net.corda.training.flow.*
+import net.corda.training.service.IOUService
 import net.corda.training.state.IOUState
 import java.util.function.Function
 
@@ -33,7 +34,7 @@ class IOUPlugin : CordaPluginRegistry() {
     /**
      * A list of long-lived services to be hosted within the node.
      */
-    override val servicePlugins: List<Function<PluginServiceHub, out Any>> = listOf(Function(SignTransactionFlow::Service))
+    override val servicePlugins: List<Function<PluginServiceHub, out Any>> = listOf(Function(IOUService::Service))
 
     /**
      * A list of directories in the resources directory that will be served by Jetty under /web.

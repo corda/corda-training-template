@@ -139,6 +139,6 @@ publishing {
 
 task runTemplateClientRPC(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.template.client.TemplateClientRPCKt'
+    main = 'net.corda.training.IOUClientKt'
     args 'localhost:10006'
 }

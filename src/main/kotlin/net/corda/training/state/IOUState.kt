@@ -1,12 +1,10 @@
 package net.corda.training.state
 
 import net.corda.core.contracts.Amount
-import net.corda.core.contracts.Contract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.crypto.Party
 import net.corda.core.crypto.CompositeKey
-import net.corda.core.crypto.NullPublicKey
 import net.corda.core.crypto.keys
 import net.corda.training.contract.IOUContract
 import java.security.PublicKey

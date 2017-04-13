@@ -20,7 +20,6 @@ import net.corda.training.state.IOUState
 class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
-        val me = serviceHub.myInfo.legalIdentity
         // Stage 1. Retrieve IOU specified by linearId from the vault.
         val iouStates = serviceHub.vaultService.linearHeadsOfType<IOUState>()
         val iouStateAndRef = iouStates[linearId] ?: throw Exception("IOUState with linearId $linearId not found.")
@@ -39,11 +38,12 @@ class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): Flo
         val builder = TransactionType.General.Builder(notary)
         // Stage 6. Create the transaction which comprises: one input, one output and one command.
         builder.withItems(iouStateAndRef, outputIou, transferCommand)
-        // Stage 7. Make the transaction immutable by converting it to a WireTransaction.
-        val wtx = builder.toWireTransaction()
+        // Stage 7. Verify and sign the transaction.
+        builder.toWireTransaction().toLedgerTransaction(serviceHub).verify()
+        val ptx = builder.signWith(serviceHub.legalIdentityKey).toSignedTransaction(false)
         // Stage 8. Collect signature from borrower and the new lender and add it to the transaction.
         // This also verifies the transaction and checks the signatures.
-        val stx = subFlow(SignTransactionFlow.Initiator(wtx))
+        val stx = subFlow(SignTransactionFlow.Initiator(ptx))
         // Stage 9. Notarise and record, the transaction in our vaults.
         return subFlow(FinalityFlow(stx, setOf(inputIou.lender, inputIou.borrower, newLender))).single()
     }

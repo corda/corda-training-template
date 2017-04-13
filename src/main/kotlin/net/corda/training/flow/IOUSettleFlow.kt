@@ -47,8 +47,9 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
             builder.addOutputState(settledIOU)
         }
         // Verify and sign the transaction.
-        val wtx = builder.toWireTransaction()
-        val stx = subFlow(SignTransactionFlow.Initiator(wtx))
+        builder.toWireTransaction().toLedgerTransaction(serviceHub).verify()
+        val ptx = builder.signWith(serviceHub.legalIdentityKey).toSignedTransaction(false)
+        val stx = subFlow(SignTransactionFlow.Initiator(ptx))
         // Finalize the transaction.
         return subFlow(FinalityFlow(stx, setOf(counterparty, me))).single()
     }
