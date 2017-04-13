@@ -37,7 +37,7 @@ class IOUStateTests {
      * As we are dealing with cash lent from one Party to another a sensible token to use would be [Currency].
      */
     @Test
-    fun hasIOUValueFieldOfCorrectType() {
+    fun hasIOUAmountFieldOfCorrectType() {
         // Does the amount field exist?
         IOUState::class.java.getDeclaredField("amount")
         // Is the amount field of the correct type?
@@ -71,11 +71,16 @@ class IOUStateTests {
     /**
      * Task 4.
      * TODO: Add an 'paid' property of type [Amount] to the [IOUState] class to get this test to pass.
-     * Hint: We would like this property to be initialised to a zero amount of Currency upon creation of the [IOUState].
-     * You can use the [POUNDS] extension function over [Int] to create an amount of pounds e.g. '10.POUNDS'.
-     * This property keeps track of how much of the initial [IOUState.amount] has been settled by the borrower.
-     * Extra credit: We need to make sure that the [IOUState.paid] property is of the same currency type as the
-     * [IOUState.amount] property.
+     * Hint:
+     * - We would like this property to be initialised to a zero amount of Currency upon creation of the [IOUState].
+     * - You can use the [POUNDS] extension function over [Int] to create an amount of pounds e.g. '10.POUNDS'.
+     * - This property keeps track of how much of the initial [IOUState.amount] has been settled by the borrower.
+     * - Extra credit: We need to make sure that the [IOUState.paid] property is of the same currency type as the
+     *   [IOUState.amount] property. You can create an instance of the [Amount] class that takes a zero value and a token
+     *   representing the currency - which should be the same currency as the [IOUState.amount] property.
+     * - You can initialise a property with a default value in a Kotlin data class like this:
+     *
+     *       data class(val number: Int = 10)
      */
     @Test
     fun hasPaidFieldOfCorrectType() {
@@ -145,6 +150,8 @@ class IOUStateTests {
      * the lender or borrower.
      * We can do this by performing a set intersection of the vault public keys (which are passed in as a
      * parameter to the method) with the [IOUState.participants] public keys and check the result is not the empty set.
+     * You can use the [participants.keys] method to get a list of all the [CompositeKeys].
+     * You can use [isNotEmpty] to check the intersection of the sets is not empty!
      */
     @Test
     fun isRelevantMethodComplete() {
