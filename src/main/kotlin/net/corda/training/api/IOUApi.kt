@@ -56,18 +56,22 @@ class IOUApi(val services: CordaRPCOps) {
     fun issueIOU(@QueryParam(value = "amount") amount: Int,
                   @QueryParam(value = "currency") currency: String,
                   @QueryParam(value = "party") party: String): Response {
-        // Get party objects for myself and the counterparty.
-        val me = services.nodeIdentity().legalIdentity
-        val lender = services.partyFromName(party) ?: throw IllegalArgumentException("Unknown party name.")
-        // Create a new IOU state using the parameters given.
-        val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
-        // Start the IOUIssueFlow. We block and waits for the flow to return.
-        val result = services.startFlowDynamic(IOUIssueFlow::class.java, state, lender).returnValue.get()
-        // Return the response.
-        return Response
-                .status(Response.Status.CREATED)
-                .entity("Transaction id ${result.id} committed to ledger.\n${result.tx.outputs.single()}")
-                .build()
+//        // Get party objects for myself and the counterparty.
+//        val me = services.nodeIdentity().legalIdentity
+//        val lender = services.partyFromName(party) ?: throw IllegalArgumentException("Unknown party name.")
+//        // Create a new IOU state using the parameters given.
+//        val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
+//        // Start the IOUIssueFlow. We block and waits for the flow to return.
+//        val result = services.startFlowDynamic(IOUIssueFlow::class.java, state, lender).returnValue.get()
+//        // Return the response.
+//        return Response
+//                .status(Response.Status.CREATED)
+//                .entity("Transaction id ${result.id} committed to ledger.\n${result.tx.outputs.single()}")
+//                .build()
+
+
+        // Placeholder, remove.
+        return Response.status(Response.Status.CREATED).build()
     }
 
     /**
