@@ -21,6 +21,7 @@ import net.corda.training.state.IOUState
 class IOUIssueFlow(val state: IOUState, val otherParty: Party): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
-
+        // Placeholder code to avoid typing error. Remove before starting the flow task!
+        return TransactionType.General.Builder(null).toSignedTransaction(false)
     }
 }
