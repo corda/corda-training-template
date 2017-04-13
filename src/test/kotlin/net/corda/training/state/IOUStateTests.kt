@@ -16,8 +16,8 @@ import kotlin.test.assertNotEquals
 
 /**
  * Practical exercise instructions.
- * Uncomment the first unit test [hasIOUValueFieldOfCorrectType] then run the unit test using the green arrow
- * to the left of the [IOUStateTests] class or the [hasIOUValueFieldOfCorrectType] method.
+ * Uncomment the first unit test [hasIOUAmountFieldOfCorrectType] then run the unit test using the green arrow
+ * to the left of the [IOUStateTests] class or the [hasIOUAmountFieldOfCorrectType] method.
  * Running the unit tests from [IOUStateTests] runs all of the unit tests defined in the class.
  * The test should fail because you need to make some changes to the IOUState to make the test pass. Read the TODO
  * under each task number for a description and a hint of what you need to do.

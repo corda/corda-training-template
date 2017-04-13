@@ -14,6 +14,7 @@ import java.lang.IllegalStateException
 
 /**
  * The [SignTransactionFlow] automates the process of getting a transaction signed by all the required counterparties.
+ * It is important that you spend some time learning how this flow works.
  */
 object SignTransactionFlow {
     fun allSigners(wtx: WireTransaction) = wtx.commands.flatMap { it.signers }.toSet()
@@ -38,6 +39,7 @@ object SignTransactionFlow {
             // Get the list of counterparties which need to sign.
             val counterpartyCompositeKeys = allSigners(wtx) - myKey
             // Check that my signature has been added and is valid.
+            // Don't check the any counterparty signatures or the notary signature.
             ptx.verifySignatures(*counterpartyCompositeKeys.toTypedArray(), notaryKey)
             // Collect all the counterparty signatures.
             val counterpartySignatures = collectSignatures(counterpartyCompositeKeys)
@@ -117,6 +119,7 @@ object SignTransactionFlow {
                 val proposal = stx.tx
                 val notaryKey = serviceHub.networkMapCache.notaryNodes.single().notaryIdentity.owningKey
                 val notCollectedYet = allSigners(proposal) - otherParty.owningKey
+                // Don't check any of the counterparty signatures or the notary's.
                 stx.verifySignatures(*notCollectedYet.toTypedArray(), notaryKey)
                 checkMySignatureRequired(proposal)
                 verifyDependencies(proposal)

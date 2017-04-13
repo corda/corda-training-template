@@ -8,6 +8,9 @@ import net.corda.core.flows.FlowLogic
 import net.corda.core.serialization.OpaqueBytes
 import java.util.*
 
+/**
+ * This is a flow which has been implemented for you to self issue cash for a node on the ledger.
+ */
 class SelfIssueCashFlow(val amount: Amount<Currency>) : FlowLogic<Cash.State>() {
     @Suspendable
     override fun call(): Cash.State {

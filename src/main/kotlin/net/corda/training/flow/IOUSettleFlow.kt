@@ -11,6 +11,10 @@ import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import java.util.*
 
+/**
+ * This is the flow which handles settlement of existing IOUs on the ledger.
+ * Look at the unit tests in [IOUSettleFlowTests] for how to complete the [call] method of this class.
+ */
 class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {

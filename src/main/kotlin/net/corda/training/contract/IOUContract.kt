@@ -8,10 +8,8 @@ import net.corda.core.crypto.SecureHash
 import net.corda.training.state.IOUState
 
 /**
- * The IOUContract can handle a three transaction types involving [IOUState]s.
- * - Issuance: Issuing a new [IOUState] on the ledger, which is a bilateral agreement between two parties.
- * - Transfer: Re-assinging the lender/beneficiary.
- * - Settle: Fully or partially settling the [IOUState] using the Corda [Cash] contract.
+ * This is where you'll add the contract code which defines how the [IOUState] behaves. Looks at the unit tests in
+ * [IOUContractTests] for instructions on how to complete the [IOUContract] class.
  */
 class IOUContract : Contract {
     /**
@@ -25,7 +23,7 @@ class IOUContract : Contract {
      * function to check for a range of commands which implement this interface.
      */
     interface Commands : CommandData {
-
+        // Add commands here.
     }
 
     /**
@@ -33,6 +31,9 @@ class IOUContract : Contract {
      * The constraints are self documenting so don't require any additional explanation.
      */
     override fun verify(tx: TransactionForContract) {
-
+        // Add contract code here.
+        // requireThat {
+        //     ...
+        // }
     }
 }

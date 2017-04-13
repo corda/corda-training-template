@@ -11,11 +11,8 @@ import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 
 /**
- * This is the flow which handles transfers of existing IOUs on the ledger.
- * This flow doesn't come in an Initiator and Responder pair as messaging across the network is handled by a [subFlow]
- * call to [CollectSignatureFlow.Initiator].
- * Notarisation (if required) and commitment to the ledger is handled vy the [FinalityFlow].
- * The flow returns the [SignedTransaction] that was committed to the ledger.
+ * This is the flow which handles transferring existing IOUs on the ledger to another [Party].
+ * Look at the unit tests in [IOUTransferFlowTests] for how to complete the [call] method of this class.
  */
 class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): FlowLogic<SignedTransaction>() {
     @Suspendable
