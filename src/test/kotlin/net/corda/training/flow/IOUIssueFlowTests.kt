@@ -61,25 +61,25 @@ class IOUIssueFlowTests {
      *   [checkSufficientSignatures] is set to false, otherwise Corda will assert all signatures should be present.
      * - Return the [SignedTransaction].
      */
-    @Test
-    fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
-        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
-        val future = a.services.startFlow(flow).resultFuture
-        net.runNetwork()
-        // Return the unsigned(!) SignedTransaction object from the IOUIssueFlow.
-        val ptx: SignedTransaction = future.getOrThrow()
-        // Print the transaction for debugging purposes.
-        println(ptx.tx)
-        // Check the transaction is well formed...
-        // No outputs, one input IOUState and a command with the right properties.
-        assert(ptx.tx.inputs.isEmpty())
-        assert(ptx.tx.outputs.single().data is IOUState)
-        val command = ptx.tx.commands.single()
-        assert(command.value == IOUContract.Commands.Issue())
-        assert(command.signers.toSet() == iou.participants.toSet())
-        ptx.verifySignatures(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
-    }
+//    @Test
+//    fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
+//        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
+//        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
+//        val future = a.services.startFlow(flow).resultFuture
+//        net.runNetwork()
+//        // Return the unsigned(!) SignedTransaction object from the IOUIssueFlow.
+//        val ptx: SignedTransaction = future.getOrThrow()
+//        // Print the transaction for debugging purposes.
+//        println(ptx.tx)
+//        // Check the transaction is well formed...
+//        // No outputs, one input IOUState and a command with the right properties.
+//        assert(ptx.tx.inputs.isEmpty())
+//        assert(ptx.tx.outputs.single().data is IOUState)
+//        val command = ptx.tx.commands.single()
+//        assert(command.value == IOUContract.Commands.Issue())
+//        assert(command.signers.toSet() == iou.participants.toSet())
+//        ptx.verifySignatures(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
+//    }
 
     /**
      * Task 2.
@@ -91,24 +91,24 @@ class IOUIssueFlowTests {
      * - You can access the [WireTransaction] via [SignedTransaction.tx].
      * - Use [WireTransaction.toLedgerTransaction] method to get a [LedgerTransaction].
      */
-    @Test
-    fun flowReturnsVerifiedPartiallySignedTransaction() {
-        // Check that a zero amount IOU fails.
-        val zeroIou = IOUState(0.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
-        val futureOne = a.services.startFlow(IOUIssueFlow(zeroIou, b.info.legalIdentity)).resultFuture
-        net.runNetwork()
-        assertFailsWith<TransactionVerificationException> { futureOne.getOrThrow() }
-        // Check that an IOU with the same participants fails.
-        val borrowerIsLenderIou = IOUState(10.POUNDS, a.info.legalIdentity, a.info.legalIdentity)
-        val futureTwo = a.services.startFlow(IOUIssueFlow(borrowerIsLenderIou, b.info.legalIdentity)).resultFuture
-        net.runNetwork()
-        assertFailsWith<TransactionVerificationException> { futureTwo.getOrThrow() }
-        // Check a good IOU passes.
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
-        val futureThree = a.services.startFlow(IOUIssueFlow(iou, b.info.legalIdentity)).resultFuture
-        net.runNetwork()
-        futureThree.getOrThrow()
-    }
+//    @Test
+//    fun flowReturnsVerifiedPartiallySignedTransaction() {
+//        // Check that a zero amount IOU fails.
+//        val zeroIou = IOUState(0.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
+//        val futureOne = a.services.startFlow(IOUIssueFlow(zeroIou, b.info.legalIdentity)).resultFuture
+//        net.runNetwork()
+//        assertFailsWith<TransactionVerificationException> { futureOne.getOrThrow() }
+//        // Check that an IOU with the same participants fails.
+//        val borrowerIsLenderIou = IOUState(10.POUNDS, a.info.legalIdentity, a.info.legalIdentity)
+//        val futureTwo = a.services.startFlow(IOUIssueFlow(borrowerIsLenderIou, b.info.legalIdentity)).resultFuture
+//        net.runNetwork()
+//        assertFailsWith<TransactionVerificationException> { futureTwo.getOrThrow() }
+//        // Check a good IOU passes.
+//        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
+//        val futureThree = a.services.startFlow(IOUIssueFlow(iou, b.info.legalIdentity)).resultFuture
+//        net.runNetwork()
+//        futureThree.getOrThrow()
+//    }
 
     /**
      * IMPORTANT: Review the [SignTransactionFlow] before continuing here.
@@ -124,15 +124,15 @@ class IOUIssueFlowTests {
      * - Using this flow you abstract away all the back-and-forth communication required for parties to sign a
      *   transaction.
      */
-    @Test
-    fun flowReturnsTransactionSignedByBothParties() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
-        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
-        val future = a.services.startFlow(flow).resultFuture
-        net.runNetwork()
-        val stx = future.getOrThrow()
-        stx.verifySignatures()
-    }
+//    @Test
+//    fun flowReturnsTransactionSignedByBothParties() {
+//        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
+//        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
+//        val future = a.services.startFlow(flow).resultFuture
+//        net.runNetwork()
+//        val stx = future.getOrThrow()
+//        stx.verifySignatures()
+//    }
 
     /**
      * Now we need to store the finished [SignedTransaction] in both counter-party vaults.
@@ -145,20 +145,20 @@ class IOUIssueFlowTests {
      *   inputs in the transaction that could be double spent! If we added a timestamp to this transaction then we
      *   would require the notary's signature as notaries act as a timestamping authority.
      */
-    @Test
-    fun flowRecordsTheSameTransactionInBothPartyVaults() {
-        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
-        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
-        val future = a.services.startFlow(flow).resultFuture
-        net.runNetwork()
-        val stx = future.getOrThrow()
-        println("Signed transaction hash: ${stx.id}")
-        listOf(a, b).map {
-            it.storage.validatedTransactions.getTransaction(stx.id)
-        }.forEach {
-            val txHash = (it as SignedTransaction).id
-            println("$txHash == ${stx.id}")
-            assertEquals(stx.id, txHash)
-        }
-    }
+//    @Test
+//    fun flowRecordsTheSameTransactionInBothPartyVaults() {
+//        val iou = IOUState(10.POUNDS, a.info.legalIdentity, b.info.legalIdentity)
+//        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
+//        val future = a.services.startFlow(flow).resultFuture
+//        net.runNetwork()
+//        val stx = future.getOrThrow()
+//        println("Signed transaction hash: ${stx.id}")
+//        listOf(a, b).map {
+//            it.storage.validatedTransactions.getTransaction(stx.id)
+//        }.forEach {
+//            val txHash = (it as SignedTransaction).id
+//            println("$txHash == ${stx.id}")
+//            assertEquals(stx.id, txHash)
+//        }
+//    }
 }

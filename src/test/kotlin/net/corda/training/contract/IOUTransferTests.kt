@@ -15,8 +15,6 @@ import org.junit.Test
  * task description to determine how to get the tests to pass.
  */
 class IOUTransferTests {
-    // A pre-made IOU we will use for this exercise.
-    val iou = IOUState(10.POUNDS, ALICE, BOB)
     // A pre-made dummy state we may need for some of the tests.
     class DummyState : ContractState {
         override val contract get() = DUMMY_PROGRAM_ID
@@ -55,27 +53,28 @@ class IOUTransferTests {
      *       }
      * - The [requireSingleCommand] function will handle unrecognised types for you (see first unit test).
      */
-    @Test
-    fun mustHandleMultipleCommandValues() {
-        ledger {
-            transaction {
-                output { iou }
-                command(ALICE_PUBKEY, BOB_PUBKEY) { DummyCommand() }
-                this `fails with` "Required net.corda.training.contract.IOUContract.Commands command"
-            }
-            transaction {
-                output { iou }
-                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-                this.verifies()
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this.verifies()
-            }
-        }
-    }
+//    @Test
+//    fun mustHandleMultipleCommandValues() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        ledger {
+//            transaction {
+//                output { iou }
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { DummyCommand() }
+//                this `fails with` "Required net.corda.training.contract.IOUContract.Commands command"
+//            }
+//            transaction {
+//                output { iou }
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
+//                this.verifies()
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this.verifies()
+//            }
+//        }
+//    }
 
     /**
      * Task 2.
@@ -84,41 +83,42 @@ class IOUTransferTests {
      * Hint:
      * - Look at the contract code for "Issue".
      */
-    @Test
-    fun mustHaveOneInputAndOneOutput() {
-        ledger {
-            transaction {
-                input { iou }
-                input { DummyState() }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "An IOU transfer transaction should only consume one input state."
-            }
-            transaction {
-                output { iou }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "An IOU transfer transaction should only consume one input state."
-            }
-            transaction {
-                input { iou }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "An IOU transfer transaction should only create one output state."
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                output { DummyState() }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "An IOU transfer transaction should only create one output state."
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this.verifies()
-            }
-        }
-    }
+//    @Test
+//    fun mustHaveOneInputAndOneOutput() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        ledger {
+//            transaction {
+//                input { iou }
+//                input { DummyState() }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "An IOU transfer transaction should only consume one input state."
+//            }
+//            transaction {
+//                output { iou }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "An IOU transfer transaction should only consume one input state."
+//            }
+//            transaction {
+//                input { iou }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "An IOU transfer transaction should only create one output state."
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                output { DummyState() }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "An IOU transfer transaction should only create one output state."
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this.verifies()
+//            }
+//        }
+//    }
 
     /**
      * Task 3.
@@ -131,58 +131,60 @@ class IOUTransferTests {
      * - It's easier to take this approach then check all properties other than the lender haven't changed, including
      *   the [linearId] and the [contract]!
      */
-    @Test
-    fun onlyTheLenderMayChange() {
-        ledger {
-            transaction {
-                input { IOUState(10.DOLLARS, ALICE, BOB) }
-                output { IOUState(1.DOLLARS, ALICE, BOB) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "Only the lender property may change."
-            }
-            transaction {
-                input { IOUState(10.DOLLARS, ALICE, BOB) }
-                output { IOUState(10.DOLLARS, ALICE, CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "Only the lender property may change."
-            }
-            transaction {
-                input { IOUState(10.DOLLARS, ALICE, BOB, 5.DOLLARS) }
-                output { IOUState(10.DOLLARS, ALICE, BOB, 10.DOLLARS) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "Only the lender property may change."
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this.verifies()
-            }
-        }
-    }
+//    @Test
+//    fun onlyTheLenderMayChange() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        ledger {
+//            transaction {
+//                input { IOUState(10.DOLLARS, ALICE, BOB) }
+//                output { IOUState(1.DOLLARS, ALICE, BOB) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "Only the lender property may change."
+//            }
+//            transaction {
+//                input { IOUState(10.DOLLARS, ALICE, BOB) }
+//                output { IOUState(10.DOLLARS, ALICE, CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "Only the lender property may change."
+//            }
+//            transaction {
+//                input { IOUState(10.DOLLARS, ALICE, BOB, 5.DOLLARS) }
+//                output { IOUState(10.DOLLARS, ALICE, BOB, 10.DOLLARS) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "Only the lender property may change."
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this.verifies()
+//            }
+//        }
+//    }
 
     /**
      * Task 4.
      * It is fairly obvious that in a transfer IOU transaction the lender must change.
      * TODO: Add a constraint to check the lender has changed in the output IOU.
      */
-    @Test
-    fun theLenderMustChange() {
-        ledger {
-            transaction {
-                input { iou }
-                output { iou }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "The lender property must change in a transfer."
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this.verifies()
-            }
-        }
-    }
+//    @Test
+//    fun theLenderMustChange() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        ledger {
+//            transaction {
+//                input { iou }
+//                output { iou }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "The lender property must change in a transfer."
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this.verifies()
+//            }
+//        }
+//    }
 
     /**
      * Task 5.
@@ -190,45 +192,46 @@ class IOUTransferTests {
      * TODO: Add a constraint to check the lender has changed in the output IOU.
      * Hint: The input sender cannot be the output sender!
      */
-    @Test
-    fun allParticipantsMustSign() {
-        ledger {
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, MINI_CORP_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY, MINI_CORP_PUBKEY) { IOUContract.Commands.Transfer() }
-                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
-            }
-            transaction {
-                input { iou }
-                output { iou.withNewLender(CHARLIE) }
-                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
-                this.verifies()
-            }
-        }
-    }
+//    @Test
+//    fun allParticipantsMustSign() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        ledger {
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, MINI_CORP_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY, MINI_CORP_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this `fails with` "The borrower, old lender and new lender only must sign an IOU transfer transaction"
+//            }
+//            transaction {
+//                input { iou }
+//                output { iou.withNewLender(CHARLIE) }
+//                command(ALICE_PUBKEY, BOB_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Transfer() }
+//                this.verifies()
+//            }
+//        }
+//    }
 }

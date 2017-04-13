@@ -20,31 +20,6 @@ import net.corda.training.state.IOUState
 class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
-        // Stage 1. Retrieve IOU specified by linearId from the vault.
-        val iouStates = serviceHub.vaultService.linearHeadsOfType<IOUState>()
-        val iouStateAndRef = iouStates[linearId] ?: throw Exception("IOUState with linearId $linearId not found.")
-        val inputIou = iouStateAndRef.state.data
-        // Stage 2. This flow can only be initiated by the current recipient.
-        if (serviceHub.myInfo.legalIdentity != inputIou.lender) {
-            throw IllegalArgumentException("IOU transfer can only be initiated by the IOU lender.")
-        }
-        // Stage 3. Create the new IOU state reflecting a new lender.
-        val outputIou = inputIou.withNewLender(newLender)
-        // Stage 4. Create the transfer command.
-        val signers = inputIou.participants + newLender.owningKey
-        val transferCommand = Command(IOUContract.Commands.Transfer(), signers)
-        // Stage 5. Get a reference to a transaction builder.
-        val notary = serviceHub.networkMapCache.notaryNodes.single().notaryIdentity
-        val builder = TransactionType.General.Builder(notary)
-        // Stage 6. Create the transaction which comprises: one input, one output and one command.
-        builder.withItems(iouStateAndRef, outputIou, transferCommand)
-        // Stage 7. Verify and sign the transaction.
-        builder.toWireTransaction().toLedgerTransaction(serviceHub).verify()
-        val ptx = builder.signWith(serviceHub.legalIdentityKey).toSignedTransaction(false)
-        // Stage 8. Collect signature from borrower and the new lender and add it to the transaction.
-        // This also verifies the transaction and checks the signatures.
-        val stx = subFlow(SignTransactionFlow.Initiator(ptx))
-        // Stage 9. Notarise and record, the transaction in our vaults.
-        return subFlow(FinalityFlow(stx, setOf(inputIou.lender, inputIou.borrower, newLender))).single()
+
     }
 }

@@ -28,45 +28,43 @@ import kotlin.test.assertNotEquals
 class IOUStateTests {
     // An IOUState we can use for the unit tests.
     // In this IOU, Alice is lending £1 to Bob.
-    val iouState = IOUState(1.POUNDS, ALICE, BOB)
-
     /**
      * Task 1.
      * TODO: Add an 'amount' property of type [Amount] to the [IOUState] class to get this test to pass.
      * Hint: [Amount] is a template class that takes a class parameter of the token you would like an [Amount] of.
      * As we are dealing with cash lent from one Party to another a sensible token to use would be [Currency].
      */
-    @Test
-    fun hasIOUAmountFieldOfCorrectType() {
-        // Does the amount field exist?
-        IOUState::class.java.getDeclaredField("amount")
-        // Is the amount field of the correct type?
-        assertEquals(IOUState::class.java.getDeclaredField("amount").type, Amount::class.java)
-    }
+//    @Test
+//    fun hasIOUAmountFieldOfCorrectType() {
+//        // Does the amount field exist?
+//        IOUState::class.java.getDeclaredField("amount")
+//        // Is the amount field of the correct type?
+//        assertEquals(IOUState::class.java.getDeclaredField("amount").type, Amount::class.java)
+//    }
 
     /**
      * Task 2.
      * TODO: Add a 'lender' property of type [Party] to the [IOUState] class to get this test to pass.
      */
-    @Test
-    fun hasLenderFieldOfCorrectType() {
-        // Does the lender field exist?
-        IOUState::class.java.getDeclaredField("lender")
-        // Is the lender field of the correct type?
-        assertEquals(IOUState::class.java.getDeclaredField("lender").type, Party::class.java)
-    }
+//    @Test
+//    fun hasLenderFieldOfCorrectType() {
+//        // Does the lender field exist?
+//        IOUState::class.java.getDeclaredField("lender")
+//        // Is the lender field of the correct type?
+//        assertEquals(IOUState::class.java.getDeclaredField("lender").type, Party::class.java)
+//    }
 
     /**
      * Task 3.
      * TODO: Add a 'borrower' property of type [Party] to the [IOUState] class to get this test to pass.
      */
-    @Test
-    fun hasBorrowerFieldOfCorrectType() {
-        // Does the borrower field exist?
-        IOUState::class.java.getDeclaredField("borrower")
-        // Is the borrower field of the correct type?
-        assertEquals(IOUState::class.java.getDeclaredField("borrower").type, Party::class.java)
-    }
+//    @Test
+//    fun hasBorrowerFieldOfCorrectType() {
+//        // Does the borrower field exist?
+//        IOUState::class.java.getDeclaredField("borrower")
+//        // Is the borrower field of the correct type?
+//        assertEquals(IOUState::class.java.getDeclaredField("borrower").type, Party::class.java)
+//    }
 
     /**
      * Task 4.
@@ -82,13 +80,13 @@ class IOUStateTests {
      *
      *       data class(val number: Int = 10)
      */
-    @Test
-    fun hasPaidFieldOfCorrectType() {
-        // Does the paid field exist?
-        IOUState::class.java.getDeclaredField("paid")
-        // Is the paid field of the correct type?
-        assertEquals(IOUState::class.java.getDeclaredField("paid").type, Amount::class.java)
-    }
+//    @Test
+//    fun hasPaidFieldOfCorrectType() {
+//        // Does the paid field exist?
+//        IOUState::class.java.getDeclaredField("paid")
+//        // Is the paid field of the correct type?
+//        assertEquals(IOUState::class.java.getDeclaredField("paid").type, Amount::class.java)
+//    }
 
     /**
      * Task 5.
@@ -96,10 +94,11 @@ class IOUStateTests {
      * Hint: Note that [IOUState.participants] list is a list of [CompositeKey]s. [Party] or [AnonymousParty] objects
      * include a property which contains their [CompositeKey] called [Party.owningKey]
      */
-    @Test
-    fun lenderIsParticipant() {
-        assertNotEquals(iouState.participants.indexOf(ALICE_PUBKEY), -1)
-    }
+//    @Test
+//    fun lenderIsParticipant() {
+//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
+//        assertNotEquals(iouState.participants.indexOf(ALICE_PUBKEY), -1)
+//    }
 
     /**
      * Task 6.
@@ -107,10 +106,11 @@ class IOUStateTests {
      * Hint: Note that [IOUState.participants] list is a list of [CompositeKey]s. [AnonymousParty] objects include a
      * property which contains their [CompositeKey] called [Party.owningKey]
      */
-    @Test
-    fun borrowerIsParticipant() {
-        assertNotEquals(iouState.participants.indexOf(BOB_PUBKEY), -1)
-    }
+//    @Test
+//    fun borrowerIsParticipant() {
+//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
+//        assertNotEquals(iouState.participants.indexOf(BOB_PUBKEY), -1)
+//    }
 
     /**
      * Task 7.
@@ -119,10 +119,10 @@ class IOUStateTests {
      * IntellIJ to automatically add the member definitions for you or you can add them yourself. Look at the definition
      * of [LinearState] for what requires adding.
      */
-    @Test
-    fun isLinearState() {
-        assert(LinearState::class.java.isAssignableFrom(IOUState::class.java))
-    }
+//    @Test
+//    fun isLinearState() {
+//        assert(LinearState::class.java.isAssignableFrom(IOUState::class.java))
+//    }
 
     /**
      * Task 8.
@@ -133,13 +133,13 @@ class IOUStateTests {
      * agreement at a specific point in time) together. All the [LinearState]s with the same [LinearState.linearId]
      * represent the complete life-cycle to date of an agreement, asset or shared fact.
      */
-    @Test
-    fun hasLinearIdFieldOfCorrectType() {
-        // Does the linearId field exist?
-        IOUState::class.java.getDeclaredField("linearId")
-        // Is the paid field of the correct type?
-        assertEquals(IOUState::class.java.getDeclaredField("linearId").type, UniqueIdentifier::class.java)
-    }
+//    @Test
+//    fun hasLinearIdFieldOfCorrectType() {
+//        // Does the linearId field exist?
+//        IOUState::class.java.getDeclaredField("linearId")
+//        // Is the paid field of the correct type?
+//        assertEquals(IOUState::class.java.getDeclaredField("linearId").type, UniqueIdentifier::class.java)
+//    }
 
     /**
      * Task 9.
@@ -153,10 +153,11 @@ class IOUStateTests {
      * You can use the [participants.keys] method to get a list of all the [CompositeKeys].
      * You can use [isNotEmpty] to check the intersection of the sets is not empty!
      */
-    @Test
-    fun isRelevantMethodComplete() {
-        assert(iouState.isRelevant(setOf(ALICE.owningKey.singleKey, BOB.owningKey.singleKey)))
-    }
+//    @Test
+//    fun isRelevantMethodComplete() {
+//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
+//        assert(iouState.isRelevant(setOf(ALICE.owningKey.singleKey, BOB.owningKey.singleKey)))
+//    }
 
     /**
      * Task 10.
@@ -164,15 +165,15 @@ class IOUStateTests {
      * Hint: Make sure that the lender and borrower fields are not in the wrong order as this may cause some
      * confusion in subsequent tasks!
      */
-    @Test
-    fun checkIOUStateParameterOrdering() {
-        val fields = IOUState::class.java.declaredFields
-        assertEquals(fields[0], IOUState::class.java.getDeclaredField("amount"))
-        assertEquals(fields[1], IOUState::class.java.getDeclaredField("lender"))
-        assertEquals(fields[2], IOUState::class.java.getDeclaredField("borrower"))
-        assertEquals(fields[3], IOUState::class.java.getDeclaredField("paid"))
-        assertEquals(fields[4], IOUState::class.java.getDeclaredField("linearId"))
-    }
+//    @Test
+//    fun checkIOUStateParameterOrdering() {
+//        val fields = IOUState::class.java.declaredFields
+//        assertEquals(fields[0], IOUState::class.java.getDeclaredField("amount"))
+//        assertEquals(fields[1], IOUState::class.java.getDeclaredField("lender"))
+//        assertEquals(fields[2], IOUState::class.java.getDeclaredField("borrower"))
+//        assertEquals(fields[3], IOUState::class.java.getDeclaredField("paid"))
+//        assertEquals(fields[4], IOUState::class.java.getDeclaredField("linearId"))
+//    }
 
     /**
      * Task 11.
@@ -192,21 +193,22 @@ class IOUStateTests {
      *
      * The name string name of a party can be obtained from the following property [Party.name].
      */
-    @Test
-    fun checkIOUStateToStringMethod() {
-        assertEquals(iouState.toString(), "IOU(${iouState.linearId}): Bob owes Alice 1.00 GBP and has paid 0.00 GBP so far.")
-    }
+//    @Test
+//    fun checkIOUStateToStringMethod() {
+//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
+//        assertEquals(iouState.toString(), "IOU(${iouState.linearId}): Bob owes Alice 1.00 GBP and has paid 0.00 GBP so far.")
+//    }
 
     /**
      * Task 12.
      * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
      * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
      */
-    @Test
-    fun checkPayHelperMethod() {
-        val iou = IOUState(10.DOLLARS, ALICE, BOB)
-        assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
-        assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
-        assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)
-    }
+//    @Test
+//    fun checkPayHelperMethod() {
+//        val iou = IOUState(10.DOLLARS, ALICE, BOB)
+//        assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
+//        assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
+//        assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)
+//    }
 }
