@@ -20,7 +20,9 @@ Instructions:
 
 To run the unit tests use the Green arrow in IntelliJ next to the test definition.
 
-Use the instructions above each unit test to complete the code in the required faile to get the unit tests to pass.
+Use the instructions above each unit test to complete the code in the required file (e.g. `IOUState.kt`) to get the unit tests to pass.
+
+Solutions are available [here](https://github.com/roger3cev/corda-training-solutions).
 
 
 
