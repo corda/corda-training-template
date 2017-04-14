@@ -41,12 +41,7 @@ class IOUPlugin : CordaPluginRegistry() {
      * The template's web frontend is accessible at /web/template.
      */
     override val staticServeDirs: Map<String, String> = mapOf(
-            // This will serve the templateWeb directory in resources to /web/template
-            "template" to javaClass.classLoader.getResource("templateWeb").toExternalForm()
+            // This will serve the iouWeb directory in resources to /web/template
+            "iou" to javaClass.classLoader.getResource("iouWeb").toExternalForm()
     )
-
-    /**
-     * Whitelisting the required types for serialisation by the Corda node.
-     */
-    override fun customizeSerialization(custom: SerializationCustomization) = true
 }

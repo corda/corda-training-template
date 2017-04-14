@@ -24,6 +24,8 @@ class IOUContract : Contract {
      */
     interface Commands : CommandData {
         // Add commands here.
+        // E.g
+        // class DoSomething : TypeOnlyCommandData(), Commands
     }
 
     /**

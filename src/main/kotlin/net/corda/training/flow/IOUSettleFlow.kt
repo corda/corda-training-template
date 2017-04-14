@@ -18,7 +18,7 @@ import java.util.*
 class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
-        // Placeholder code to avoid typing error. Remove before starting the flow task!
+        // Placeholder code to avoid type error when running the tests. Remove before starting the flow task!
         return TransactionType.General.Builder(null).toSignedTransaction(false)
     }
 }

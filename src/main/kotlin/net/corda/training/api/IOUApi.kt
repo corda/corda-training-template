@@ -56,6 +56,10 @@ class IOUApi(val services: CordaRPCOps) {
     fun issueIOU(@QueryParam(value = "amount") amount: Int,
                   @QueryParam(value = "currency") currency: String,
                   @QueryParam(value = "party") party: String): Response {
+
+//        UNCOMMENT THIS CODE BEFORE USING THE API!
+//        -----------------------------------------
+//
 //        // Get party objects for myself and the counterparty.
 //        val me = services.nodeIdentity().legalIdentity
 //        val lender = services.partyFromName(party) ?: throw IllegalArgumentException("Unknown party name.")
