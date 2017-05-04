@@ -3,9 +3,9 @@ package net.corda.training.flow
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.contracts.asset.Cash
 import net.corda.core.contracts.Amount
-import net.corda.flows.CashIssueFlow
 import net.corda.core.flows.FlowLogic
 import net.corda.core.serialization.OpaqueBytes
+import net.corda.flows.CashIssueFlow
 import java.util.*
 
 /**

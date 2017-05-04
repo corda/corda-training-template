@@ -1,8 +1,10 @@
 package net.corda.training.flow
 
 import co.paralleluniverse.fibers.Suspendable
-import net.corda.core.contracts.*
-import net.corda.core.crypto.Party
+import net.corda.core.contracts.Amount
+import net.corda.core.contracts.Command
+import net.corda.core.contracts.TransactionType
+import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.FlowLogic
 import net.corda.core.node.services.linearHeadsOfType
 import net.corda.core.transactions.SignedTransaction
