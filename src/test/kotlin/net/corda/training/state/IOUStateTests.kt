@@ -80,13 +80,18 @@ class IOUStateTests {
      *
      *       data class(val number: Int = 10)
      */
-//    @Test
-//    fun hasPaidFieldOfCorrectType() {
-//        // Does the paid field exist?
-//        IOUState::class.java.getDeclaredField("paid")
-//        // Is the paid field of the correct type?
-//        assertEquals(IOUState::class.java.getDeclaredField("paid").type, Amount::class.java)
-//    }
+    @Test
+    fun hasPaidFieldOfCorrectType() {
+        // Does the paid field exist?
+        IOUState::class.java.getDeclaredField("paid")
+        // Is the paid field of the correct type?
+        assertEquals(IOUState::class.java.getDeclaredField("paid").type, Amount::class.java)
+        // Does the paid field's currency match the amount field's currency?
+        val iouStateGBP = IOUState(1.POUNDS, ALICE, BOB)
+        val iouStateUSD = IOUState(1.DOLLARS, ALICE, BOB)
+        assertEquals(iouStateGBP.amount.token, iouStateGBP.paid.token)
+        assertEquals(iouStateUSD.amount.token, iouStateUSD.paid.token)
+    }
 
     /**
      * Task 5.
