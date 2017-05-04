@@ -145,10 +145,7 @@ class IOUIssueTests {
      *
      *       val state = tx.inputs.single() as XState
      *
-     * - You also need to make sure that when checking the [IOUState.amount] property is greater than zero that you
-     *   compare it against a zero value of the same currency. Note that you can obtain the currency of the [amount]
-     *   property by using [IOUState.amount.token].
-     *
+     * - When checking that the [IOUState.amount] is greater than zero, use the [IOUState.amount.quantity] property.
      */
 //    @Test
 //    fun cannotCreateZeroValueIOUs() {
