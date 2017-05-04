@@ -8,6 +8,7 @@ import net.corda.testing.ALICE
 import net.corda.testing.ALICE_PUBKEY
 import net.corda.testing.BOB
 import net.corda.testing.BOB_PUBKEY
+import net.corda.testing.CHARLIE
 import net.corda.training.contract.IOUContract
 import org.junit.Test
 import java.util.*
@@ -206,7 +207,7 @@ class IOUStateTests {
 
     /**
      * Task 12.
-     * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
+     * TODO: Add a helper method called [IOUState.pay] to settle an amount of the IOU.
      * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
      */
 //    @Test
@@ -215,5 +216,15 @@ class IOUStateTests {
 //        assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
 //        assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
 //        assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)
+//    }
+
+    /**
+     * Task 13.
+     * TODO: Add a helper method called [IOUState.withNewLender] to create a copy of the IOU where the lender has been changed.
+     */
+//    @Test
+//    fun checkWithNewLenderHelperMethod() {
+//        val iou = IOUState(10.DOLLARS, ALICE, BOB)
+//        assertEquals(CHARLIE, iou.withNewLender(CHARLIE).lender)
 //    }
 }
