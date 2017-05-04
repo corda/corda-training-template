@@ -19,7 +19,7 @@ import kotlin.test.assertFailsWith
 
 /**
  * Practical exercise instructions.
- * Uncomment the unit tests and use the hints + unit test body to complete the FLows such that the unit tests pass.
+ * Uncomment the unit tests and use the hints + unit test body to complete the Flows such that the unit tests pass.
  */
 class IOUSettleFlowTests {
     lateinit var net: MockNetwork

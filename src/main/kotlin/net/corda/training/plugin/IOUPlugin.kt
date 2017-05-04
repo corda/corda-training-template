@@ -3,12 +3,11 @@ package net.corda.training.plugin
 import net.corda.core.contracts.Amount
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.crypto.Party
-import net.corda.training.api.IOUApi
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.node.CordaPluginRegistry
 import net.corda.core.node.PluginServiceHub
-import net.corda.core.serialization.SerializationCustomization
 import net.corda.core.transactions.WireTransaction
+import net.corda.training.api.IOUApi
 import net.corda.training.flow.*
 import net.corda.training.service.IOUService
 import net.corda.training.state.IOUState

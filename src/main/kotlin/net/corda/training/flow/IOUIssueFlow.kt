@@ -6,7 +6,6 @@ import net.corda.core.contracts.TransactionType
 import net.corda.core.crypto.Party
 import net.corda.core.flows.FlowLogic
 import net.corda.core.transactions.SignedTransaction
-import net.corda.core.transactions.WireTransaction
 import net.corda.flows.FinalityFlow
 import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState

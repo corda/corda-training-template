@@ -49,7 +49,7 @@ class IOUIssueTests {
      */
 //    @Test
 //    fun mustIncludeIssueCommand() {
-//    val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                output { iou }
@@ -88,7 +88,7 @@ class IOUIssueTests {
      */
 //    @Test
 //    fun issueTransactionMustHaveNoInputs() {
-//    val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                input { dummyState }
@@ -113,7 +113,7 @@ class IOUIssueTests {
      */
 //    @Test
 //    fun issueTransactionMustHaveOneOutput() {
-//    val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
@@ -145,14 +145,11 @@ class IOUIssueTests {
      *
      *       val state = tx.inputs.single() as XState
      *
-     * - You also need to make sure that when checking the [IOUState.amount] property is greater than zero that you
-     *   compare it against a zero value of the same currency. Note that you can obtain the currency of the [amount]
-     *   property by using [IOUState.amount.token].
-     *
+     * - When checking that the [IOUState.amount] is greater than zero, use the [IOUState.amount.quantity] property.
      */
 //    @Test
 //    fun cannotCreateZeroValueIOUs() {
-//    val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
@@ -186,7 +183,7 @@ class IOUIssueTests {
      */
 //    @Test
 //    fun lenderAndBorrowerCannotBeTheSame() {
-//    val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
 //        ledger {
 //            transaction {
@@ -217,7 +214,7 @@ class IOUIssueTests {
      */
 //    @Test
 //    fun lenderAndBorrowerMustSignIssueTransaction() {
-//    val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                command(DUMMY_PUBKEY_1) { IOUContract.Commands.Issue() }
@@ -256,6 +253,4 @@ class IOUIssueTests {
 //            }
 //        }
 //    }
-
-    
 }
