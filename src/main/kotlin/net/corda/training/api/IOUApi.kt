@@ -79,7 +79,7 @@ class IOUApi(val services: CordaRPCOps) {
     }
 
     /**
-     * tranfers an IOU specified by [linearId] to a new party.
+     * Tranfers an IOU specified by [linearId] to a new party.
      */
     @GET
     @Path("transfer-iou")
