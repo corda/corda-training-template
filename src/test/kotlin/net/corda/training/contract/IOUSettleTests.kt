@@ -40,7 +40,7 @@ class IOUSettleTests {
      */
 //    @Test
 //    fun mustIncludeSettleCommand() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        val inputCash = createCashState(5.POUNDS, BOB_PUBKEY)
 //        val outputCash = inputCash.withNewOwner(newOwner = ALICE_PUBKEY).second
 //        ledger {
