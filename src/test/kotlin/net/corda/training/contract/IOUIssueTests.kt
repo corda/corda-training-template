@@ -70,7 +70,7 @@ class IOUIssueTests {
 
     /**
      * Task 2.
-     * As previously observed, issue transactions should have any input state references. Therefore we must check to
+     * As previously observed, issue transactions should not have any input state references. Therefore we must check to
      * ensure that no input states are included in a transaction to issue an IOU.
      * TODO: Write a contract constraint that ensures a transaction to issue an IOU does not include any input states.
      * Hint: use a [requireThat] block with a constraint to inside the [IOUContract.verify] function to encapsulate your
