@@ -18,7 +18,7 @@ import kotlin.test.assertFailsWith
 
 /**
  * Practical exercise instructions.
- * Uncomment the unit tests and use the hints + unit test body to complete the Flows such that the unit tests pass.
+ * Uncomment the unit tests and use the hints + unit test body to complete the FLows such that the unit tests pass.
  */
 class IOUIssueFlowTests {
     lateinit var net: MockNetwork
@@ -31,6 +31,8 @@ class IOUIssueFlowTests {
         val nodes = net.createSomeNodes(2)
         a = nodes.partyNodes[0]
         b = nodes.partyNodes[1]
+        // For real nodes this happens automatically, but we have to manually register the flow for tests
+        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
         net.runNetwork()
     }
 
@@ -50,7 +52,7 @@ class IOUIssueFlowTests {
      *   [SignedTransaction].
      * - Create a [TransactionBuilder] and pass it a notary reference. You can get a reference to a transaction builder
      *   via [TransactionType.General.Builder]. A notary [Party] object can be obtained from
-     *   [FlowLogic.serviceHub.networkMapCache].
+     *   [FlowLogic.serviceHub.networkMapService].
      * - Get a reference to your [KeyPair] as you'll need it to sign the transaction. It's available from
      *   [FlowLogic.serviceHub]. Remember that [IOUIssueFlow] is a sub-class of [FlowLogic].
      * - You can get a reference to a notary via [FlowLogic.serviceHub.networkMapCache].
@@ -77,7 +79,7 @@ class IOUIssueFlowTests {
 //        assert(ptx.tx.outputs.single().data is IOUState)
 //        val command = ptx.tx.commands.single()
 //        assert(command.value == IOUContract.Commands.Issue())
-//        assert(command.signers.toSet() == iou.participants.toSet())
+//        assert(command.signers.toSet() == iou.participants.map { it.owningKey }.toSet())
 //        ptx.verifySignatures(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
 //    }
 
