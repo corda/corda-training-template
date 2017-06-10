@@ -1,8 +1,10 @@
 package net.corda.training.contract
 
 import net.corda.core.contracts.*
-import net.corda.core.crypto.CompositeKey
-import net.corda.core.utilities.DUMMY_PUBKEY_1
+import net.corda.core.identity.AbstractParty
+import net.corda.core.utilities.ALICE
+import net.corda.core.utilities.BOB
+import net.corda.core.utilities.CHARLIE
 import net.corda.testing.*
 import net.corda.training.state.IOUState
 import org.junit.Test
@@ -18,7 +20,7 @@ class IOUTransferTests {
     // A pre-made dummy state we may need for some of the tests.
     class DummyState : ContractState {
         override val contract get() = DUMMY_PROGRAM_ID
-        override val participants: List<CompositeKey> get() = listOf()
+        override val participants: List<AbstractParty> get() = listOf()
     }
     // A dummy command.
     class DummyCommand : CommandData
@@ -55,7 +57,7 @@ class IOUTransferTests {
      */
 //    @Test
 //    fun mustHandleMultipleCommandValues() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                output { iou }
@@ -78,14 +80,14 @@ class IOUTransferTests {
 
     /**
      * Task 2.
-     * The transfer transactino should only have one input state and one output state.
+     * The transfer transaction should only have one input state and one output state.
      * TODO: Add constraints to the contract code to ensure a transfer transaction has only one input and output state.
      * Hint:
      * - Look at the contract code for "Issue".
      */
 //    @Test
 //    fun mustHaveOneInputAndOneOutput() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                input { iou }
@@ -133,7 +135,7 @@ class IOUTransferTests {
      */
 //    @Test
 //    fun onlyTheLenderMayChange() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                input { IOUState(10.DOLLARS, ALICE, BOB) }
@@ -169,7 +171,7 @@ class IOUTransferTests {
      */
 //    @Test
 //    fun theLenderMustChange() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                input { iou }
@@ -188,13 +190,12 @@ class IOUTransferTests {
 
     /**
      * Task 5.
-     * It is fairly obvious that in a transfer IOU transaction the lender must change!
-     * TODO: Add a constraint to check the lender has changed in the output IOU.
-     * Hint: The input sender cannot be the output sender!
+     * All the participants in a transfer IOU transaction must sign.
+     * TODO: Add a constraint to check the old lender, the new lender and the recipient have signed.
      */
 //    @Test
 //    fun allParticipantsMustSign() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
 //                input { iou }

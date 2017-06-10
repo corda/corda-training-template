@@ -19,7 +19,7 @@ import kotlin.test.assertFailsWith
 
 /**
  * Practical exercise instructions.
- * Uncomment the unit tests and use the hints + unit test body to complete the Flows such that the unit tests pass.
+ * Uncomment the unit tests and use the hints + unit test body to complete the FLows such that the unit tests pass.
  */
 class IOUSettleFlowTests {
     lateinit var net: MockNetwork
@@ -34,6 +34,9 @@ class IOUSettleFlowTests {
         a = nodes.partyNodes[0]
         b = nodes.partyNodes[1]
         c = nodes.partyNodes[2]
+        // For real nodes this happens automatically, but we have to manually register the flow for tests
+        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
+        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUSettleFlowResponder::class.java) }
         net.runNetwork()
     }
 
@@ -99,7 +102,7 @@ class IOUSettleFlowTests {
 //        val outputCashSum = ledgerTx.outputs
 //                .map { it.data }
 //                .filterIsInstance<Cash.State>()
-//                .filter { it.owner == b.info.legalIdentity.owningKey }
+//                .filter { it.owner == b.info.legalIdentity }
 //                .sumCash()
 //                .withoutIssuer()
 //        // Compare the cash assigned to the lender with the amount claimed is being settled by the borrower.
