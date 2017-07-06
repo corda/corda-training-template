@@ -58,9 +58,8 @@ class IOUIssueFlowTests {
      * - You can get a reference to a notary via [FlowLogic.serviceHub.networkMapCache].
      * - Create an IOU Issue [Command].
      * - Add the IOU state (as an output) and the [Command] to the transaction builder.
-     * - Sign the transaction, you can use [TransactionBuilder.signWith].
-     * - Convert the transaction builder to a [SignedTransaction] using the [toSignedTransation] method. Ensure that
-     *   [checkSufficientSignatures] is set to false, otherwise Corda will assert all signatures should be present.
+     * - Sign the transaction and convert it to a [SignedTransaction] using the [ServiceHub.signInitialTransaction]
+     *   method.
      * - Return the [SignedTransaction].
      */
 //    @Test
