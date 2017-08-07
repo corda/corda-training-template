@@ -3,13 +3,12 @@ package net.corda.training.flow
 import net.corda.contracts.asset.Cash
 import net.corda.contracts.asset.sumCash
 import net.corda.core.contracts.*
-import net.corda.core.utilities.DUMMY_NOTARY
-import net.corda.training.state.IOUState
-import net.corda.training.contract.IOUContract
 import net.corda.core.getOrThrow
-import net.corda.testing.node.MockNetwork
 import net.corda.core.transactions.SignedTransaction
-import net.corda.core.transactions.WireTransaction
+import net.corda.testing.DUMMY_NOTARY
+import net.corda.testing.node.MockNetwork
+import net.corda.training.contract.IOUContract
+import net.corda.training.state.IOUState
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -48,12 +47,12 @@ class IOUSettleFlowTests {
     /**
      * Issue an IOU on the ledger, we need to do this before we can transfer one.
      */
-    private fun issueIou(iou: IOUState): SignedTransaction {
-        val flow = IOUIssueFlow(iou, b.info.legalIdentity)
-        val future = a.services.startFlow(flow).resultFuture
-        net.runNetwork()
-        return future.getOrThrow()
-    }
+//    private fun issueIou(iou: IOUState): SignedTransaction {
+//        val flow = IOUIssueFlow(iou)
+//        val future = a.services.startFlow(flow).resultFuture
+//        net.runNetwork()
+//        return future.getOrThrow()
+//    }
 
     /**
      * Issue an some on-ledger cash to ourselves, we need to do this before we can Settle an IOU.
@@ -112,7 +111,7 @@ class IOUSettleFlowTests {
 //        val command = ledgerTx.commands.requireSingleCommand<IOUContract.Commands>()
 //        assert(command.value == IOUContract.Commands.Settle())
 //        // Check the transaction has been signed by the borrower.
-//        settleResult.verifySignatures(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
+//        settleResult.verifySignaturesExcept(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
 //    }
 
     /**
@@ -183,7 +182,7 @@ class IOUSettleFlowTests {
 //        val settleResult = future.getOrThrow()
 //        // Check the transaction is well formed...
 //        // One output IOUState, one input IOUState reference, input and output cash
-//        settleResult.verifySignatures(DUMMY_NOTARY.owningKey)
+//        settleResult.verifySignaturesExcept(DUMMY_NOTARY.owningKey)
 //    }
 
     /**
@@ -202,6 +201,6 @@ class IOUSettleFlowTests {
 //        val settleResult = future.getOrThrow()
 //        // Check the transaction is well formed...
 //        // One output IOUState, one input IOUState reference, input and output cash
-//        settleResult.verifySignatures()
+//        settleResult.verifyRequiredSignatures()
 //    }
 }

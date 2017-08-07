@@ -2,10 +2,8 @@ package net.corda.training.contract
 
 import net.corda.core.contracts.*
 import net.corda.core.identity.AbstractParty
-import net.corda.core.utilities.ALICE
-import net.corda.core.utilities.BOB
-import net.corda.core.utilities.CHARLIE
 import net.corda.testing.*
+import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.training.state.IOUState
 import org.junit.Test
 

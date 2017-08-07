@@ -1,17 +1,14 @@
 package net.corda.training.flow
 
 import co.paralleluniverse.fibers.Suspendable
-import net.corda.core.contracts.*
+import net.corda.core.contracts.Command
+import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.flows.*
 import net.corda.core.identity.Party
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatedBy
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
-import net.corda.core.node.services.linearHeadsOfType
+import net.corda.core.node.services.queryBy
+import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
-import net.corda.flows.CollectSignaturesFlow
-import net.corda.flows.FinalityFlow
-import net.corda.flows.SignTransactionFlow
+import net.corda.core.transactions.TransactionBuilder
 import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 
@@ -27,7 +24,9 @@ class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): Flo
     @Suspendable
     override fun call(): SignedTransaction {
         // Placeholder code to avoid type error when running the tests. Remove before starting the flow task!
-        return TransactionType.General.Builder(null).toSignedTransaction(false)
+        return serviceHub.signInitialTransaction(
+                TransactionBuilder(notary = null)
+        )
     }
 }
 
