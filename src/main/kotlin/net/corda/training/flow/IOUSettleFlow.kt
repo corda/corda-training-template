@@ -68,7 +68,7 @@ class SelfIssueCashFlow(val amount: Amount<Currency>) : FlowLogic<Cash.State>() 
         val notary = serviceHub.networkMapCache.getAnyNotary()!!
         val me = serviceHub.myInfo.legalIdentity
         /** Create the cash issuance transaction. */
-        val cashIssueTransaction = subFlow(CashIssueFlow(amount, issueRef, me, notary))
+        val cashIssueTransaction = subFlow(CashIssueFlow(amount, issueRef, me, notary, false))
         /** Return the cash output. */
         return cashIssueTransaction.stx.tx.outputs.single().data as Cash.State
     }
