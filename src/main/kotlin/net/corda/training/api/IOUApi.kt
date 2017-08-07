@@ -7,6 +7,7 @@ import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.messaging.CordaRPCOps
+import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.utilities.loggerFor
 import net.corda.training.flow.IOUIssueFlow
@@ -111,7 +112,7 @@ class IOUApi(val services: CordaRPCOps) {
 //        val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
 //        // Start the IOUIssueFlow. We block and waits for the flow to return.
 //        try {
-//            val result = services.startFlowDynamic(IOUIssueFlow::class.java, state, lender).returnValue.get()
+//            val result = services.startFlow(::IOUIssueFlow, state).returnValue.get()
 //            // Return the response.
 //            return Response
 //                    .status(Response.Status.CREATED)
@@ -131,7 +132,7 @@ class IOUApi(val services: CordaRPCOps) {
     }
 
     /**
-     * tranfers an IOU specified by [linearId] to a new party.
+     * Transfers an IOU specified by [linearId] to a new party.
      */
     @GET
     @Path("transfer-iou")
@@ -140,7 +141,7 @@ class IOUApi(val services: CordaRPCOps) {
         val linearId = UniqueIdentifier.fromString(id)
         val newLender = services.partyFromX500Name(X500Name(party)) ?: throw IllegalArgumentException("Unknown party name.")
         try {
-            services.startFlowDynamic(IOUTransferFlow::class.java, linearId, newLender).returnValue.get()
+            services.startFlow(::IOUTransferFlow, linearId, newLender).returnValue.get()
             return Response.status(Response.Status.CREATED).entity("IOU $id transferred to $party.").build()
 
         } catch (e: Exception) {
@@ -163,7 +164,7 @@ class IOUApi(val services: CordaRPCOps) {
         val settleAmount = Amount(amount.toLong() * 100, Currency.getInstance(currency))
 
         try {
-            services.startFlowDynamic(IOUSettleFlow::class.java, linearId, settleAmount).returnValue.get()
+            services.startFlow(::IOUSettleFlow, linearId, settleAmount).returnValue.get()
             return Response.status(Response.Status.CREATED).entity("$amount $currency paid off on IOU id $id.").build()
 
         } catch (e: Exception) {
@@ -184,7 +185,7 @@ class IOUApi(val services: CordaRPCOps) {
         val issueAmount = Amount(amount.toLong() * 100, Currency.getInstance(currency))
 
         try {
-            val cashState = services.startFlowDynamic(SelfIssueCashFlow::class.java, issueAmount).returnValue.get()
+            val cashState = services.startFlow(::SelfIssueCashFlow, issueAmount).returnValue.get()
             return Response.status(Response.Status.CREATED).entity(cashState.toString()).build()
 
         } catch (e: Exception) {
