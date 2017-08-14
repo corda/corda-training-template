@@ -1,11 +1,10 @@
 package net.corda.training.state
 
 import net.corda.core.contracts.*
-import net.corda.core.crypto.CompositeKey
 import net.corda.core.identity.Party
-import net.corda.core.utilities.ALICE
-import net.corda.core.utilities.BOB
+import net.corda.testing.ALICE
 import net.corda.testing.ALICE_PUBKEY
+import net.corda.testing.BOB
 import net.corda.testing.BOB_PUBKEY
 import org.junit.Test
 import java.util.*
@@ -169,7 +168,7 @@ class IOUStateTests {
 //        val borrowerIdx = fields.indexOf(IOUState::class.java.getDeclaredField("borrower"))
 //        val paidIdx = fields.indexOf(IOUState::class.java.getDeclaredField("paid"))
 //        val linearIdIdx = fields.indexOf(IOUState::class.java.getDeclaredField("linearId"))
-
+//
 //        assert(amountIdx < lenderIdx)
 //        assert(lenderIdx < borrowerIdx)
 //        assert(borrowerIdx < paidIdx)

@@ -1,12 +1,11 @@
 package net.corda.training.plugin
 
 import net.corda.core.messaging.CordaRPCOps
-import net.corda.core.node.CordaPluginRegistry
 import net.corda.training.api.IOUApi
 import net.corda.webserver.services.WebServerPluginRegistry
 import java.util.function.Function
 
-class IOUPlugin : CordaPluginRegistry(), WebServerPluginRegistry {
+class IOUPlugin : WebServerPluginRegistry {
     /**
      * A list of classes that expose web APIs.
      */

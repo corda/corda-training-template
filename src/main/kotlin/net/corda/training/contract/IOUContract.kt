@@ -5,6 +5,7 @@ import net.corda.contracts.asset.sumCash
 import net.corda.core.contracts.*
 import net.corda.core.contracts.Requirements.using
 import net.corda.core.crypto.SecureHash
+import net.corda.core.transactions.LedgerTransaction
 import net.corda.training.state.IOUState
 
 /**
@@ -32,7 +33,7 @@ class IOUContract : Contract {
      * The contract code for the [IOUContract].
      * The constraints are self documenting so don't require any additional explanation.
      */
-    override fun verify(tx: TransactionForContract) {
+    override fun verify(tx: LedgerTransaction) {
         // Add contract code here.
         // requireThat {
         //     ...

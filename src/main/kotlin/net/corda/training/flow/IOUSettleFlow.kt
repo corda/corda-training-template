@@ -2,19 +2,17 @@ package net.corda.training.flow
 
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.contracts.asset.Cash
-import net.corda.core.contracts.*
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatedBy
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.contracts.Amount
+import net.corda.core.contracts.Command
+import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.flows.*
 import net.corda.core.identity.Party
-import net.corda.core.node.services.linearHeadsOfType
-import net.corda.core.serialization.OpaqueBytes
+import net.corda.core.node.services.queryBy
+import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
+import net.corda.core.transactions.TransactionBuilder
+import net.corda.core.utilities.OpaqueBytes
 import net.corda.flows.CashIssueFlow
-import net.corda.flows.CollectSignaturesFlow
-import net.corda.flows.FinalityFlow
-import net.corda.flows.SignTransactionFlow
 import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import java.util.*
@@ -31,7 +29,9 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
     @Suspendable
     override fun call(): SignedTransaction {
         // Placeholder code to avoid type error when running the tests. Remove before starting the flow task!
-        return TransactionType.General.Builder(null).toSignedTransaction(false)
+        return serviceHub.signInitialTransaction(
+                TransactionBuilder(notary = null)
+        )
     }
 }
 
@@ -65,11 +65,11 @@ class SelfIssueCashFlow(val amount: Amount<Currency>) : FlowLogic<Cash.State>() 
     override fun call(): Cash.State {
         /** Create the cash issue command. */
         val issueRef = OpaqueBytes.of(0)
-        val notary = serviceHub.networkMapCache.notaryNodes.single().notaryIdentity
+        val notary = serviceHub.networkMapCache.getAnyNotary()!!
         val me = serviceHub.myInfo.legalIdentity
         /** Create the cash issuance transaction. */
-        val cashIssueTransaction = subFlow(CashIssueFlow(amount, issueRef, me, notary))
+        val cashIssueTransaction = subFlow(CashIssueFlow(amount, issueRef, me, notary, false))
         /** Return the cash output. */
-        return cashIssueTransaction.tx.outputs.single().data as Cash.State
+        return cashIssueTransaction.stx.tx.outputs.single().data as Cash.State
     }
 }
