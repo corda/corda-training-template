@@ -177,6 +177,31 @@ class IOUIssueTests {
 
     /**
      * Task 5.
+     * For obvious reasons, the identity of the lender and borrower must be different.
+     * TODO: Add a contract constraint to check the lender is not the borrower.
+     * Hint:
+     * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
+     */
+//    @Test
+//    fun lenderAndBorrowerCannotBeTheSame() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
+//        ledger {
+//            transaction {
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
+//                output { borrowerIsLenderIou }
+//                this `fails with` "The lender and borrower cannot be the same identity."
+//            }
+//            transaction {
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
+//                output { iou }
+//                this.verifies()
+//            }
+//        }
+//    }
+
+    /**
+     * Task 6.
      * The list of public keys which the commands hold should contain all of the participants defined in the [IOUState].
      * This is because the IOU is a bilateral agreement where both parties involved are required to sign to issue an
      * IOU or change the properties of an existing IOU.
@@ -230,28 +255,5 @@ class IOUIssueTests {
 //        }
 //    }
 
-    /**
-     * Task 6.
-     * For obvious reasons, the identity of the lender and borrower must be different.
-     * TODO: Add a contract constraint to check the lender is not the borrower.
-     * Hint:
-     * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
-     */
-//    @Test
-//    fun lenderAndBorrowerCannotBeTheSame() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
-//        ledger {
-//            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { borrowerIsLenderIou }
-//                this `fails with` "The lender and borrower cannot be the same identity."
-//            }
-//            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
-//                this.verifies()
-//            }
-//        }
-//    }
+
 }

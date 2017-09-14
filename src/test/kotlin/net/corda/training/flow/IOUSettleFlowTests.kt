@@ -89,7 +89,7 @@ class IOUSettleFlowTests {
 //        val settleResult = future.getOrThrow()
 //        // Check the transaction is well formed...
 //        // One output IOUState, one input IOUState reference, input and output cash
-//        val ledgerTx = settleResult.toLedgerTransaction(a.services)
+//        val ledgerTx = settleResult.toLedgerTransaction(a.services, false)
 //        assert(ledgerTx.inputs.size == 2)
 //        assert(ledgerTx.outputs.size == 2)
 //        val outputIou = ledgerTx.outputs.map { it.data }.filterIsInstance<IOUState>().single()
