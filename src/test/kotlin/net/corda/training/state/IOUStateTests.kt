@@ -86,8 +86,6 @@ class IOUStateTests {
     /**
      * Task 5.
      * TODO: Add an entry to the [IOUState.participants] list for the lender.
-     * Hint: Note that [IOUState.participants] list is a list of [CompositeKey]s. [Party] or [AnonymousParty] objects
-     * include a property which contains their [CompositeKey] called [Party.owningKey]
      */
 //    @Test
 //    fun lenderIsParticipant() {
@@ -98,8 +96,6 @@ class IOUStateTests {
     /**
      * Task 6.
      * TODO: Similar to the last task, add an entry to the [IOUState.participants] list for the borrower.
-     * Hint: Note that [IOUState.participants] list is a list of [CompositeKey]s. [AnonymousParty] objects include a
-     * property which contains their [CompositeKey] called [Party.owningKey]
      */
 //    @Test
 //    fun borrowerIsParticipant() {
