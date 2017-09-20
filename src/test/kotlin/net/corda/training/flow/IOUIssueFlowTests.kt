@@ -111,16 +111,21 @@ class IOUIssueFlowTests {
     /**
      * IMPORTANT: Review the [SignTransactionFlow] before continuing here.
      * Task 3.
-     * Now we need to collect the signature from the [otherParty] using the [SignTransactionFlow] which has been
-     * provided for you.
+     * Now we need to collect the signature from the [otherParty] using the [SignTransactionFlow].
      * TODO: Amend the [IOUIssueFlow] to collect the [otherParty]'s signature.
      * Hint:
-     * - You need to use [subFlow] to start the [SignTransactionFlow.Initiator].
-     * - Pass it a [WireTransaction] object.
-     * - It will return a [SignedTransaction].
-     * - It performs the signature checking and transaction verification for you.
-     * - Using this flow you abstract away all the back-and-forth communication required for parties to sign a
-     *   transaction.
+     * On the Initiator side:
+     * - Use [subFlow] to start the [CollectSignaturesFlow]
+     * - Pass it a [SignedTransaction] object
+     * - It will return a [SignedTransaction] with all the required signatures
+     * - The subflow performs the signature checking and transaction verification for you
+     *
+     * On the Responder side:
+     * - Create a subclass of [SignTransactionFlow]
+     * - Override [SignTransactionFlow.checkTransaction] to impose any constraints on the transaction
+     *
+     * Using this flow you abstract away all the back-and-forth communication required for parties to sign a
+     * transaction.
      */
 //    @Test
 //    fun flowReturnsTransactionSignedByBothParties() {
