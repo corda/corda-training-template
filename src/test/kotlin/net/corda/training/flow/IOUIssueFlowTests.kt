@@ -43,7 +43,7 @@ class IOUIssueFlowTests {
         net.stopNodes()
     }
 
-    /**
+/**
      * Task 1.
      * Build out the [IOUIssueFlow]!
      * TODO: Implement the [IOUIssueFlow] flow which builds and returns a partially [SignedTransaction].
@@ -52,12 +52,8 @@ class IOUIssueFlowTests {
      * - Look at the comments in the [IOUIssueFlow] object for how to complete this task as well as the unit test below.
      * - Change the template type of the FlowLogic class and the return type of [call] (which is currently [Unit]) to
      *   [SignedTransaction].
-     * - Create a [TransactionBuilder] and pass it a notary reference. You can get a reference to a transaction builder
-     *   via [TransactionType.General.Builder]. A notary [Party] object can be obtained from
-     *   [FlowLogic.serviceHub.networkMapService].
-     * - Get a reference to your [KeyPair] as you'll need it to sign the transaction. It's available from
-     *   [FlowLogic.serviceHub]. Remember that [IOUIssueFlow] is a sub-class of [FlowLogic].
-     * - You can get a reference to a notary via [FlowLogic.serviceHub.networkMapCache].
+     * - Create a [TransactionBuilder] and pass it a notary reference. A notary [Party] object can be obtained from
+     *   [FlowLogic.serviceHub.networkMapCache].
      * - Create an IOU Issue [Command].
      * - Add the IOU state (as an output) and the [Command] to the transaction builder.
      * - Sign the transaction and convert it to a [SignedTransaction] using the [ServiceHub.signInitialTransaction]
