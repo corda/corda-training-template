@@ -39,12 +39,12 @@ class IOUTransferFlowResponder(val otherParty: Party): FlowLogic<Unit>() {
 
     @Suspendable
     override fun call() {
-        val signTransactionFlow = object : SignTransactionFlow(otherParty) {
+        class IOUTransferSignTransactionFlow : SignTransactionFlow(otherParty) {
             override fun checkTransaction(stx: SignedTransaction) {
                 // Define checking logic.
             }
         }
 
-        subFlow(signTransactionFlow)
+        subFlow(IOUTransferSignTransactionFlow())
     }
 }

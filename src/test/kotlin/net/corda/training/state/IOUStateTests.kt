@@ -2,10 +2,7 @@ package net.corda.training.state
 
 import net.corda.core.contracts.*
 import net.corda.core.identity.Party
-import net.corda.testing.ALICE
-import net.corda.testing.ALICE_PUBKEY
-import net.corda.testing.BOB
-import net.corda.testing.BOB_PUBKEY
+import net.corda.testing.*
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -191,8 +188,10 @@ class IOUStateTests {
      */
 //    @Test
 //    fun checkIOUStateToStringMethod() {
-//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
-//        assertEquals(iouState.toString(), "IOU(${iouState.linearId}): CN=Bob Plc,O=Bob Plc,L=Rome,C=IT owes CN=Alice Corp,O=Alice Corp,L=Madrid,C=ES 1.00 GBP and has paid 0.00 GBP so far.")
+//        val iouStateAliceBob = IOUState(1.POUNDS, ALICE, BOB)
+//        val iouStateMiniMega = IOUState(2.DOLLARS, MINI_CORP, MEGA_CORP)
+//        assertEquals(iouStateAliceBob.toString(), "IOU(${iouStateAliceBob.linearId}): CN=Bob Plc,O=Bob Plc,L=Rome,C=IT owes CN=Alice Corp,O=Alice Corp,L=Madrid,C=ES 1.00 GBP and has paid 0.00 GBP so far.")
+//        assertEquals(iouStateMiniMega.toString(), "IOU(${iouStateAliceBob.linearId}): CN=MegaCorp,L=London,E=demo@r3.com owes CN=MiniCorp,L=London,E=demo@r3.com 2.00 USD and has paid 0.00 USD so far.")
 //    }
 
     /**
@@ -206,5 +205,16 @@ class IOUStateTests {
 //        assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
 //        assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
 //        assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)
+//    }
+
+    /**
+     * Task 13.
+     * TODO: Add a helper method called [withNewLender] that can be called from an [IOUState] to change the IOU's lender.
+     */
+//    @Test
+//    fun checkWithNewLenderHelperMethod() {
+//        val iou = IOUState(10.DOLLARS, ALICE, BOB)
+//        assertEquals(MINI_CORP, iou.withNewLender(MINI_CORP).lender)
+//        assertEquals(MEGA_CORP, iou.withNewLender(MEGA_CORP).lender)
 //    }
 }
