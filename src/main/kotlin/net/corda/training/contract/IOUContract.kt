@@ -1,10 +1,6 @@
 package net.corda.training.contract
 
-import net.corda.contracts.asset.Cash
-import net.corda.contracts.asset.sumCash
 import net.corda.core.contracts.*
-import net.corda.core.contracts.Requirements.using
-import net.corda.core.crypto.SecureHash
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.training.state.IOUState
 
@@ -13,11 +9,6 @@ import net.corda.training.state.IOUState
  * [IOUContractTests] for instructions on how to complete the [IOUContract] class.
  */
 class IOUContract : Contract {
-    /**
-     * Legal prose reference. This is just a dummy string for the time being.
-     */
-    override val legalContractReference: SecureHash = SecureHash.sha256("Prose contract.")
-
     /**
      * Add any commands required for this contract as classes within this interface.
      * It is useful to encapsulate your commands inside an interface, so you can use the [requireSingleCommand]

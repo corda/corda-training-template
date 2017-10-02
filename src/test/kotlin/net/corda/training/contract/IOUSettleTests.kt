@@ -1,12 +1,15 @@
 package net.corda.training.contract
 
-import net.corda.contracts.asset.Cash
-import net.corda.core.contracts.*
+import net.corda.core.contracts.Amount
+import net.corda.core.contracts.TypeOnlyCommandData
+import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.contracts.withoutIssuer
 import net.corda.core.identity.AbstractParty
 import net.corda.core.utilities.OpaqueBytes
-import net.corda.testing.*
+import net.corda.finance.`issued by`
+import net.corda.finance.contracts.asset.Cash
+import net.corda.testing.MEGA_CORP
 import net.corda.training.state.IOUState
-import org.junit.Test
 import java.util.*
 
 /**

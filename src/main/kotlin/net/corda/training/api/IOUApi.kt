@@ -1,15 +1,18 @@
 package net.corda.training.api
 
 import net.corda.client.rpc.notUsed
-import net.corda.contracts.asset.Cash
 import net.corda.core.contracts.Amount
 import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.identity.CordaX500Name
+import net.corda.core.internal.x500Name
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.utilities.loggerFor
+import net.corda.finance.contracts.asset.Cash
+import net.corda.finance.contracts.getCashBalances
 import net.corda.training.flow.IOUIssueFlow
 import net.corda.training.flow.IOUSettleFlow
 import net.corda.training.flow.IOUTransferFlow
@@ -33,7 +36,7 @@ val SERVICE_NODE_NAMES = listOf(X500Name("CN=Controller,O=R3,L=London,C=UK"), X5
  */
 @Path("iou")
 class IOUApi(val services: CordaRPCOps) {
-    private val myLegalName = services.nodeIdentity().legalIdentity.name
+    private val myLegalNames = services.nodeInfo().legalIdentities.map { it.name.x500Name }.toList()
 
     companion object {
         private val logger: Logger = loggerFor<IOUApi>()
@@ -45,7 +48,7 @@ class IOUApi(val services: CordaRPCOps) {
     @GET
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
-    fun whoami() = mapOf("me" to myLegalName)
+    fun whoami() = mapOf("me" to myLegalNames)
 
     /**
      * Returns all parties registered with the [NetworkMapService]. These names can be used to look up identities
@@ -58,8 +61,8 @@ class IOUApi(val services: CordaRPCOps) {
         val (nodeInfo, nodeUpdates) = services.networkMapFeed()
         nodeUpdates.notUsed()
         return mapOf("peers" to nodeInfo
-                .map { it.legalIdentity.name }
-                .filter { it != myLegalName && it !in SERVICE_NODE_NAMES })
+                .flatMap { it.legalIdentities.map { it.name.x500Name } }
+                .filter { it !in myLegalNames && it !in SERVICE_NODE_NAMES })
     }
 
     /**
@@ -139,7 +142,8 @@ class IOUApi(val services: CordaRPCOps) {
     fun transferIOU(@QueryParam(value = "id") id: String,
                     @QueryParam(value = "party") party: String): Response {
         val linearId = UniqueIdentifier.fromString(id)
-        val newLender = services.partyFromX500Name(X500Name(party)) ?: throw IllegalArgumentException("Unknown party name.")
+
+        val newLender = services.wellKnownPartyFromX500Name(CordaX500Name.parse(party) ) ?: throw IllegalArgumentException("Unknown party name.")
         try {
             services.startFlow(::IOUTransferFlow, linearId, newLender).returnValue.get()
             return Response.status(Response.Status.CREATED).entity("IOU $id transferred to $party.").build()

@@ -2,8 +2,6 @@ package net.corda.training.contract
 
 import net.corda.core.contracts.*
 import net.corda.core.identity.Party
-import net.corda.testing.*
-import net.corda.testing.contracts.DUMMY_PROGRAM_ID
 import net.corda.training.state.IOUState
 import org.junit.Test
 
@@ -16,7 +14,6 @@ import org.junit.Test
 class IOUIssueTests {
     // A pre-made dummy state we may need for some of the tests.
     val dummyState = object : ContractState {
-        override val contract get() = DUMMY_PROGRAM_ID
         override val participants: List<Party> get() = listOf()
     }
     // A pre-defined dummy command.

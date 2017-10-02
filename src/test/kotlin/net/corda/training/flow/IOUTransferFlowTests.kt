@@ -1,16 +1,12 @@
 package net.corda.training.flow
 
-import net.corda.core.contracts.*
-import net.corda.core.getOrThrow
+import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.transactions.SignedTransaction
-import net.corda.testing.DUMMY_NOTARY
+import net.corda.node.internal.StartedNode
 import net.corda.testing.node.MockNetwork
-import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertFailsWith
 
 /**
  * Practical exercise instructions.
@@ -18,20 +14,22 @@ import kotlin.test.assertFailsWith
  */
 class IOUTransferFlowTests {
     lateinit var net: MockNetwork
-    lateinit var a: MockNetwork.MockNode
-    lateinit var b: MockNetwork.MockNode
-    lateinit var c: MockNetwork.MockNode
+    lateinit var a: StartedNode<MockNetwork.MockNode>
+    lateinit var b: StartedNode<MockNetwork.MockNode>
+    lateinit var c: StartedNode<MockNetwork.MockNode>
 
     @Before
     fun setup() {
         net = MockNetwork()
-        val nodes = net.createSomeNodes(3)
-        a = nodes.partyNodes[0]
-        b = nodes.partyNodes[1]
-        c = nodes.partyNodes[2]
+        a = net.createNode()
+        b = net.createNode()
+        c = net.createNode()
         // For real nodes this happens automatically, but we have to manually register the flow for tests
-        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
-        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUTransferFlowResponder::class.java) }
+        listOf(a, b, c).forEach {
+            it.registerInitiatedFlow(IOUIssueFlowResponder::class.java)
+            it.registerInitiatedFlow(IOUTransferFlowResponder::class.java)
+        }
+
         net.runNetwork()
     }
 

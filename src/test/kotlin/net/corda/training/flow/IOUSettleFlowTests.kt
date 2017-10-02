@@ -1,20 +1,15 @@
 package net.corda.training.flow
 
-import net.corda.contracts.asset.Cash
-import net.corda.contracts.asset.sumCash
-import net.corda.core.contracts.*
-import net.corda.core.getOrThrow
-import net.corda.core.transactions.SignedTransaction
-import net.corda.testing.DUMMY_NOTARY
+import net.corda.core.contracts.Amount
+import net.corda.core.contracts.StateAndRef
+import net.corda.core.utilities.getOrThrow
+import net.corda.finance.contracts.asset.Cash
+import net.corda.node.internal.StartedNode
 import net.corda.testing.node.MockNetwork
-import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 /**
  * Practical exercise instructions.
@@ -22,20 +17,21 @@ import kotlin.test.assertFailsWith
  */
 class IOUSettleFlowTests {
     lateinit var net: MockNetwork
-    lateinit var a: MockNetwork.MockNode
-    lateinit var b: MockNetwork.MockNode
-    lateinit var c: MockNetwork.MockNode
+    lateinit var a: StartedNode<MockNetwork.MockNode>
+    lateinit var b: StartedNode<MockNetwork.MockNode>
+    lateinit var c: StartedNode<MockNetwork.MockNode>
 
     @Before
     fun setup() {
         net = MockNetwork()
-        val nodes = net.createSomeNodes(3)
-        a = nodes.partyNodes[0]
-        b = nodes.partyNodes[1]
-        c = nodes.partyNodes[2]
+        a = net.createNode()
+        b = net.createNode()
+        c = net.createNode()
         // For real nodes this happens automatically, but we have to manually register the flow for tests
-        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
-        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUSettleFlowResponder::class.java) }
+        listOf(a, b, c).forEach {
+            it.registerInitiatedFlow(IOUIssueFlowResponder::class.java)
+            it.registerInitiatedFlow(IOUSettleFlowResponder::class.java)
+        }
         net.runNetwork()
     }
 
