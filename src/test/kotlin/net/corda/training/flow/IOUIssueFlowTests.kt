@@ -43,7 +43,7 @@ class IOUIssueFlowTests {
         net.stopNodes()
     }
 
-/**
+    /**
      * Task 1.
      * Build out the [IOUIssueFlow]!
      * TODO: Implement the [IOUIssueFlow] flow which builds and returns a partially [SignedTransaction].
@@ -75,7 +75,7 @@ class IOUIssueFlowTests {
 //        assert(ptx.tx.inputs.isEmpty())
 //        assert(ptx.tx.outputs.single().data is IOUState)
 //        val command = ptx.tx.commands.single()
-//        assert(command.value == IOUContract.Commands.Issue())
+//        assert(command.value is IOUContract.Commands.Issue)
 //        assert(command.signers.toSet() == iou.participants.map { it.owningKey }.toSet())
 //        ptx.verifySignaturesExcept(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
 //    }
