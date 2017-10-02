@@ -35,8 +35,8 @@ val SERVICE_NODE_NAMES = listOf(X500Name("CN=Controller,O=R3,L=London,C=UK"), X5
  * We've defined a bunch of endpoints to deal with IOUs, cash and the various operations you can perform with them.
  */
 @Path("iou")
-class IOUApi(val services: CordaRPCOps) {
-    private val myLegalNames = services.nodeInfo().legalIdentities.map { it.name.x500Name }.toList()
+class IOUApi(val rpcOps: CordaRPCOps) {
+    private val myLegalNames = rpcOps.nodeIdentity().legalIdentity.map { it.name.x500Name }.toList()
 
     companion object {
         private val logger: Logger = loggerFor<IOUApi>()
@@ -58,7 +58,7 @@ class IOUApi(val services: CordaRPCOps) {
     @Path("peers")
     @Produces(MediaType.APPLICATION_JSON)
     fun getPeers(): Map<String, List<X500Name>> {
-        val (nodeInfo, nodeUpdates) = services.networkMapFeed()
+        val (nodeInfo, nodeUpdates) = rpcOps.networkMapFeed()
         nodeUpdates.notUsed()
         return mapOf("peers" to nodeInfo
                 .flatMap { it.legalIdentities.map { it.name.x500Name } }
@@ -73,7 +73,7 @@ class IOUApi(val services: CordaRPCOps) {
     @Produces(MediaType.APPLICATION_JSON)
     fun getIOUs(): List<StateAndRef<ContractState>> {
         // Filter by state type: IOU.
-        return services.vaultQueryBy<IOUState>().states
+        return rpcOps.vaultQueryBy<IOUState>().states
     }
 
     /**
@@ -84,7 +84,7 @@ class IOUApi(val services: CordaRPCOps) {
     @Produces(MediaType.APPLICATION_JSON)
     fun getCash(): List<StateAndRef<ContractState>> {
         // Filter by state type: Cash.
-        return services.vaultQueryBy<Cash.State>().states
+        return rpcOps.vaultQueryBy<Cash.State>().states
     }
 
     /**
@@ -94,7 +94,7 @@ class IOUApi(val services: CordaRPCOps) {
     @Path("cash-balances")
     @Produces(MediaType.APPLICATION_JSON)
             // Display cash balances.
-    fun getCashBalances() = services.getCashBalances()
+    fun getCashBalances() = rpcOps.getCashBalances()
 
     /**
      * Initiates a flow to agree an IOU between two parties.
@@ -109,13 +109,13 @@ class IOUApi(val services: CordaRPCOps) {
 //        -----------------------------------------
 //
 //        // Get party objects for myself and the counterparty.
-//        val me = services.nodeIdentity().legalIdentity
-//        val lender = services.partyFromX500Name(X500Name(party)) ?: throw IllegalArgumentException("Unknown party name.")
+//        val me = rpcOps.nodeIdentity().legalIdentity
+//        val lender = rpcOps.partyFromX500Name(X500Name(party)) ?: throw IllegalArgumentException("Unknown party name.")
 //        // Create a new IOU state using the parameters given.
 //        val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
 //        // Start the IOUIssueFlow. We block and waits for the flow to return.
 //        try {
-//            val result = services.startFlow(::IOUIssueFlow, state).returnValue.get()
+//            val result = rpcOps.startFlow(::IOUIssueFlow, state).returnValue.get()
 //            // Return the response.
 //            return Response
 //                    .status(Response.Status.CREATED)
@@ -142,10 +142,9 @@ class IOUApi(val services: CordaRPCOps) {
     fun transferIOU(@QueryParam(value = "id") id: String,
                     @QueryParam(value = "party") party: String): Response {
         val linearId = UniqueIdentifier.fromString(id)
-
-        val newLender = services.wellKnownPartyFromX500Name(CordaX500Name.parse(party) ) ?: throw IllegalArgumentException("Unknown party name.")
+        val newLender = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(party) ) ?: throw IllegalArgumentException("Unknown party name.")
         try {
-            services.startFlow(::IOUTransferFlow, linearId, newLender).returnValue.get()
+            rpcOps.startFlow(::IOUTransferFlow, linearId, newLender).returnValue.get()
             return Response.status(Response.Status.CREATED).entity("IOU $id transferred to $party.").build()
 
         } catch (e: Exception) {
@@ -168,7 +167,7 @@ class IOUApi(val services: CordaRPCOps) {
         val settleAmount = Amount(amount.toLong() * 100, Currency.getInstance(currency))
 
         try {
-            services.startFlow(::IOUSettleFlow, linearId, settleAmount).returnValue.get()
+            rpcOps.startFlow(::IOUSettleFlow, linearId, settleAmount).returnValue.get()
             return Response.status(Response.Status.CREATED).entity("$amount $currency paid off on IOU id $id.").build()
 
         } catch (e: Exception) {
@@ -189,7 +188,7 @@ class IOUApi(val services: CordaRPCOps) {
         val issueAmount = Amount(amount.toLong() * 100, Currency.getInstance(currency))
 
         try {
-            val cashState = services.startFlow(::SelfIssueCashFlow, issueAmount).returnValue.get()
+            val cashState = rpcOps.startFlow(::SelfIssueCashFlow, issueAmount).returnValue.get()
             return Response.status(Response.Status.CREATED).entity(cashState.toString()).build()
 
         } catch (e: Exception) {

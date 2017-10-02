@@ -32,17 +32,17 @@ class IOUIssueFlow(val state: IOUState) : FlowLogic<SignedTransaction>() {
  * The signing is handled by the [CollectSignaturesFlow].
  */
 @InitiatedBy(IOUIssueFlow::class)
-class IOUIssueFlowResponder(val otherParty: Party) : FlowLogic<Unit>() {
+class IOUIssueFlowResponder(val otherParty: Party): FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
         val counterpartySession: FlowSession = initiateFlow(otherParty)
 
-        val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
+        val IOUIssueSignTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) {
                 // Define checking logic.
             }
         }
 
-        subFlow(signTransactionFlow)
+        subFlow(IOUIssueSignTransactionFlow)
     }
 }

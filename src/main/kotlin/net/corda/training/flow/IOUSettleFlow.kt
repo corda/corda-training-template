@@ -43,18 +43,17 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
  */
 @InitiatedBy(IOUSettleFlow::class)
 class IOUSettleFlowResponder(val otherParty: Party): FlowLogic<Unit>() {
-
     @Suspendable
     override fun call() {
         val counterpartySession: FlowSession = initiateFlow(otherParty)
 
-        val signTransactionFlow = object : SignTransactionFlow(counterpartySession) {
+        val IOUSettleSignTransactionFlow = object : SignTransactionFlow(counterpartySession) {
             override fun checkTransaction(stx: SignedTransaction) {
                 // Define checking logic.
             }
         }
 
-        subFlow(signTransactionFlow)
+        subFlow(IOUSettleSignTransactionFlow)
     }
 }
 
