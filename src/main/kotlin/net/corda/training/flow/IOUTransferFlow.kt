@@ -1,15 +1,19 @@
 package net.corda.training.flow
 
 import co.paralleluniverse.fibers.Suspendable
-import net.corda.core.contracts.Command
 import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.flows.*
+import net.corda.core.contracts.requireThat
+import net.corda.core.flows.CollectSignaturesFlow
+import net.corda.core.flows.FinalityFlow
+import net.corda.core.flows.FlowLogic
+import net.corda.core.flows.FlowSession
+import net.corda.core.flows.InitiatedBy
+import net.corda.core.flows.InitiatingFlow
+import net.corda.core.flows.SignTransactionFlow
+import net.corda.core.flows.StartableByRPC
 import net.corda.core.identity.Party
-import net.corda.core.node.services.queryBy
-import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
-import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 
 /**
@@ -32,20 +36,20 @@ class IOUTransferFlow(val linearId: UniqueIdentifier, val newLender: Party): Flo
 
 /**
  * This is the flow which signs IOU transfers.
- * The signing is handled by the [CollectSignaturesFlow].
+ * The signing is handled by the [SignTransactionFlow].
  */
 @InitiatedBy(IOUTransferFlow::class)
-class IOUTransferFlowResponder(val otherParty: Party): FlowLogic<Unit>() {
-
+class IOUTransferFlowResponder(val flowSession: FlowSession): FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        val counterpartySession: FlowSession = initiateFlow(otherParty)
-        val IOUTransferSignTransactionFlow = object : SignTransactionFlow(counterpartySession) {
-            override fun checkTransaction(stx: SignedTransaction) {
-                // Define checking logic.
+        val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {
+                //TODO checks should be made here?
+                val output = stx.tx.outputs.single().data
+                "This must be an IOU transaction" using (output is IOUState)
             }
         }
 
-        subFlow(IOUTransferSignTransactionFlow)
+        subFlow(signedTransactionFlow)
     }
 }

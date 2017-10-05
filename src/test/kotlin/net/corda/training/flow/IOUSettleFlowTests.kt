@@ -2,17 +2,31 @@ package net.corda.training.flow
 
 import net.corda.core.contracts.Amount
 import net.corda.core.contracts.StateAndRef
+import net.corda.core.contracts.requireSingleCommand
+import net.corda.core.contracts.withoutIssuer
+import net.corda.core.identity.Party
+import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.getOrThrow
+import net.corda.finance.POUNDS
 import net.corda.finance.contracts.asset.Cash
+import net.corda.finance.utils.sumCash
 import net.corda.node.internal.StartedNode
+import net.corda.testing.DUMMY_NOTARY
+import net.corda.testing.chooseIdentity
 import net.corda.testing.node.MockNetwork
+import net.corda.testing.setCordappPackages
+import net.corda.testing.unsetCordappPackages
+import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import org.junit.After
 import org.junit.Before
+import org.junit.Test
 import java.util.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
- * Practical exercise instructions.
+ * Practical exercise instructions Flows part 3.
  * Uncomment the unit tests and use the hints + unit test body to complete the FLows such that the unit tests pass.
  */
 class IOUSettleFlowTests {
@@ -23,32 +37,33 @@ class IOUSettleFlowTests {
 
     @Before
     fun setup() {
+        setCordappPackages("net.corda.training", "net.corda.finance.contracts.asset")
         net = MockNetwork()
-        a = net.createNode()
-        b = net.createNode()
-        c = net.createNode()
+        val nodes = net.createSomeNodes(3)
+        a = nodes.partyNodes[0]
+        b = nodes.partyNodes[1]
+        c = nodes.partyNodes[2]
         // For real nodes this happens automatically, but we have to manually register the flow for tests
-        listOf(a, b, c).forEach {
-            it.registerInitiatedFlow(IOUIssueFlowResponder::class.java)
-            it.registerInitiatedFlow(IOUSettleFlowResponder::class.java)
-        }
+        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
+        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUSettleFlowResponder::class.java) }
         net.runNetwork()
     }
 
     @After
     fun tearDown() {
         net.stopNodes()
+        unsetCordappPackages()
     }
 
     /**
      * Issue an IOU on the ledger, we need to do this before we can transfer one.
      */
-//    private fun issueIou(iou: IOUState): SignedTransaction {
-//        val flow = IOUIssueFlow(iou)
-//        val future = a.services.startFlow(flow).resultFuture
-//        net.runNetwork()
-//        return future.getOrThrow()
-//    }
+    private fun issueIou(iou: IOUState): SignedTransaction {
+        val flow = IOUIssueFlow(iou)
+        val future = a.services.startFlow(flow).resultFuture
+        net.runNetwork()
+        return future.getOrThrow()
+    }
 
     /**
      * Issue an some on-ledger cash to ourselves, we need to do this before we can Settle an IOU.
@@ -76,7 +91,7 @@ class IOUSettleFlowTests {
      */
 //    @Test
 //    fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
-//        val stx = issueIou(IOUState(10.POUNDS, b.info.legalIdentity, a.info.legalIdentity))
+//        val stx = issueIou(IOUState(10.POUNDS, b.info.chooseIdentity(), a.info.chooseIdentity()))
 //        issueCash(5.POUNDS)
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUSettleFlow(inputIou.linearId, 5.POUNDS)
@@ -85,29 +100,31 @@ class IOUSettleFlowTests {
 //        val settleResult = future.getOrThrow()
 //        // Check the transaction is well formed...
 //        // One output IOUState, one input IOUState reference, input and output cash
-//        val ledgerTx = settleResult.toLedgerTransaction(a.services, false)
-//        assert(ledgerTx.inputs.size == 2)
-//        assert(ledgerTx.outputs.size == 2)
-//        val outputIou = ledgerTx.outputs.map { it.data }.filterIsInstance<IOUState>().single()
-//        assertEquals(
-//                outputIou,
-//                inputIou.pay(5.POUNDS))
-//        // Sum all the output cash. This is complicated as there may be multiple cash output states with not all of them
-//        // being assigned to the lender.
-//        val outputCashSum = ledgerTx.outputs
-//                .map { it.data }
-//                .filterIsInstance<Cash.State>()
-//                .filter { it.owner == b.info.legalIdentity }
-//                .sumCash()
-//                .withoutIssuer()
-//        // Compare the cash assigned to the lender with the amount claimed is being settled by the borrower.
-//        assertEquals(
-//                outputCashSum,
-//                (inputIou.amount - inputIou.paid - outputIou.paid))
-//        val command = ledgerTx.commands.requireSingleCommand<IOUContract.Commands>()
-//        assert(command.value == IOUContract.Commands.Settle())
-//        // Check the transaction has been signed by the borrower.
-//        settleResult.verifySignaturesExcept(b.info.legalIdentity.owningKey, DUMMY_NOTARY.owningKey)
+//        a.database.transaction {
+//            val ledgerTx = settleResult.toLedgerTransaction(a.services, false)
+//            assert(ledgerTx.inputs.size == 2)
+//            assert(ledgerTx.outputs.size == 2)
+//            val outputIou = ledgerTx.outputs.map { it.data }.filterIsInstance<IOUState>().single()
+//            assertEquals(
+//                    outputIou,
+//                    inputIou.pay(5.POUNDS))
+//            // Sum all the output cash. This is complicated as there may be multiple cash output states with not all of them
+//            // being assigned to the lender.
+//            val outputCashSum = ledgerTx.outputs
+//                    .map { it.data }
+//                    .filterIsInstance<Cash.State>()
+//                    .filter { it.owner == b.info.chooseIdentity() }
+//                    .sumCash()
+//                    .withoutIssuer()
+//            // Compare the cash assigned to the lender with the amount claimed is being settled by the borrower.
+//            assertEquals(
+//                    outputCashSum,
+//                    (inputIou.amount - inputIou.paid - outputIou.paid))
+//            val command = ledgerTx.commands.requireSingleCommand<IOUContract.Commands>()
+//            assert(command.value == IOUContract.Commands.Settle())
+//            // Check the transaction has been signed by the borrower.
+//            settleResult.verifySignaturesExcept(b.info.chooseIdentity().owningKey, DUMMY_NOTARY.owningKey)
+//        }
 //    }
 
     /**
@@ -118,7 +135,7 @@ class IOUSettleFlowTests {
      */
 //    @Test
 //    fun settleFlowCanOnlyBeRunByBorrower() {
-//        val stx = issueIou(IOUState(10.POUNDS, b.info.legalIdentity, a.info.legalIdentity))
+//        val stx = issueIou(IOUState(10.POUNDS, b.info.chooseIdentity(), a.info.chooseIdentity()))
 //        issueCash(5.POUNDS)
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUSettleFlow(inputIou.linearId, 5.POUNDS)
@@ -137,7 +154,7 @@ class IOUSettleFlowTests {
      */
 //    @Test
 //    fun borrowerMustHaveCashInRightCurrency() {
-//        val stx = issueIou(IOUState(10.POUNDS, b.info.legalIdentity, a.info.legalIdentity))
+//        val stx = issueIou(IOUState(10.POUNDS, b.info.chooseIdentity(), a.info.chooseIdentity()))
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUSettleFlow(inputIou.linearId, 5.POUNDS)
 //        val future = a.services.startFlow(flow).resultFuture
@@ -153,7 +170,7 @@ class IOUSettleFlowTests {
      */
 //    @Test
 //    fun borrowerMustHaveEnoughCashInRightCurrency() {
-//        val stx = issueIou(IOUState(10.POUNDS, b.info.legalIdentity, a.info.legalIdentity))
+//        val stx = issueIou(IOUState(10.POUNDS, b.info.chooseIdentity(), a.info.chooseIdentity()))
 //        issueCash(1.POUNDS)
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUSettleFlow(inputIou.linearId, 5.POUNDS)
@@ -169,7 +186,7 @@ class IOUSettleFlowTests {
      */
 //    @Test
 //    fun flowReturnsTransactionSignedByBothParties() {
-//        val stx = issueIou(IOUState(10.POUNDS, b.info.legalIdentity, a.info.legalIdentity))
+//        val stx = issueIou(IOUState(10.POUNDS, b.info.chooseIdentity(), a.info.chooseIdentity()))
 //        issueCash(5.POUNDS)
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUSettleFlow(inputIou.linearId, 5.POUNDS)
@@ -188,7 +205,7 @@ class IOUSettleFlowTests {
      */
 //    @Test
 //    fun flowReturnsCommittedTransaction() {
-//        val stx = issueIou(IOUState(10.POUNDS, b.info.legalIdentity, a.info.legalIdentity))
+//        val stx = issueIou(IOUState(10.POUNDS, b.info.chooseIdentity(), a.info.chooseIdentity()))
 //        issueCash(5.POUNDS)
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUSettleFlow(inputIou.linearId, 5.POUNDS)

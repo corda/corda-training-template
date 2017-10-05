@@ -2,6 +2,7 @@ package net.corda.training.state
 
 import net.corda.core.contracts.*
 import net.corda.core.identity.Party
+import net.corda.finance.*
 import net.corda.testing.*
 import org.junit.Test
 import java.util.*
@@ -131,24 +132,6 @@ class IOUStateTests {
 
     /**
      * Task 9.
-     * TODO: Complete the [IOUState.isRelevant] method.
-     * Hint: The [LinearState.isRelevant] method is used by the Corda vault of a node to ascertain if the state
-     * implementing the method is one that the calling node's vault should be tracking. For the [IOUState] this is
-     * performed based on whether the public keys of the lender or borrower are known to the node, i.e. if the node IS
-     * the lender or borrower.
-     * We can do this by performing a set intersection of the vault public keys (which are passed in as a
-     * parameter to the method) with the [IOUState.participants] public keys and check the result is not the empty set.
-     * You can use the [participants.keys] method to get a list of all the [CompositeKeys].
-     * You can use [isNotEmpty] to check the intersection of the sets is not empty!
-     */
-//    @Test
-//    fun isRelevantMethodComplete() {
-//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
-//        assert(iouState.isRelevant(setOf(ALICE_PUBKEY, BOB_PUBKEY)))
-//    }
-
-    /**
-     * Task 10.
      * TODO: Ensure parameters are ordered correctly.
      * Hint: Make sure that the lender and borrower fields are not in the wrong order as this may cause some
      * confusion in subsequent tasks!
@@ -169,7 +152,7 @@ class IOUStateTests {
 //    }
 
     /**
-     * Task 11.
+     * Task 10.
      * TODO: Override the toString() method for the [IOUState]. See unit test body for specifics of the format.
      * Hint: You can use string interpolation in Kotlin to easily create strings using previously declared variables.
      * For example:
@@ -190,12 +173,12 @@ class IOUStateTests {
 //    fun checkIOUStateToStringMethod() {
 //        val iouStateAliceBob = IOUState(1.POUNDS, ALICE, BOB)
 //        val iouStateMiniMega = IOUState(2.DOLLARS, MINI_CORP, MEGA_CORP)
-//        assertEquals(iouStateAliceBob.toString(), "IOU(${iouStateAliceBob.linearId}): CN=Bob Plc,O=Bob Plc,L=Rome,C=IT owes CN=Alice Corp,O=Alice Corp,L=Madrid,C=ES 1.00 GBP and has paid 0.00 GBP so far.")
-//        assertEquals(iouStateMiniMega.toString(), "IOU(${iouStateAliceBob.linearId}): CN=MegaCorp,L=London,E=demo@r3.com owes CN=MiniCorp,L=London,E=demo@r3.com 2.00 USD and has paid 0.00 USD so far.")
+//        assertEquals(iouStateAliceBob.toString(), "IOU(${iouStateAliceBob.linearId}): C=IT,L=Rome,O=Bob Plc owes C=ES,L=Madrid,O=Alice Corp 1.00 GBP and has paid 0.00 GBP so far.")
+//        assertEquals(iouStateMiniMega.toString(), "IOU(${iouStateMiniMega.linearId}): C=GB,L=London,O=MegaCorp owes C=GB,L=London,O=MiniCorp 2.00 USD and has paid 0.00 USD so far.")
 //    }
 
     /**
-     * Task 12.
+     * Task 11.
      * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
      * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
      */
@@ -208,7 +191,7 @@ class IOUStateTests {
 //    }
 
     /**
-     * Task 13.
+     * Task 12.
      * TODO: Add a helper method called [withNewLender] that can be called from an [IOUState] to change the IOU's lender.
      */
 //    @Test

@@ -3,6 +3,7 @@ package net.corda.training.flow
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.contracts.Amount
 import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.contracts.requireThat
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -11,12 +12,12 @@ import net.corda.core.flows.InitiatedBy
 import net.corda.core.flows.InitiatingFlow
 import net.corda.core.flows.SignTransactionFlow
 import net.corda.core.flows.StartableByRPC
-import net.corda.core.identity.Party
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.flows.CashIssueFlow
+import net.corda.training.state.IOUState
 import java.util.*
 
 /**
@@ -39,21 +40,21 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
 
 /**
  * This is the flow which signs IOU settlements.
- * The signing is handled by the [CollectSignaturesFlow].
+ * The signing is handled by the [SignTransactionFlow].
  */
 @InitiatedBy(IOUSettleFlow::class)
-class IOUSettleFlowResponder(val otherParty: Party): FlowLogic<Unit>() {
+class IOUSettleFlowResponder(val flowSession: FlowSession): FlowLogic<Unit>() {
     @Suspendable
     override fun call() {
-        val counterpartySession: FlowSession = initiateFlow(otherParty)
-
-        val IOUSettleSignTransactionFlow = object : SignTransactionFlow(counterpartySession) {
-            override fun checkTransaction(stx: SignedTransaction) {
-                // Define checking logic.
+        val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {
+                //TODO checks should be made here?
+                val outputStates = stx.tx.outputs.map { it.data::class.java.name }.toList()
+                "There must be an IOU transaction." using (outputStates.contains(IOUState::class.java.name))
             }
         }
 
-        subFlow(IOUSettleSignTransactionFlow)
+        subFlow(signedTransactionFlow)
     }
 }
 
@@ -68,6 +69,7 @@ class SelfIssueCashFlow(val amount: Amount<Currency>) : FlowLogic<Cash.State>() 
     override fun call(): Cash.State {
         /** Create the cash issue command. */
         val issueRef = OpaqueBytes.of(0)
+        /** Note: ongoing work to support multiple notary identities is still in progress. */
         val notary = serviceHub.networkMapCache.notaryIdentities.first()
         /** Create the cash issuance transaction. */
         val cashIssueTransaction = subFlow(CashIssueFlow(amount, issueRef, notary))

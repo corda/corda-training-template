@@ -1,14 +1,13 @@
 package net.corda.training
 
-import net.corda.core.internal.concurrent.transpose
+import com.google.common.util.concurrent.Futures
+import net.corda.core.concurrent.CordaFuture
+import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
 import net.corda.node.services.transactions.ValidatingNotaryService
 import net.corda.nodeapi.User
 import net.corda.nodeapi.internal.ServiceInfo
-import net.corda.testing.ALICE
-import net.corda.testing.BOB
-import net.corda.testing.CHARLIE
-import net.corda.testing.DUMMY_NOTARY
+import net.corda.testing.driver.NodeParameters
 import net.corda.testing.driver.driver
 
 /**
@@ -27,20 +26,17 @@ import net.corda.testing.driver.driver
  */
 fun main(args: Array<String>) {
     // No permissions required as we are not invoking flows.
-    driver(isDebug = true, dsl = {
-        val futures = listOf(
-                startNode(providedName = DUMMY_NOTARY.name, advertisedServices = setOf(ServiceInfo(ValidatingNotaryService.type))),
-                startNode(providedName = ALICE.name),
-                startNode(providedName = BOB.name),
-                startNode(providedName = CHARLIE.name))
-        val nodes = futures.map { it.getOrThrow() }
+    val user = User("user1", "test", permissions = setOf())
+    driver(isDebug = true) {
+        startNode(NodeParameters(providedName = CordaX500Name("Controller", "R3","London","UK")), advertisedServices = setOf(ServiceInfo(ValidatingNotaryService.type)))
+        val nodeA = startNode(NodeParameters(providedName = CordaX500Name("NodeA","NodeA","London","C=UK")), rpcUsers = listOf(user)).getOrThrow()
+        val nodeB = startNode(NodeParameters(providedName = CordaX500Name("NodeB","NodeB","New York","US")), rpcUsers = listOf(user)).getOrThrow()
+        val nodeC = startNode(NodeParameters(providedName = CordaX500Name("NodeC","NodeC","Paris","FR")), rpcUsers = listOf(user)).getOrThrow()
 
-        nodes.slice(IntRange(1, futures.size)).forEach { startWebserver(it) }
-
-//        startWebserver(nodeA)
-//        startWebserver(nodeB)
-//        startWebserver(nodeC)
+        startWebserver(nodeA)
+        startWebserver(nodeB)
+        startWebserver(nodeC)
 
         waitForAllNodesToFinish()
-    })
+    }
 }

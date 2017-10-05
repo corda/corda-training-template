@@ -1,19 +1,17 @@
 package net.corda.training.contract
 
-import net.corda.core.contracts.Amount
-import net.corda.core.contracts.TypeOnlyCommandData
-import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.contracts.withoutIssuer
+import net.corda.core.contracts.*
 import net.corda.core.identity.AbstractParty
 import net.corda.core.utilities.OpaqueBytes
-import net.corda.finance.`issued by`
+import net.corda.finance.*
 import net.corda.finance.contracts.asset.Cash
-import net.corda.testing.MEGA_CORP
+import net.corda.testing.*
 import net.corda.training.state.IOUState
+import org.junit.*
 import java.util.*
 
 /**
- * Practical exercise instructions.
+ * Practical exercise instructions for Contracts Part 3.
  * The objective here is to write some contract code that verifies a transaction to settle an [IOUState].
  * Settling is more complicated than transfering and issuing as it requires you to use multiple state types in a
  * transaction.
@@ -31,6 +29,16 @@ class IOUSettleTests {
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
 
+    @Before
+    fun setup() {
+        setCordappPackages("net.corda.training")
+    }
+
+    @After
+    fun tearDown() {
+        unsetCordappPackages()
+    }
+
     /**
      * Task 1.
      * We need to add another case to deal with settling in the [IOUContract.verify] function.
@@ -41,30 +49,30 @@ class IOUSettleTests {
 //    fun mustIncludeSettleCommand() {
 //        val iou = IOUState(10.POUNDS, ALICE, BOB)
 //        val inputCash = createCashState(5.POUNDS, BOB)
-//        val outputCash = inputCash.withNewOwner(newOwner = ALICE).second
+//        val outputCash = inputCash.withNewOwner(newOwner = ALICE).ownableState
 //        ledger {
 //            transaction {
-//                input { iou }
-//                output { iou.pay(5.POUNDS) }
-//                input { inputCash }
-//                output { outputCash }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.POUNDS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { inputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { outputCash }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                this.fails()
 //            }
 //            transaction {
-//                input { iou }
-//                output { iou.pay(5.POUNDS) }
-//                input { inputCash }
-//                output { outputCash }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.POUNDS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { inputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { outputCash }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { DummyCommand() } // Wrong type.
 //                this.fails()
 //            }
 //            transaction {
-//                input { iou }
-//                output { iou.pay(5.POUNDS) }
-//                input { inputCash }
-//                output { outputCash }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.POUNDS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { inputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { outputCash }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() } // Correct Type.
 //                this.verifies()
@@ -94,24 +102,24 @@ class IOUSettleTests {
 //        val iouOne = IOUState(10.POUNDS, ALICE, BOB)
 //        val iouTwo = IOUState(5.POUNDS, ALICE, BOB)
 //        val inputCash = createCashState(5.POUNDS, BOB)
-//        val outputCash = inputCash.withNewOwner(newOwner = ALICE).second
+//        val outputCash = inputCash.withNewOwner(newOwner = ALICE)
 //        ledger {
 //            transaction {
-//                input { iouOne }
-//                input { iouTwo }
+//                input(IOUContract.IOU_CONTRACT_ID) { iouOne }
+//                input(IOUContract.IOU_CONTRACT_ID) { iouTwo }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
-//                output { iouOne.pay(5.POUNDS) }
-//                input { inputCash }
-//                output { outputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { iouOne.pay(5.POUNDS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { inputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { outputCash.ownableState }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                this `fails with` "List has more than one element."
 //            }
 //            transaction {
-//                input { iouOne }
+//                input(IOUContract.IOU_CONTRACT_ID) { iouOne }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
-//                output { iouOne.pay(5.POUNDS) }
-//                input { inputCash }
-//                output { outputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { iouOne.pay(5.POUNDS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { inputCash }
+//                output(IOUContract.IOU_CONTRACT_ID) { outputCash.ownableState }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                this.verifies()
 //            }
@@ -120,7 +128,7 @@ class IOUSettleTests {
 
     /**
      * Task 3.
-     * There always has to be one input IOU ina settle transaction but there might not be an output IOU.
+     * There always has to be one input IOU in a settle transaction but there might not be an output IOU.
      * TODO: Add a constraint to check there is always one input IOU.
      */
 //    @Test
@@ -132,23 +140,23 @@ class IOUSettleTests {
 //        ledger {
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "There must be one input IOU."
 //            }
 //            transaction {
-//                input { iouOne }
+//                input(IOUContract.IOU_CONTRACT_ID) { iouOne }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
-//                output { iouOne.pay(5.POUNDS) }
-//                input { fivePounds }
-//                output { fivePounds.withNewOwner(newOwner = ALICE).second }
+//                output(IOUContract.IOU_CONTRACT_ID) { iouOne.pay(5.POUNDS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { fivePounds }
+//                output(IOUContract.IOU_CONTRACT_ID) { fivePounds.withNewOwner(newOwner = ALICE).ownableState }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                this.verifies()
 //            }
 //            transaction {
-//                input { iouOne }
+//                input(IOUContract.IOU_CONTRACT_ID) { iouOne }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
-//                input { tenPounds }
-//                output { tenPounds.withNewOwner(newOwner = ALICE).second }
+//                input(IOUContract.IOU_CONTRACT_ID) { tenPounds }
+//                output(IOUContract.IOU_CONTRACT_ID) { tenPounds.withNewOwner(newOwner = ALICE).ownableState }
 //                command(BOB_PUBKEY) { Cash.Commands.Move() }
 //                this.verifies()
 //            }
@@ -162,7 +170,7 @@ class IOUSettleTests {
      * need to count how much cash is being used to settle and update our [IOUState] accordingly.
      * TODO: Filter out the cash states from the list of outputs list and assign them to a constant.
      * Hint:
-     * - Use the [filterIsInstance] extension function to filter the outputs list by type, in this case [Cash.State].
+     * - Use the [outputsOfType] extension function to filter the transaction's outputs by type, in this case [Cash.State].
      */
 //    @Test
 //    fun mustBeCashOutputStatesPresent() {
@@ -171,17 +179,17 @@ class IOUSettleTests {
 //        val cashPayment = cash.withNewOwner(newOwner = ALICE)
 //        ledger {
 //            transaction {
-//                input { iou }
-//                output { iou.pay(5.DOLLARS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "There must be output cash."
 //            }
 //            transaction {
-//                input { iou }
-//                input { cash }
-//                output { iou.pay(5.DOLLARS) }
-//                output { cashPayment.second }
-//                command(BOB_PUBKEY) { cashPayment.first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { cash }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
+//                output(IOUContract.IOU_CONTRACT_ID) { cashPayment.ownableState }
+//                command(BOB_PUBKEY) { cashPayment.command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this.verifies()
 //            }
@@ -207,20 +215,20 @@ class IOUSettleTests {
 //        val validCashPayment = cash.withNewOwner(newOwner = ALICE)
 //        ledger {
 //            transaction {
-//                input { iou }
-//                input { cash }
-//                output { iou.pay(5.POUNDS) }
-//                output { invalidCashPayment.second }
-//                command(BOB_PUBKEY) { invalidCashPayment.first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { cash }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.POUNDS) }
+//                output(IOUContract.IOU_CONTRACT_ID, "outputs cash") { invalidCashPayment.ownableState }
+//                command(BOB_PUBKEY) { invalidCashPayment.command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "There must be output cash paid to the recipient."
 //            }
 //            transaction {
-//                input { iou }
-//                input { cash }
-//                output { iou.pay(5.POUNDS) }
-//                output { validCashPayment.second }
-//                command(BOB_PUBKEY) { validCashPayment.first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { cash }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.POUNDS) }
+//                output(IOUContract.IOU_CONTRACT_ID) { validCashPayment.ownableState }
+//                command(BOB_PUBKEY) { validCashPayment.command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this.verifies()
 //            }
@@ -248,28 +256,28 @@ class IOUSettleTests {
 //        val fiveDollars = createCashState(5.DOLLARS, BOB)
 //        ledger {
 //            transaction {
-//                input { iou }
-//                input { elevenDollars }
-//                output { iou.pay(11.DOLLARS) }
-//                output { elevenDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { elevenDollars.withNewOwner(newOwner = ALICE).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { elevenDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(11.DOLLARS) }
+//                output(IOUContract.IOU_CONTRACT_ID) { elevenDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { elevenDollars.withNewOwner(newOwner = ALICE).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "The amount settled cannot be more than the amount outstanding."
 //            }
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { iou.pay(5.DOLLARS) }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = ALICE).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = ALICE).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this.verifies()
 //            }
 //            transaction {
-//                input { iou }
-//                input { tenDollars }
-//                output { tenDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = ALICE).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { tenDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { tenDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = ALICE).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this.verifies()
 //            }
@@ -289,18 +297,18 @@ class IOUSettleTests {
 //        val tenPounds = createCashState(10.POUNDS, BOB)
 //        ledger {
 //            transaction {
-//                input { iou }
-//                input { tenPounds }
-//                output { tenPounds.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { tenPounds.withNewOwner(newOwner = ALICE).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { tenPounds }
+//                output(IOUContract.IOU_CONTRACT_ID) { tenPounds.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { tenPounds.withNewOwner(newOwner = ALICE).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "Token mismatch: GBP vs USD"
 //            }
 //            transaction {
-//                input { iou }
-//                input { tenDollars }
-//                output { tenDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = ALICE).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { tenDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { tenDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = ALICE).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this.verifies()
 //            }
@@ -321,36 +329,36 @@ class IOUSettleTests {
 //        val fiveDollars = createCashState(5.DOLLARS, BOB)
 //        ledger {
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "There must be one output IOU."
 //            }
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                output { iou.pay(5.DOLLARS) }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                verifies()
 //            }
 //            transaction {
-//                input { tenDollars }
-//                input { iou }
-//                output { iou.pay(10.DOLLARS) }
-//                output { tenDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { tenDollars }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(10.DOLLARS) }
+//                output(IOUContract.IOU_CONTRACT_ID) { tenDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "There must be no output IOU as it has been fully settled."
 //            }
 //            transaction {
-//                input { tenDollars }
-//                input { iou }
-//                output { tenDollars.withNewOwner(newOwner = ALICE).second }
-//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { tenDollars }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { tenDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                command(BOB_PUBKEY) { tenDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                verifies()
 //            }
@@ -368,38 +376,38 @@ class IOUSettleTests {
 //        val fiveDollars = createCashState(5.DOLLARS, BOB)
 //        ledger {
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                output { iou.copy(borrower = ALICE, paid = 5.DOLLARS) }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.copy(borrower = ALICE, paid = 5.DOLLARS) }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "The borrower may not change when settling."
 //            }
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                output { iou.copy(amount = 0.DOLLARS, paid = 5.DOLLARS) }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.copy(amount = 0.DOLLARS, paid = 5.DOLLARS) }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "The amount may not change when settling."
 //            }
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                output { iou.copy(lender = CHARLIE, paid = 5.DOLLARS) }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.copy(lender = CHARLIE, paid = 5.DOLLARS) }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                this `fails with` "The lender may not change when settling."
 //            }
 //            transaction {
-//                input { iou }
-//                input { fiveDollars }
-//                output { fiveDollars.withNewOwner(newOwner = ALICE).second }
-//                output { iou.pay(5.DOLLARS) }
-//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).first }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID) { fiveDollars }
+//                output(IOUContract.IOU_CONTRACT_ID) { fiveDollars.withNewOwner(newOwner = ALICE).ownableState }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
+//                command(BOB_PUBKEY) { fiveDollars.withNewOwner(newOwner = BOB).command }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                verifies()
 //            }
@@ -418,32 +426,33 @@ class IOUSettleTests {
 //        val cashPayment = cash.withNewOwner(newOwner = ALICE)
 //        ledger {
 //            transaction {
-//                input { cash }
-//                input { iou }
-//                output { cashPayment.second }
-//                command(BOB_PUBKEY) { cashPayment.first }
-//                output { iou.pay(5.DOLLARS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { cash }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { cashPayment.ownableState }
+//                command(BOB_PUBKEY) { cashPayment.command }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
 //                command(ALICE_PUBKEY, CHARLIE_PUBKEY) { IOUContract.Commands.Settle() }
 //                failsWith("Both lender and borrower together only must sign IOU settle transaction.")
 //            }
 //            transaction {
-//                input { cash }
-//                input { iou }
-//                output { cashPayment.second }
-//                command(BOB_PUBKEY) { cashPayment.first }
-//                output { iou.pay(5.DOLLARS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { cash }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { cashPayment.ownableState }
+//                command(BOB_PUBKEY) { cashPayment.command }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
 //                command(BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                failsWith("Both lender and borrower together only must sign IOU settle transaction.")
 //            }
 //            transaction {
-//                input { cash }
-//                input { iou }
-//                output { cashPayment.second }
-//                command(BOB_PUBKEY) { cashPayment.first }
-//                output { iou.pay(5.DOLLARS) }
+//                input(IOUContract.IOU_CONTRACT_ID) { cash }
+//                input(IOUContract.IOU_CONTRACT_ID) { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { cashPayment.ownableState }
+//                command(BOB_PUBKEY) { cashPayment.command }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou.pay(5.DOLLARS) }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Settle() }
 //                verifies()
 //            }
 //        }
 //    }
 }
+

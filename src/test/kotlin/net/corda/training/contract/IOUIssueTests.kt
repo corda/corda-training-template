@@ -1,23 +1,48 @@
 package net.corda.training.contract
 
-import net.corda.core.contracts.*
-import net.corda.core.identity.Party
+import net.corda.core.contracts.CommandData
+import net.corda.core.contracts.ContractState
+import net.corda.core.contracts.TypeOnlyCommandData
+import net.corda.core.contracts.requireSingleCommand
+import net.corda.core.contracts.requireThat
+import net.corda.finance.DOLLARS
+import net.corda.finance.POUNDS
+import net.corda.finance.SWISS_FRANCS
+import net.corda.testing.ALICE
+import net.corda.testing.ALICE_PUBKEY
+import net.corda.testing.BOB
+import net.corda.testing.BOB_PUBKEY
+import net.corda.testing.DUMMY_KEY_1
+import net.corda.testing.MINI_CORP_PUBKEY
+import net.corda.testing.contracts.DummyState
+import net.corda.testing.ledger
+import net.corda.testing.setCordappPackages
+import net.corda.testing.unsetCordappPackages
 import net.corda.training.state.IOUState
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 /**
- * Practical exercise instructions.
+ * Practical exercise instructions for Contracts Part 1.
  * The objective here is to write some contract code that verifies a transaction to issue an [IOUState].
  * As with the [IOUStateTests] uncomment each unit test and run them one at a time. Use the body of the tests and the
  * task description to determine how to get the tests to pass.
  */
 class IOUIssueTests {
-    // A pre-made dummy state we may need for some of the tests.
-    val dummyState = object : ContractState {
-        override val participants: List<Party> get() = listOf()
-    }
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
+
+    @Before
+    fun setup() {
+        setCordappPackages("net.corda.training")
+    }
+
+    @After
+    fun tearDown() {
+        unsetCordappPackages()
+    }
+
 
     /**
      * Task 1.
@@ -30,7 +55,7 @@ class IOUIssueTests {
      * - For the create command we only care about the existence of it in a transaction, therefore it should subclass
      *   the [TypeOnlyCommandData] class.
      * - The command should be defined inside [IOUContract].
-     * - You can use the [requireSingleCommand] function to check for the existence and type of the specified command
+     * - You can use the [requireSingleCommand] function on [tx.commands] to check for the existence and type of the specified command
      *   in the transaction.
      * - We usually encapsulate our commands around an interface inside the contract class called [Commands] which
      *   implements the [CommandData] interface. The [Create] command itself should be defined inside the [Commands]
@@ -48,16 +73,12 @@ class IOUIssueTests {
 //        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
-//                output { iou }
-//                this.fails()
-//            }
-//            transaction {
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID){ iou }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { DummyCommand() } // Wrong type.
 //                this.fails()
 //            }
 //            transaction {
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() } // Correct type.
 //                this.verifies()
 //            }
@@ -73,7 +94,7 @@ class IOUIssueTests {
      * constraints:
      *
      *     requireThat {
-     *         "Message when constraint fails" by (boolean constraint expression)
+     *         "Message when constraint fails" using (boolean constraint expression)
      *     }
      *
      * Note that the unit tests often expect contract verification failure with a specific message which should be
@@ -87,13 +108,13 @@ class IOUIssueTests {
 //        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
-//                input { dummyState }
+//                input(IOUContract.IOU_CONTRACT_ID) { DummyState() }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "No inputs should be consumed when issuing an IOU."
 //            }
 //            transaction {
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
 //                this.verifies() // As there are no input states.
 //            }
@@ -113,13 +134,13 @@ class IOUIssueTests {
 //        ledger {
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou } // Two outputs fails.
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou } // Two outputs fails.
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "Only one output state should be created when issuing an IOU."
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou } // One output passes.
+//                output(IOUContract.IOU_CONTRACT_ID) { iou } // One output passes.
 //                this.verifies()
 //            }
 //        }
@@ -149,22 +170,22 @@ class IOUIssueTests {
 //        ledger {
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { IOUState(0.POUNDS, ALICE, BOB) } // Zero amount fails.
+//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(0.POUNDS, ALICE, BOB) } // Zero amount fails.
 //                this `fails with` "A newly issued IOU must have a positive amount."
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { IOUState(100.SWISS_FRANCS, ALICE, BOB) }
+//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(100.SWISS_FRANCS, ALICE, BOB) }
 //                this.verifies()
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { IOUState(1.POUNDS, ALICE, BOB) }
+//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(1.POUNDS, ALICE, BOB) }
 //                this.verifies()
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { IOUState(10.DOLLARS, ALICE, BOB) }
+//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(10.DOLLARS, ALICE, BOB) }
 //                this.verifies()
 //            }
 //        }
@@ -188,38 +209,38 @@ class IOUIssueTests {
 //        val iou = IOUState(1.POUNDS, ALICE, BOB)
 //        ledger {
 //            transaction {
-//                command(DUMMY_PUBKEY_1) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                command(DUMMY_KEY_1.public) { IOUContract.Commands.Issue() }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
 //                command(BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
 //                command(BOB_PUBKEY, BOB_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
 //                command(BOB_PUBKEY, BOB_PUBKEY, MINI_CORP_PUBKEY, ALICE_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
 //                command(BOB_PUBKEY, BOB_PUBKEY, BOB_PUBKEY, ALICE_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this.verifies()
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this.verifies()
 //            }
 //        }
@@ -239,12 +260,12 @@ class IOUIssueTests {
 //        ledger {
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { borrowerIsLenderIou }
+//                output(IOUContract.IOU_CONTRACT_ID) { borrowerIsLenderIou }
 //                this `fails with` "The lender and borrower cannot have the same identity."
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output { iou }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this.verifies()
 //            }
 //        }

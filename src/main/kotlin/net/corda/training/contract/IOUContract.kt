@@ -1,6 +1,8 @@
 package net.corda.training.contract
 
-import net.corda.core.contracts.*
+import net.corda.core.contracts.CommandData
+import net.corda.core.contracts.Contract
+import net.corda.core.contracts.requireSingleCommand
 import net.corda.core.transactions.LedgerTransaction
 import net.corda.training.state.IOUState
 
@@ -9,10 +11,15 @@ import net.corda.training.state.IOUState
  * [IOUContractTests] for instructions on how to complete the [IOUContract] class.
  */
 class IOUContract : Contract {
+    companion object {
+        @JvmStatic
+        val IOU_CONTRACT_ID = "net.corda.training.contract.IOUContract"
+    }
+
     /**
      * Add any commands required for this contract as classes within this interface.
      * It is useful to encapsulate your commands inside an interface, so you can use the [requireSingleCommand]
-     * function to check for a range of commands which implement this interface.
+     * function to check for a number of commands which implement this interface.
      */
     interface Commands : CommandData {
         // Add commands here.
