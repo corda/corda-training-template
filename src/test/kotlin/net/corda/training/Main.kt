@@ -28,10 +28,11 @@ fun main(args: Array<String>) {
     // No permissions required as we are not invoking flows.
     val user = User("user1", "test", permissions = setOf())
     driver(isDebug = true) {
-        startNode(NodeParameters(providedName = CordaX500Name("Controller", "R3","London","UK")), advertisedServices = setOf(ServiceInfo(ValidatingNotaryService.type)))
-        val nodeA = startNode(NodeParameters(providedName = CordaX500Name("NodeA","NodeA","London","C=UK")), rpcUsers = listOf(user)).getOrThrow()
-        val nodeB = startNode(NodeParameters(providedName = CordaX500Name("NodeB","NodeB","New York","US")), rpcUsers = listOf(user)).getOrThrow()
-        val nodeC = startNode(NodeParameters(providedName = CordaX500Name("NodeC","NodeC","Paris","FR")), rpcUsers = listOf(user)).getOrThrow()
+        startNode(NodeParameters(providedName = CordaX500Name("Controller", "London","GB")), advertisedServices = setOf(ServiceInfo(ValidatingNotaryService.type)))
+        val(nodeA, nodeB, nodeC) = listOf(
+                startNode(NodeParameters(providedName = CordaX500Name("NodeA","London","C=GB")), rpcUsers = listOf(user)).getOrThrow(),
+                startNode(NodeParameters(providedName = CordaX500Name("NodeB","New York","US")), rpcUsers = listOf(user)).getOrThrow(),
+                startNode(NodeParameters(providedName = CordaX500Name("NodeC","Paris","FR")), rpcUsers = listOf(user)).getOrThrow())
 
         startWebserver(nodeA)
         startWebserver(nodeB)

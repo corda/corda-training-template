@@ -1,18 +1,17 @@
 package net.corda.training.api
 
-import net.corda.client.rpc.notUsed
-import net.corda.core.contracts.Amount
-import net.corda.core.contracts.ContractState
-import net.corda.core.contracts.StateAndRef
-import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.contracts.*
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.internal.x500Name
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.vaultQueryBy
+import net.corda.core.node.NodeInfo
 import net.corda.core.utilities.loggerFor
 import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.contracts.getCashBalances
+import net.corda.training.contract.IOUContract
+import net.corda.training.flow.IOUIssueFlow
 import net.corda.training.flow.IOUSettleFlow
 import net.corda.training.flow.IOUTransferFlow
 import net.corda.training.flow.SelfIssueCashFlow
@@ -27,19 +26,22 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 
-val SERVICE_NODE_NAMES = listOf(X500Name("CN=Controller,O=R3,L=London,C=UK"), X500Name("CN=NetworkMapService,O=R3,L=London,C=UK"))
-
 /**
  * This API is accessible from /api/iou. The endpoint paths specified below are relative to it.
  * We've defined a bunch of endpoints to deal with IOUs, cash and the various operations you can perform with them.
  */
 @Path("iou")
 class IOUApi(val rpcOps: CordaRPCOps) {
-    private val myLegalNames = rpcOps.nodeInfo().legalIdentities.map { it.name.x500Name }.toList()
+    private val me = rpcOps.nodeInfo().legalIdentities.first().name
+    private val myLegalName = me.x500Name
 
     companion object {
         private val logger: Logger = loggerFor<IOUApi>()
     }
+
+    /** Helpers for filtering the network map cache. */
+    private fun isNotary(nodeInfo: NodeInfo) = rpcOps.notaryIdentities().any { nodeInfo.isLegalIdentity(it) }
+    private fun isMe(nodeInfo: NodeInfo) = nodeInfo.legalIdentities.first().name == me
 
     /**
      * Returns the node's name.
@@ -47,7 +49,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     @GET
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
-    fun whoami() = mapOf("me" to myLegalNames)
+    fun whoami() = mapOf("me" to myLegalName)
 
     /**
      * Returns all parties registered with the [NetworkMapService]. These names can be used to look up identities
@@ -57,11 +59,9 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     @Path("peers")
     @Produces(MediaType.APPLICATION_JSON)
     fun getPeers(): Map<String, List<X500Name>> {
-        val (nodeInfo, nodeUpdates) = rpcOps.networkMapFeed()
-        nodeUpdates.notUsed()
-        return mapOf("peers" to nodeInfo
-                .flatMap { it.legalIdentities.map { it.name.x500Name } }
-                .filter { it != myLegalNames && it !in SERVICE_NODE_NAMES })
+        return mapOf("peers" to rpcOps.networkMapSnapshot()
+                .filter { isNotary(it).not() && isMe(it).not() }
+                .map { it.legalIdentities.first().name.x500Name })
     }
 
     /**
@@ -104,19 +104,20 @@ class IOUApi(val rpcOps: CordaRPCOps) {
 //                 @QueryParam(value = "currency") currency: String,
 //                 @QueryParam(value = "party") party: String): Response {
 //        // Get party objects for myself and the counterparty.
-//        val me = rpcOps.nodeInfo().legalIdentities.map { it.name.x500Name }.toList()
+//        val me = rpcOps.nodeInfo().legalIdentities.first()
 //        val lender = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(party)) ?: throw IllegalArgumentException("Unknown party name.")
 //        // Create a new IOU state using the parameters given.
 //        val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
+//        val stateAndContract = StateAndContract(state, IOUContract.IOU_CONTRACT_ID)
 //        // Start the IOUIssueFlow. We block and waits for the flow to return.
 //        try {
-//            val result = rpcOps.startFlow(::IOUIssueFlow, state, lender).returnValue.get()
+//            val result = rpcOps.startFlowDynamic(IOUIssueFlow::class.java, stateAndContract).returnValue.get()
 //            // Return the response.
 //            return Response
 //                    .status(Response.Status.CREATED)
 //                    .entity("Transaction id ${result.id} committed to ledger.\n${result.tx.outputs.single()}")
 //                    .build()
-//        // For the purposes of this demo app, we do not differentiate by exception type.
+//            // For the purposes of this demo app, we do not differentiate by exception type.
 //        } catch (e: Exception) {
 //            return Response
 //                    .status(Response.Status.BAD_REQUEST)

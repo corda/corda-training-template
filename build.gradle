@@ -25,8 +25,6 @@ repositories {
     mavenCentral()
     maven { url 'https://dl.bintray.com/kotlin/exposed' }
     maven { url 'https://jitpack.io' }
-    //TODO: remove once V1.0 is public
-    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
 }
 
 apply plugin: 'kotlin'
@@ -87,17 +85,18 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    delete "./build/nodes"
     directory "./build/nodes"
-    networkMap "CN=Controller,O=R3,OU=corda,L=London,C=UK"
+    networkMap "O=Network Map Service,L=London,C=GB"
     node {
-        name "CN=Controller,O=R3,OU=corda,L=London,C=UK"
+        name "O=Network Map Service,L=London,C=GB"
         advertisedServices = ["corda.notary.validating"]
         p2pPort 10002
         rpcPort 10003
         cordapps = []
     }
     node {
-        name "CN=ParticipantA,O=ParticipantA,L=London,C=UK"
+        name "O=ParticipantA,L=London,C=GB"
         advertisedServices = []
         p2pPort 10005
         rpcPort 10006
@@ -106,7 +105,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
     }
     node {
-        name "CN=ParticipantB,O=ParticipantB,L=New York,C=US"
+        name "O=ParticipantB,L=New York,C=US"
         advertisedServices = []
         p2pPort 10008
         rpcPort 10009
@@ -115,7 +114,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
     }
     node {
-        name "CN=ParticipantC,O=ParticipantC,L=New York,C=US"
+        name "O=ParticipantC,L=New York,C=US"
         advertisedServices = []
         p2pPort 10011
         rpcPort 10012

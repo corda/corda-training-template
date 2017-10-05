@@ -44,7 +44,6 @@ class IOUTransferFlowResponder(val flowSession: FlowSession): FlowLogic<Unit>() 
     override fun call() {
         val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
             override fun checkTransaction(stx: SignedTransaction) = requireThat {
-                //TODO checks should be made here?
                 val output = stx.tx.outputs.single().data
                 "This must be an IOU transaction" using (output is IOUState)
             }
