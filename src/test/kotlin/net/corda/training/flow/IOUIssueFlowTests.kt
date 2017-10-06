@@ -119,8 +119,10 @@ class IOUIssueFlowTests {
      * TODO: Amend the [IOUIssueFlow] to collect the [otherParty]'s signature.
      * Hint:
      * On the Initiator side:
+     * - Get a set of signers required from the participants who are not the node
+     * - Use [initateFlow] to get a set of [FlowSession] objects
      * - Use [subFlow] to start the [CollectSignaturesFlow]
-     * - Pass it a [SignedTransaction] object
+     * - Pass it a [SignedTransaction] object and [FlowSession] set
      * - It will return a [SignedTransaction] with all the required signatures
      * - The subflow performs the signature checking and transaction verification for you
      *

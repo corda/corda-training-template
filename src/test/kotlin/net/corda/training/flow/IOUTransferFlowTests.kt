@@ -65,7 +65,7 @@ class IOUTransferFlowTests {
      * Hint:
      * - This flow will look similar to the [IOUIssueFlow].
      * - This time our transaction has an input state, so we need to retrieve it from the vault!
-     * - You can use the [serviceHub.vaultQueryService.queryBy] method to get the latest linear states of a particular
+     * - You can use the [serviceHub.vaultService.queryBy] method to get the latest linear states of a particular
      *   type from the vault. It returns a list of states matching your query.
      * - Use the [UniqueIdentifier] which is passed into the flow to retrieve the correct [IOUState].
      * - Use the [IOUState.withNewLender] method to create a copy of the state with a new lender.
@@ -142,7 +142,7 @@ class IOUTransferFlowTests {
      * Task 4.
      * Get the borrowers and the new lenders signatures.
      * TODO: Amend the [IOUTransferFlow] to handle collecting signatures from multiple parties.
-     * Hint: use the [CollectSignaturesFlow] in the same way you did for the [IOUIssueFlow].
+     * Hint: use [initiateFlow] and the [CollectSignaturesFlow] in the same way you did for the [IOUIssueFlow].
      */
 //    @Test
 //    fun flowReturnsTransactionSignedByAllParties() {

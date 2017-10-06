@@ -82,7 +82,7 @@ class IOUSettleFlowTests {
      * TODO: Grab the IOU for the given [linearId] from the vault, build and sign the settle transaction.
      * Hints:
      * - Use the code from the [IOUTransferFlow] to get the correct [IOUState] from the vault.
-     * - You will need to use the [generateSpend] functionality of the vault to add the cash states and cash command
+     * - You will need to use the [Cash.generateSpend] functionality of the vault to add the cash states and cash command
      *   to your transaction. The API is quite simple. It takes a reference to a [TransactionBuilder], an [Amount] and
      *   the [Party] object for the recipient. The function will mutate your builder by adding the states and commands.
      * - You then need to produce the output [IOUState] by using the [IOUState.pay] function.
@@ -149,7 +149,7 @@ class IOUSettleFlowTests {
      * The borrower must have at least SOME cash in the right currency to pay the lender.
      * TODO: Add a check in the flow to ensure that the borrower has a balance of cash in the right currency.
      * Hint:
-     * - Use [serviceHub.vaultService.cashBalances] - it is a map which can be queried by [Currency].
+     * - Use [serviceHub.cashBalances] - it is a map which can be queried by [Currency].
      * - Use an if statement to check there is cash in the right currency present.
      */
 //    @Test
@@ -182,7 +182,7 @@ class IOUSettleFlowTests {
     /**
      * Task 5.
      * We need to get the transaction signed by the other party.
-     * TODO: Use a subFlow call to the [SignTransactionFlow] to get a signature from the lender.
+     * TODO: Use a subFlow call to [initateFlow] and the [SignTransactionFlow] to get a signature from the lender.
      */
 //    @Test
 //    fun flowReturnsTransactionSignedByBothParties() {
