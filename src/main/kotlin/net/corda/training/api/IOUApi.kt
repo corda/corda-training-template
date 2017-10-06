@@ -5,12 +5,12 @@ import net.corda.core.identity.CordaX500Name
 import net.corda.core.internal.x500Name
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.startFlow
+import net.corda.core.messaging.startTrackedFlow
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.node.NodeInfo
 import net.corda.core.utilities.loggerFor
 import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.contracts.getCashBalances
-import net.corda.training.contract.IOUContract
 import net.corda.training.flow.IOUIssueFlow
 import net.corda.training.flow.IOUSettleFlow
 import net.corda.training.flow.IOUTransferFlow
@@ -19,10 +19,7 @@ import net.corda.training.state.IOUState
 import org.bouncycastle.asn1.x500.X500Name
 import org.slf4j.Logger
 import java.util.*
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 
@@ -98,7 +95,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     /**
      * Initiates a flow to agree an IOU between two parties.
      */
-//    @GET
+//    @PUT
 //    @Path("issue-iou")
 //    fun issueIOU(@QueryParam(value = "amount") amount: Int,
 //                 @QueryParam(value = "currency") currency: String,
@@ -107,11 +104,10 @@ class IOUApi(val rpcOps: CordaRPCOps) {
 //        val me = rpcOps.nodeInfo().legalIdentities.first()
 //        val lender = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(party)) ?: throw IllegalArgumentException("Unknown party name.")
 //        // Create a new IOU state using the parameters given.
-//        val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
-//        val stateAndContract = StateAndContract(state, IOUContract.IOU_CONTRACT_ID)
-//        // Start the IOUIssueFlow. We block and waits for the flow to return.
 //        try {
-//            val result = rpcOps.startFlowDynamic(IOUIssueFlow::class.java, stateAndContract).returnValue.get()
+//            val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
+//            // Start the IOUIssueFlow. We block and waits for the flow to return.
+//            val result = rpcOps.startTrackedFlow(::IOUIssueFlow, state).returnValue.get()
 //            // Return the response.
 //            return Response
 //                    .status(Response.Status.CREATED)
