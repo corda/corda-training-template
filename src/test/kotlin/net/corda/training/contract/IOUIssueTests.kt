@@ -252,6 +252,7 @@ class IOUIssueTests {
      * TODO: Add a contract constraint to check the lender is not the borrower.
      * Hint:
      * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
+     * - This check must be made before the checking who has signed.
      */
 //    @Test
 //    fun lenderAndBorrowerCannotBeTheSame() {
