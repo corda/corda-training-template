@@ -27,7 +27,7 @@ import net.corda.testing.driver.driver
 fun main(args: Array<String>) {
     // No permissions required as we are not invoking flows.
     val user = User("user1", "test", permissions = setOf())
-    driver(isDebug = true) {
+    driver(isDebug = true, extraCordappPackagesToScan = listOf("net.corda.finance")) {
         startNode(NodeParameters(providedName = CordaX500Name("Controller", "London","GB")), advertisedServices = setOf(ServiceInfo(ValidatingNotaryService.type))).getOrThrow()
         val(nodeA, nodeB, nodeC) = listOf(
                 startNode(NodeParameters(providedName = CordaX500Name("Bank A","London","GB")), rpcUsers = listOf(user)).getOrThrow(),
