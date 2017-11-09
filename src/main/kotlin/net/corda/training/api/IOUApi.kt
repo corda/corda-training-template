@@ -73,14 +73,17 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     }
 
     /**
+     * Task 1
      * Displays all IOU states that exist in the node's vault.
+     * TODO: Return a list of IOUStates on ledger
+     * Hint - Use [rpcOps] to query the vault all unconsumed [IOUState]s
      */
     @GET
     @Path("ious")
     @Produces(MediaType.APPLICATION_JSON)
     fun getIOUs(): List<StateAndRef<ContractState>> {
         // Filter by state type: IOU.
-        return rpcOps.vaultQueryBy<IOUState>().states
+        return listOf()
     }
 
     /**

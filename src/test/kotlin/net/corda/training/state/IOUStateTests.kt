@@ -181,6 +181,8 @@ class IOUStateTests {
      * Task 11.
      * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
      * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
+     * The existing state is immutable so a new state must be created from the existing state. Kotlin provides a [copy]
+     * method which creates a new object with new values for specified fields.
      */
 //    @Test
 //    fun checkPayHelperMethod() {
