@@ -50,7 +50,7 @@ class IOUIssueTests {
      * public keys as parameters which correspond to the required signers for the transaction.
      * Commands also become more important later on when multiple actions are possible with an IOUState, e.g. Transfer
      * and Settle.
-     * TODO: Add an "Issue" command to the IOUState and check for the existence of the command in the verify function.
+     * TODO: Add an "Issue" command to the IOUContract and check for the existence of the command in the verify function.
      * Hint:
      * - For the create command we only care about the existence of it in a transaction, therefore it should subclass
      *   the [TypeOnlyCommandData] class.

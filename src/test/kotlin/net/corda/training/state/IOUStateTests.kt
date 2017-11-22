@@ -126,7 +126,7 @@ class IOUStateTests {
 //    fun hasLinearIdFieldOfCorrectType() {
 //        // Does the linearId field exist?
 //        IOUState::class.java.getDeclaredField("linearId")
-//        // Is the paid field of the correct type?
+//        // Is the linearId field of the correct type?
 //        assertEquals(IOUState::class.java.getDeclaredField("linearId").type, UniqueIdentifier::class.java)
 //    }
 
