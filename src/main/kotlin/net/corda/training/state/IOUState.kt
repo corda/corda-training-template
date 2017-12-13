@@ -1,7 +1,7 @@
 package net.corda.training.state
 
 import net.corda.core.contracts.ContractState
-import net.corda.core.identity.AbstractParty
+import net.corda.core.identity.Party
 
 /**
  * This is where you'll add the definition of your state object. Look at the unit tests in [IOUStateTests] for
@@ -10,5 +10,5 @@ import net.corda.core.identity.AbstractParty
  * Remove the "val data: String = "data" property before starting the [IOUState] tasks.
  */
 data class IOUState(val data: String = "data"): ContractState {
-    override val participants: List<AbstractParty> get() = listOf()
+    override val participants: List<Party> get() = listOf()
 }
