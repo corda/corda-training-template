@@ -153,32 +153,6 @@ class IOUStateTests {
 
     /**
      * Task 10.
-     * TODO: Override the toString() method for the [IOUState]. See unit test body for specifics of the format.
-     * Hint: You can use string interpolation in Kotlin to easily create strings using previously declared variables.
-     * For example:
-     *
-     *     val str: String = "World"
-     *     println("Hello $str")
-     *
-     * More information: https://kotlinlang.org/docs/reference/basic-types.html#string-templates
-     *
-     * Methods are defined as "fun foo(param: ParamType): ReturnType { }" in Kotlin or if the body is a single
-     * expression, you can use "fun foo(param: ParamType): ReturnType = expression"
-     *
-     * More information: https://kotlinlang.org/docs/reference/functions.html#function-declarations
-     *
-     * The name string name of a party can be obtained from the following property [Party.name].
-     */
-//    @Test
-//    fun checkIOUStateToStringMethod() {
-//        val iouStateAliceBob = IOUState(1.POUNDS, ALICE, BOB)
-//        val iouStateMiniMega = IOUState(2.DOLLARS, MINI_CORP, MEGA_CORP)
-//        assertEquals(iouStateAliceBob.toString(), "IOU(${iouStateAliceBob.linearId}): C=IT,L=Rome,O=Bob Plc owes C=ES,L=Madrid,O=Alice Corp 1.00 GBP and has paid 0.00 GBP so far.")
-//        assertEquals(iouStateMiniMega.toString(), "IOU(${iouStateMiniMega.linearId}): C=GB,L=London,O=MegaCorp owes C=GB,L=London,O=MiniCorp 2.00 USD and has paid 0.00 USD so far.")
-//    }
-
-    /**
-     * Task 11.
      * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
      * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
      * The existing state is immutable so a new state must be created from the existing state. Kotlin provides a [copy]
@@ -193,7 +167,7 @@ class IOUStateTests {
 //    }
 
     /**
-     * Task 12.
+     * Task 11.
      * TODO: Add a helper method called [withNewLender] that can be called from an [IOUState] to change the IOU's lender.
      */
 //    @Test
