@@ -3,7 +3,10 @@ package net.corda.training.state
 import net.corda.core.contracts.*
 import net.corda.core.identity.Party
 import net.corda.finance.*
-import net.corda.testing.*
+import net.corda.training.ALICE
+import net.corda.training.BOB
+import net.corda.training.MEGACORP
+import net.corda.training.MINICORP
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -21,6 +24,7 @@ import kotlin.test.assertNotEquals
  * Hint: CMD / Ctrl + click on the brown type names in square brackets for that type's definition in the codebase.
  */
 class IOUStateTests {
+
     /**
      * Task 1.
      * TODO: Add an 'amount' property of type [Amount] to the [IOUState] class to get this test to pass.
@@ -87,8 +91,8 @@ class IOUStateTests {
      */
 //    @Test
 //    fun lenderIsParticipant() {
-//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
-//        assertNotEquals(iouState.participants.indexOf(ALICE), -1)
+//        val iouState = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        assertNotEquals(iouState.participants.indexOf(ALICE.party), -1)
 //    }
 
     /**
@@ -97,8 +101,8 @@ class IOUStateTests {
      */
 //    @Test
 //    fun borrowerIsParticipant() {
-//        val iouState = IOUState(1.POUNDS, ALICE, BOB)
-//        assertNotEquals(iouState.participants.indexOf(BOB), -1)
+//        val iouState = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        assertNotEquals(iouState.participants.indexOf(BOB.party), -1)
 //    }
 
     /**
@@ -152,7 +156,7 @@ class IOUStateTests {
 //    }
 
     /**
-     * Task 10.
+     * Task 11.
      * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
      * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
      * The existing state is immutable so a new state must be created from the existing state. Kotlin provides a [copy]
@@ -160,20 +164,20 @@ class IOUStateTests {
      */
 //    @Test
 //    fun checkPayHelperMethod() {
-//        val iou = IOUState(10.DOLLARS, ALICE, BOB)
+//        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
 //        assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
 //        assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)
 //    }
 
     /**
-     * Task 11.
+     * Task 12.
      * TODO: Add a helper method called [withNewLender] that can be called from an [IOUState] to change the IOU's lender.
      */
 //    @Test
 //    fun checkWithNewLenderHelperMethod() {
-//        val iou = IOUState(10.DOLLARS, ALICE, BOB)
-//        assertEquals(MINI_CORP, iou.withNewLender(MINI_CORP).lender)
-//        assertEquals(MEGA_CORP, iou.withNewLender(MEGA_CORP).lender)
+//        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
+//        assertEquals(MINICORP.party, iou.withNewLender(MINICORP.party).lender)
+//        assertEquals(MEGACORP.party, iou.withNewLender(MEGACORP.party).lender)
 //    }
 }

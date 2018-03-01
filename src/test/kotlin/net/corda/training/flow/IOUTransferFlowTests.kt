@@ -1,16 +1,18 @@
 package net.corda.training.flow
 
 import net.corda.core.contracts.*
+import net.corda.core.identity.CordaX500Name
 import net.corda.core.identity.Party
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.utilities.getOrThrow
 import net.corda.finance.*
-import net.corda.node.internal.StartedNode
-import net.corda.testing.DUMMY_NOTARY
-import net.corda.testing.chooseIdentity
+import net.corda.testing.core.chooseIdentity
 import net.corda.testing.node.MockNetwork
-import net.corda.testing.setCordappPackages
-import net.corda.testing.unsetCordappPackages
+import net.corda.testing.node.MockNetworkNotarySpec
+import net.corda.testing.node.MockNodeParameters
+import net.corda.testing.node.MockServices
+import net.corda.testing.node.StartedMockNode
+import net.corda.testing.node.startFlow
 import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
 import org.junit.After
@@ -23,40 +25,41 @@ import kotlin.test.assertFailsWith
  * Uncomment the unit tests and use the hints + unit test body to complete the FLows such that the unit tests pass.
  */
 class IOUTransferFlowTests {
-    lateinit var net: MockNetwork
-    lateinit var a: StartedNode<MockNetwork.MockNode>
-    lateinit var b: StartedNode<MockNetwork.MockNode>
-    lateinit var c: StartedNode<MockNetwork.MockNode>
+    lateinit var ledgerServices: MockServices
+    lateinit var mockNetwork: MockNetwork
+    lateinit var a: StartedMockNode
+    lateinit var b: StartedMockNode
+    lateinit var c: StartedMockNode
 
     @Before
     fun setup() {
-        setCordappPackages("net.corda.training")
-        net = MockNetwork()
-        val nodes = net.createSomeNodes(3)
-        a = nodes.partyNodes[0]
-        b = nodes.partyNodes[1]
-        c = nodes.partyNodes[2]
+        ledgerServices = MockServices(listOf("net.corda.training"))
+        mockNetwork = MockNetwork(listOf("net.corda.training"),
+                notarySpecs = listOf(MockNetworkNotarySpec(CordaX500Name("Notary","London","GB"))))
+        a = mockNetwork.createNode(MockNodeParameters())
+        b = mockNetwork.createNode(MockNodeParameters())
+        c = mockNetwork.createNode(MockNodeParameters())
+        val startedNodes = arrayListOf(a, b, c)
         // For real nodes this happens automatically, but we have to manually register the flow for tests
-        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
-        nodes.partyNodes.forEach { it.registerInitiatedFlow(IOUTransferFlowResponder::class.java) }
-        net.runNetwork()
+        startedNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
+        startedNodes.forEach { it.registerInitiatedFlow(IOUTransferFlowResponder::class.java) }
+        mockNetwork.runNetwork()
     }
 
     @After
     fun tearDown() {
-        net.stopNodes()
-        unsetCordappPackages()
+        mockNetwork.stopNodes()
     }
 
     /**
      * Issue an IOU on the ledger, we need to do this before we can transfer one.
      */
-//    private fun issueIou(iou: IOUState): SignedTransaction {
-//        val flow = IOUIssueFlow(iou)
-//        val future = a.services.startFlow(flow).resultFuture
-//        net.runNetwork()
-//        return future.getOrThrow()
-//    }
+    private fun issueIou(iou: IOUState): SignedTransaction {
+        val flow = IOUIssueFlow(iou)
+        val future = a.services.startFlow(flow)
+        mockNetwork.runNetwork()
+        return future.getOrThrow()
+    }
 
     /**
      * Task 1.
@@ -83,8 +86,8 @@ class IOUTransferFlowTests {
 //        val stx = issueIou(IOUState(10.POUNDS, lender, borrower))
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUTransferFlow(inputIou.linearId, c.info.chooseIdentity())
-//        val future = a.services.startFlow(flow).resultFuture
-//        net.runNetwork()
+//        val future = a.services.startFlow(flow)
+//        mockNetwork.runNetwork()
 //        val ptx = future.getOrThrow()
 //        // Check the transaction is well formed...
 //        // One output IOUState, one input state reference and a Transfer command with the right properties.
@@ -96,7 +99,8 @@ class IOUTransferFlowTests {
 //        println("Output state: $outputIou")
 //        val command = ptx.tx.commands.single()
 //        assert(command.value == IOUContract.Commands.Transfer())
-//        ptx.verifySignaturesExcept(b.info.chooseIdentity().owningKey, c.info.chooseIdentity().owningKey, DUMMY_NOTARY.owningKey)
+//        ptx.verifySignaturesExcept(b.info.chooseIdentity().owningKey, c.info.chooseIdentity().owningKey,
+//                mockNetwork.defaultNotaryNode.info.legalIdentitiesAndCerts.first().owningKey)
 //    }
 
     /**
@@ -115,8 +119,8 @@ class IOUTransferFlowTests {
 //        val stx = issueIou(IOUState(10.POUNDS, lender, borrower))
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUTransferFlow(inputIou.linearId, c.info.chooseIdentity())
-//        val future = b.services.startFlow(flow).resultFuture
-//        net.runNetwork()
+//        val future = b.services.startFlow(flow)
+//        mockNetwork.runNetwork()
 //        assertFailsWith<IllegalArgumentException> { future.getOrThrow() }
 //    }
 
@@ -132,8 +136,8 @@ class IOUTransferFlowTests {
 //        val stx = issueIou(IOUState(10.POUNDS, lender, borrower))
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUTransferFlow(inputIou.linearId, lender)
-//        val future = a.services.startFlow(flow).resultFuture
-//        net.runNetwork()
+//        val future = a.services.startFlow(flow)
+//        mockNetwork.runNetwork()
 //        // Check that we can't transfer an IOU to ourselves.
 //        assertFailsWith<TransactionVerificationException> { future.getOrThrow() }
 //    }
@@ -151,9 +155,9 @@ class IOUTransferFlowTests {
 //        val stx = issueIou(IOUState(10.POUNDS, lender, borrower))
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUTransferFlow(inputIou.linearId, c.info.chooseIdentity())
-//        val future = a.services.startFlow(flow).resultFuture
-//        net.runNetwork()
-//        future.getOrThrow().verifySignaturesExcept(DUMMY_NOTARY.owningKey)
+//        val future = a.services.startFlow(flow)
+//        mockNetwork.runNetwork()
+//        future.getOrThrow().verifySignaturesExcept(mockNetwork.defaultNotaryNode.info.legalIdentitiesAndCerts.first().owningKey)
 //    }
 
     /**
@@ -168,8 +172,8 @@ class IOUTransferFlowTests {
 //        val stx = issueIou(IOUState(10.POUNDS, lender, borrower))
 //        val inputIou = stx.tx.outputs.single().data as IOUState
 //        val flow = IOUTransferFlow(inputIou.linearId, c.info.chooseIdentity())
-//        val future = a.services.startFlow(flow).resultFuture
-//        net.runNetwork()
+//        val future = a.services.startFlow(flow)
+//        mockNetwork.runNetwork()
 //        future.getOrThrow().verifyRequiredSignatures()
 //    }
 }
