@@ -54,8 +54,6 @@ class IOUIssueFlowTests {
      * Hint:
      * - There's a whole bunch of things you need to do to get this unit test to pass!
      * - Look at the comments in the [IOUIssueFlow] object for how to complete this task as well as the unit test below.
-     * - Change the template type of the FlowLogic class and the return type of [call] (which is currently [Unit]) to
-     *   [SignedTransaction].
      * - Create a [TransactionBuilder] and pass it a notary reference. A notary [Party] object can be obtained from
      *   [FlowLogic.serviceHub.networkMapCache].
      * - Create an IOU Issue [Command].

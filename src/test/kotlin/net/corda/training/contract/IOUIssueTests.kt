@@ -56,7 +56,10 @@ class IOUIssueTests {
      *   the [TypeOnlyCommandData] class.
      * - The command should be defined inside [IOUContract].
      * - You can use the [requireSingleCommand] function on [tx.commands] to check for the existence and type of the specified command
-     *   in the transaction.
+     *   in the transaction. [requireSingleCommand] requires a generic type to identify the type of command required.
+     *
+     *   requireSingleCommand<REQUIRED_COMMAND_CLASS>()
+     *
      * - We usually encapsulate our commands around an interface inside the contract class called [Commands] which
      *   implements the [CommandData] interface. The [Create] command itself should be defined inside the [Commands]
      *   interface as well as implement it, for example:
@@ -100,7 +103,7 @@ class IOUIssueTests {
      * Note that the unit tests often expect contract verification failure with a specific message which should be
      * defined with your contract constraints. If not then the unit test will fail!
      *
-     * You can access the list of inputs via the [TransactionForContract] object which is passed into
+     * You can access the list of inputs via the [LedgerTransaction] object which is passed into
      * [IOUContract.verify].
      */
 //    @Test
@@ -156,11 +159,11 @@ class IOUIssueTests {
      * - You can use the Kotlin function [single] to either grab the single element from the list or throw an exception
      *   if there are 0 or more than one elements in the list. Note that we have already checked the outputs list has
      *   only one element in the previous task.
-     * - We need to obtain a reference to the proposed IOU for issuance from the [TransactionForContract.inputs] list.
+     * - We need to obtain a reference to the proposed IOU for issuance from the [LedgerTransaction.outputs] list.
      *   This list is typed as a list of [ContractState]s, therefore we need to cast the [ContractState] which we return
      *   from [single] to an [IOUState]. You can use the Kotlin keyword 'as' to cast a class. E.g.
      *
-     *       val state = tx.inputs.single() as XState
+     *       val state = tx.outputs.single() as XState
      *
      * - When checking the [IOUState.amount] property is greater than zero, you need to check the
      *   [IOUState.amount.quantity] field.
@@ -193,6 +196,32 @@ class IOUIssueTests {
 
     /**
      * Task 5.
+     * For obvious reasons, the identity of the lender and borrower must be different.
+     * TODO: Add a contract constraint to check the lender is not the borrower.
+     * Hint:
+     * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
+     * - This check must be made before the checking who has signed.
+     */
+//    @Test
+//    fun lenderAndBorrowerCannotBeTheSame() {
+//        val iou = IOUState(1.POUNDS, ALICE, BOB)
+//        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
+//        ledger {
+//            transaction {
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
+//                output(IOUContract.IOU_CONTRACT_ID) { borrowerIsLenderIou }
+//                this `fails with` "The lender and borrower cannot have the same identity."
+//            }
+//            transaction {
+//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
+//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                this.verifies()
+//            }
+//        }
+//    }
+
+    /**
+     * Task 5.
      * The list of public keys which the commands hold should contain all of the participants defined in the [IOUState].
      * This is because the IOU is a bilateral agreement where both parties involved are required to sign to issue an
      * IOU or change the properties of an existing IOU.
@@ -203,6 +232,12 @@ class IOUIssueTests {
      * - We don't want any additional public keys not listed in the IOUs participants list.
      * - You will need a reference to the Issue command to get access to the list of signers.
      * - [requireSingleCommand] returns the single required command - you can assign the return value to a constant.
+     *
+     * Kotlin Hints
+     * Kotlin provides a map function for easy conversion of a [Collection] using map
+     * - https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/map.html
+     * [Collection] can be turned into a set using toSet()
+     * - https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/to-set.html
      */
 //    @Test
 //    fun lenderAndBorrowerMustSignIssueTransaction() {
@@ -237,32 +272,6 @@ class IOUIssueTests {
 //                command(BOB_PUBKEY, BOB_PUBKEY, BOB_PUBKEY, ALICE_PUBKEY) { IOUContract.Commands.Issue() }
 //                output(IOUContract.IOU_CONTRACT_ID) { iou }
 //                this.verifies()
-//            }
-//            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
-//                this.verifies()
-//            }
-//        }
-//    }
-
-    /**
-     * Task 6.
-     * For obvious reasons, the identity of the lender and borrower must be different.
-     * TODO: Add a contract constraint to check the lender is not the borrower.
-     * Hint:
-     * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
-     * - This check must be made before the checking who has signed.
-     */
-//    @Test
-//    fun lenderAndBorrowerCannotBeTheSame() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
-//        ledger {
-//            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { borrowerIsLenderIou }
-//                this `fails with` "The lender and borrower cannot have the same identity."
 //            }
 //            transaction {
 //                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
