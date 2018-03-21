@@ -163,7 +163,7 @@ class IOUIssueTests {
      *   This list is typed as a list of [ContractState]s, therefore we need to cast the [ContractState] which we return
      *   from [single] to an [IOUState]. You can use the Kotlin keyword 'as' to cast a class. E.g.
      *
-     *       val state = tx.outputs.single() as XState
+     *       val state = tx.outputStates.single() as XState
      *
      * - When checking the [IOUState.amount] property is greater than zero, you need to check the
      *   [IOUState.amount.quantity] field.
@@ -221,7 +221,7 @@ class IOUIssueTests {
 //    }
 
     /**
-     * Task 5.
+     * Task 6.
      * The list of public keys which the commands hold should contain all of the participants defined in the [IOUState].
      * This is because the IOU is a bilateral agreement where both parties involved are required to sign to issue an
      * IOU or change the properties of an existing IOU.

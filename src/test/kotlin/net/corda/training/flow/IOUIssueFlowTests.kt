@@ -57,7 +57,10 @@ class IOUIssueFlowTests {
      * - Create a [TransactionBuilder] and pass it a notary reference. A notary [Party] object can be obtained from
      *   [FlowLogic.serviceHub.networkMapCache].
      * - Create an IOU Issue [Command].
-     * - Add the IOU state (as an output) and the [Command] to the transaction builder.
+     * - Add the IOU state (as an output) and the [Command] to the transaction builder [addOutput].
+     * - Create a [IOUState] to be the output state
+     * - Add the [IOUState] to the transaction builder
+     * - Extra credit: use [TransactionBuilder.withItems] to create the transaction instead of
      * - Sign the transaction and convert it to a [SignedTransaction] using the [ServiceHub.signInitialTransaction]
      *   method.
      * - Return the [SignedTransaction].
@@ -111,9 +114,9 @@ class IOUIssueFlowTests {
 //    }
 
     /**
-     * IMPORTANT: Review the [SignTransactionFlow] before continuing here.
+     * IMPORTANT: Review the [CollectSignaturesFlow] before continuing here.
      * Task 3.
-     * Now we need to collect the signature from the [otherParty] using the [SignTransactionFlow].
+     * Now we need to collect the signature from the [otherParty] using the [CollectSignaturesFlow].
      * TODO: Amend the [IOUIssueFlow] to collect the [otherParty]'s signature.
      * Hint:
      * On the Initiator side:
@@ -121,6 +124,7 @@ class IOUIssueFlowTests {
      * - Use [initateFlow] to get a set of [FlowSession] objects
      * - - Using [state.participants] as a base to determine the sessions needed is recommended. [participants] is on
      * - - the state interface so it is guaranteed to to exist where [lender] and [borrower] are not.
+     * - - Hint: [ourIdentity] will give you the [Party] that represents the identity of the initiating flow.
      * - Use [subFlow] to start the [CollectSignaturesFlow]
      * - Pass it a [SignedTransaction] object and [FlowSession] set
      * - It will return a [SignedTransaction] with all the required signatures
