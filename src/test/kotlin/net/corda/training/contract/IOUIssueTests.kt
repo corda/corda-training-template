@@ -1,27 +1,16 @@
 package net.corda.training.contract
 
-import net.corda.core.contracts.CommandData
-import net.corda.core.contracts.ContractState
-import net.corda.core.contracts.TypeOnlyCommandData
-import net.corda.core.contracts.requireSingleCommand
-import net.corda.core.contracts.requireThat
-import net.corda.finance.DOLLARS
-import net.corda.finance.POUNDS
-import net.corda.finance.SWISS_FRANCS
-import net.corda.testing.ALICE
-import net.corda.testing.ALICE_PUBKEY
-import net.corda.testing.BOB
-import net.corda.testing.BOB_PUBKEY
-import net.corda.testing.DUMMY_KEY_1
-import net.corda.testing.MINI_CORP_PUBKEY
+import net.corda.core.contracts.*
+import net.corda.finance.*
 import net.corda.testing.contracts.DummyState
-import net.corda.testing.ledger
-import net.corda.testing.setCordappPackages
-import net.corda.testing.unsetCordappPackages
+import net.corda.testing.node.MockServices
+import net.corda.testing.node.ledger
+import net.corda.training.ALICE
+import net.corda.training.BOB
+import net.corda.training.DUMMY
+import net.corda.training.MINICORP
 import net.corda.training.state.IOUState
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 
 /**
  * Practical exercise instructions for Contracts Part 1.
@@ -32,17 +21,7 @@ import org.junit.Test
 class IOUIssueTests {
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
-
-    @Before
-    fun setup() {
-        setCordappPackages("net.corda.training")
-    }
-
-    @After
-    fun tearDown() {
-        unsetCordappPackages()
-    }
-
+    private var ledgerServices = MockServices(listOf("net.corda.training"))
 
     /**
      * Task 1.
@@ -58,7 +37,7 @@ class IOUIssueTests {
      * - You can use the [requireSingleCommand] function on [tx.commands] to check for the existence and type of the specified command
      *   in the transaction. [requireSingleCommand] requires a generic type to identify the type of command required.
      *
-     *   requireSingleCommand<REQUIRED_COMMAND_CLASS>()
+     *   requireSingleCommand<REQUIRED_COMMAND>()
      *
      * - We usually encapsulate our commands around an interface inside the contract class called [Commands] which
      *   implements the [CommandData] interface. The [Create] command itself should be defined inside the [Commands]
@@ -71,22 +50,22 @@ class IOUIssueTests {
      * - We can check for the existence of any command that implements [IOUContract.Commands] by using the
      *   [requireSingleCommand] function which takes a type parameter.
      */
-//    @Test
-//    fun mustIncludeIssueCommand() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        ledger {
+    @Test
+    fun mustIncludeIssueCommand() {
+//        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        ledgerServices.ledger {
 //            transaction {
-//                output(IOUContract.IOU_CONTRACT_ID){ iou }
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { DummyCommand() } // Wrong type.
+//                output(IOUContract.IOU_CONTRACT_ID,  iou)
+//                command(listOf(ALICE.publicKey, BOB.publicKey), DummyCommand()) // Wrong type.
 //                this.fails()
 //            }
 //            transaction {
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() } // Correct type.
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue()) // Correct type.
 //                this.verifies()
 //            }
 //        }
-//    }
+    }
 
     /**
      * Task 2.
@@ -106,23 +85,23 @@ class IOUIssueTests {
      * You can access the list of inputs via the [LedgerTransaction] object which is passed into
      * [IOUContract.verify].
      */
-//    @Test
-//    fun issueTransactionMustHaveNoInputs() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        ledger {
+    @Test
+    fun issueTransactionMustHaveNoInputs() {
+//        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        ledgerServices.ledger {
 //            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID) { DummyState() }
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                input(IOUContract.IOU_CONTRACT_ID, DummyState())
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "No inputs should be consumed when issuing an IOU."
 //            }
 //            transaction {
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
 //                this.verifies() // As there are no input states.
 //            }
 //        }
-//    }
+    }
 
     /**
      * Task 3.
@@ -131,23 +110,23 @@ class IOUIssueTests {
      * Hint: Write an additional constraint within the existing [requireThat] block which you created in the previous
      * task.
      */
-//    @Test
-//    fun issueTransactionMustHaveOneOutput() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        ledger {
+    @Test
+    fun issueTransactionMustHaveOneOutput() {
+//        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        ledgerServices.ledger {
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou } // Two outputs fails.
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou) // Two outputs fails.
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "Only one output state should be created when issuing an IOU."
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou } // One output passes.
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou) // One output passes.
 //                this.verifies()
 //            }
 //        }
-//    }
+    }
 
     /**
      * Task 4.
@@ -168,31 +147,31 @@ class IOUIssueTests {
      * - When checking the [IOUState.amount] property is greater than zero, you need to check the
      *   [IOUState.amount.quantity] field.
      */
-//    @Test
-//    fun cannotCreateZeroValueIOUs() {
-//        ledger {
+    @Test
+    fun cannotCreateZeroValueIOUs() {
+//        ledgerServices.ledger {
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(0.POUNDS, ALICE, BOB) } // Zero amount fails.
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, IOUState(0.POUNDS, ALICE.party, BOB.party)) // Zero amount fails.
 //                this `fails with` "A newly issued IOU must have a positive amount."
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(100.SWISS_FRANCS, ALICE, BOB) }
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, IOUState(100.SWISS_FRANCS, ALICE.party, BOB.party))
 //                this.verifies()
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(1.POUNDS, ALICE, BOB) }
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, IOUState(1.POUNDS, ALICE.party, BOB.party))
 //                this.verifies()
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { IOUState(10.DOLLARS, ALICE, BOB) }
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, IOUState(10.DOLLARS, ALICE.party, BOB.party))
 //                this.verifies()
 //            }
 //        }
-//    }
+    }
 
     /**
      * Task 5.
@@ -202,23 +181,23 @@ class IOUIssueTests {
      * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
      * - This check must be made before the checking who has signed.
      */
-//    @Test
-//    fun lenderAndBorrowerCannotBeTheSame() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE, ALICE)
-//        ledger {
+    @Test
+    fun lenderAndBorrowerCannotBeTheSame() {
+//        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE.party, ALICE.party)
+//        ledgerServices.ledger {
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { borrowerIsLenderIou }
+//                command(listOf(ALICE.publicKey, BOB.publicKey),IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, borrowerIsLenderIou)
 //                this `fails with` "The lender and borrower cannot have the same identity."
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this.verifies()
 //            }
 //        }
-//    }
+    }
 
     /**
      * Task 6.
@@ -239,45 +218,45 @@ class IOUIssueTests {
      * [Collection] can be turned into a set using toSet()
      * - https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/to-set.html
      */
-//    @Test
-//    fun lenderAndBorrowerMustSignIssueTransaction() {
-//        val iou = IOUState(1.POUNDS, ALICE, BOB)
-//        ledger {
+    @Test
+    fun lenderAndBorrowerMustSignIssueTransaction() {
+//        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        ledgerServices.ledger {
 //            transaction {
-//                command(DUMMY_KEY_1.public) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(DUMMY.publicKey, IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(ALICE.publicKey, IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
-//                command(BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(BOB.publicKey, IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
-//                command(BOB_PUBKEY, BOB_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(listOf(BOB.publicKey, BOB.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
-//                command(BOB_PUBKEY, BOB_PUBKEY, MINI_CORP_PUBKEY, ALICE_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(listOf(BOB.publicKey, BOB.publicKey, MINICORP.publicKey, ALICE.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this `fails with` "Both lender and borrower together only may sign IOU issue transaction."
 //            }
 //            transaction {
-//                command(BOB_PUBKEY, BOB_PUBKEY, BOB_PUBKEY, ALICE_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(listOf(BOB.publicKey, BOB.publicKey, BOB.publicKey, ALICE.publicKey), IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this.verifies()
 //            }
 //            transaction {
-//                command(ALICE_PUBKEY, BOB_PUBKEY) { IOUContract.Commands.Issue() }
-//                output(IOUContract.IOU_CONTRACT_ID) { iou }
+//                command(listOf(ALICE.publicKey, BOB.publicKey),IOUContract.Commands.Issue())
+//                output(IOUContract.IOU_CONTRACT_ID, iou)
 //                this.verifies()
 //            }
 //        }
-//    }
+    }
 }
