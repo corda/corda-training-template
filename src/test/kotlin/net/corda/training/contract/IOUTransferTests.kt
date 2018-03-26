@@ -62,8 +62,8 @@ class IOUTransferTests {
      *       }
      * - The [requireSingleCommand] function will handle unrecognised types for you (see first unit test).
      */
-    @Test
-    fun mustHandleMultipleCommandValues() {
+//    @Test
+//    fun mustHandleMultipleCommandValues() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -83,7 +83,7 @@ class IOUTransferTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 2.
@@ -92,8 +92,8 @@ class IOUTransferTests {
      * Hint:
      * - Look at the contract code for "Issue".
      */
-    @Test
-    fun mustHaveOneInputAndOneOutput() {
+//    @Test
+//    fun mustHaveOneInputAndOneOutput() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -127,7 +127,7 @@ class IOUTransferTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 3.
@@ -140,8 +140,8 @@ class IOUTransferTests {
      * - It's easier to take this approach then check all properties other than the lender haven't changed, including
      *   the [linearId] and the [contract]!
      */
-    @Test
-    fun onlyTheLenderMayChange() {
+//    @Test
+//    fun onlyTheLenderMayChange() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -169,15 +169,15 @@ class IOUTransferTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 4.
      * It is fairly obvious that in a transfer IOU transaction the lender must change.
      * TODO: Add a constraint to check the lender has changed in the output IOU.
      */
-    @Test
-    fun theLenderMustChange() {
+//    @Test
+//    fun theLenderMustChange() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -193,15 +193,15 @@ class IOUTransferTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 5.
      * All the participants in a transfer IOU transaction must sign.
      * TODO: Add a constraint to check the old lender, the new lender and the recipient have signed.
      */
-    @Test
-    fun allParticipantsMustSign() {
+//    @Test
+//    fun allParticipantsMustSign() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -241,5 +241,5 @@ class IOUTransferTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 }

@@ -46,8 +46,8 @@ class IOUSettleTests {
      * TODO: Add the [IOUContract.Commands.Settle] case to the verify function.
      * Hint: You can leave the body empty for now.
      */
-    @Test
-    fun mustIncludeSettleCommand() {
+//    @Test
+//    fun mustIncludeSettleCommand() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        val inputCash = createCashState(5.POUNDS, BOB.party)
 //        val outputCash = inputCash.withNewOwner(newOwner = ALICE.party).ownableState
@@ -79,7 +79,7 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 2.
@@ -98,8 +98,8 @@ class IOUSettleTests {
      *
      *   This is exactly how map / filter are used in Kotlin.
      */
-    @Test
-    fun mustBeOneGroupOfIOUs() {
+//    @Test
+//    fun mustBeOneGroupOfIOUs() {
 //        val iouOne = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        val iouTwo = IOUState(5.POUNDS, ALICE.party, BOB.party)
 //        val inputCash = createCashState(5.POUNDS, BOB.party)
@@ -125,15 +125,15 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 3.
      * There always has to be one input IOU in a settle transaction but there might not be an output IOU.
      * TODO: Add a constraint to check there is always one input IOU.
      */
-    @Test
-    fun mustHaveOneInputIOU() {
+//    @Test
+//    fun mustHaveOneInputIOU() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        val iouOne = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        val tenPounds = createCashState(10.POUNDS, BOB.party)
@@ -162,7 +162,7 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 4.
@@ -173,8 +173,8 @@ class IOUSettleTests {
      * Hint:
      * - Use the [outputsOfType] extension function to filter the transaction's outputs by type, in this case [Cash.State].
      */
-    @Test
-    fun mustBeCashOutputStatesPresent() {
+//    @Test
+//    fun mustBeCashOutputStatesPresent() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val cash = createCashState(5.DOLLARS, BOB.party)
 //        val cashPayment = cash.withNewOwner(newOwner = ALICE.party)
@@ -195,7 +195,7 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 5.
@@ -208,8 +208,8 @@ class IOUSettleTests {
      * - Use [filter] to filter over the list of cash states to get the ones which are being assigned to us.
      * - Once we have this filtered list, we can sum the cash being paid to us so we know how much is being settled.
      */
-    @Test
-    fun mustBeCashOutputStatesWithRecipientAsOwner() {
+//    @Test
+//    fun mustBeCashOutputStatesWithRecipientAsOwner() {
 //        val iou = IOUState(10.POUNDS, ALICE.party, BOB.party)
 //        val cash = createCashState(5.POUNDS, BOB.party)
 //        val invalidCashPayment = cash.withNewOwner(newOwner = CHARLIE.party)
@@ -234,7 +234,7 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 6.
@@ -249,8 +249,8 @@ class IOUSettleTests {
      * - We can compare the amount left paid to the amount being paid to use, ensuring the amount being paid isn't too
      *   much.
      */
-    @Test
-    fun cashSettlementAmountMustBeLessThanRemainingIOUAmount() {
+//    @Test
+//    fun cashSettlementAmountMustBeLessThanRemainingIOUAmount() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val elevenDollars = createCashState(11.DOLLARS, BOB.party)
 //        val tenDollars = createCashState(10.DOLLARS, BOB.party)
@@ -283,7 +283,7 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 7.
@@ -291,8 +291,8 @@ class IOUSettleTests {
      * in the currency that the IOU in denominated in.
      * TODO: You shouldn't have anything to do here but here are some tests just to make sure!
      */
-    @Test
-    fun cashSettlementMustBeInTheCorrectCurrency() {
+//    @Test
+//    fun cashSettlementMustBeInTheCorrectCurrency() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val tenDollars = createCashState(10.DOLLARS, BOB.party)
 //        val tenPounds = createCashState(10.POUNDS, BOB.party)
@@ -314,7 +314,7 @@ class IOUSettleTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 8.
@@ -323,8 +323,8 @@ class IOUSettleTests {
      * TODO: Write a constraint that ensures the correct behaviour depending on the amount settled vs amount remaining.
      * Hint: You can use a simple if statement and compare the total amount paid vs amount left to settle.
      */
-    @Test
-    fun mustOnlyHaveOutputIOUIfNotFullySettling() {
+//    @Test
+//    fun mustOnlyHaveOutputIOUIfNotFullySettling() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val tenDollars = createCashState(10.DOLLARS, BOB.party)
 //        val fiveDollars = createCashState(5.DOLLARS, BOB.party)
@@ -364,15 +364,15 @@ class IOUSettleTests {
 //                verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 9.
      * We want to make sure that the only property of the IOU which changes when we settle, is the paid amount.
      * TODO: Write a constraint to check only the paid property of the [IOUState] changes when settling.
      */
-    @Test
-    fun onlyPaidPropertyMayChange() {
+//    @Test
+//    fun onlyPaidPropertyMayChange() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val fiveDollars = createCashState(5.DOLLARS, BOB.party)
 //        ledgerServices.ledger {
@@ -413,15 +413,15 @@ class IOUSettleTests {
 //                verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 10.
      * Both the lender and the borrower must signed an IOU issue transaction.
      * TODO: Add a constraint to the contract code that ensures this is the case.
      */
-    @Test
-    fun mustBeSignedByAllParticipants() {
+//    @Test
+//    fun mustBeSignedByAllParticipants() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val cash = createCashState(5.DOLLARS, BOB.party)
 //        val cashPayment = cash.withNewOwner(newOwner = ALICE.party)
@@ -454,6 +454,6 @@ class IOUSettleTests {
 //                verifies()
 //            }
 //        }
-    }
+//    }
 }
 

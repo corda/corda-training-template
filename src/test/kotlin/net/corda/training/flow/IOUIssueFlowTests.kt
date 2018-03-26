@@ -59,18 +59,18 @@ class IOUIssueFlowTests {
      *   method.
      * - Return the [SignedTransaction].
      */
-    @Test
-    fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
+//    @Test
+//    fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
 //        val lender = a.info.walIdentitiesAndCerts.first().owningKey)
-    }
+//    }
 
     /**
      * Task 2.
      * Now we have a well formed transaction, we need to properly verify it using the [IOUContract].
      * TODO: Amend the [IOUIssueFlow] to verify the transaction as well as sign it.
      */
-    @Test
-    fun flowReturnsVerifiedPartiallySignedTransaction() {
+//    @Test
+//    fun flowReturnsVerifiedPartiallySignedTransaction() {
 //        // Check that a zero amount IOU fails.
 //        val lender = a.info.chooseIdentityAndCert().party
 //        val borrower = b.info.chooseIdentityAndCert().party
@@ -88,7 +88,7 @@ class IOUIssueFlowTests {
 //        val futureThree = a.startFlow(IOUIssueFlow(iou))
 //        mockNetwork.runNetwork()
 //        futureThree.getOrThrow()
-    }
+//    }
 
     /**
      * IMPORTANT: Review the [CollectSignaturesFlow] before continuing here.
@@ -115,8 +115,8 @@ class IOUIssueFlowTests {
      * Using this flow you abstract away all the back-and-forth communication required for parties to sign a
      * transaction.
      */
-    @Test
-    fun flowReturnsTransactionSignedByBothParties() {
+//    @Test
+//    fun flowReturnsTransactionSignedByBothParties() {
 //        val lender = a.info.chooseIdentityAndCert().party
 //        val borrower = b.info.chooseIdentityAndCert().party
 //        val iou = IOUState(10.POUNDS, lender, borrower)
@@ -125,7 +125,7 @@ class IOUIssueFlowTests {
 //        mockNetwork.runNetwork()
 //        val stx = future.getOrThrow()
 //        stx.verifyRequiredSignatures()
-    }
+//    }
 
     /**
      * Task 4.
@@ -139,8 +139,8 @@ class IOUIssueFlowTests {
      *   inputs in the transaction that could be double spent! If we added a timestamp to this transaction then we
      *   would require the notary's signature as notaries act as a timestamping authority.
      */
-    @Test
-    fun flowRecordsTheSameTransactionInBothPartyVaults() {
+//    @Test
+//    fun flowRecordsTheSameTransactionInBothPartyVaults() {
 //        val lender = a.info.chooseIdentityAndCert().party
 //        val borrower = b.info.chooseIdentityAndCert().party
 //        val iou = IOUState(10.POUNDS, lender, borrower)
@@ -156,5 +156,5 @@ class IOUIssueFlowTests {
 //                    println("$txHash == ${stx.id}")
 //                    assertEquals(stx.id, txHash)
 //                }
-    }
+//    }
 }

@@ -50,8 +50,8 @@ class IOUIssueTests {
      * - We can check for the existence of any command that implements [IOUContract.Commands] by using the
      *   [requireSingleCommand] function which takes a type parameter.
      */
-    @Test
-    fun mustIncludeIssueCommand() {
+//    @Test
+//    fun mustIncludeIssueCommand() {
 //        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -65,7 +65,7 @@ class IOUIssueTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 2.
@@ -85,8 +85,8 @@ class IOUIssueTests {
      * You can access the list of inputs via the [LedgerTransaction] object which is passed into
      * [IOUContract.verify].
      */
-    @Test
-    fun issueTransactionMustHaveNoInputs() {
+//    @Test
+//    fun issueTransactionMustHaveNoInputs() {
 //        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -101,7 +101,7 @@ class IOUIssueTests {
 //                this.verifies() // As there are no input states.
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 3.
@@ -110,8 +110,8 @@ class IOUIssueTests {
      * Hint: Write an additional constraint within the existing [requireThat] block which you created in the previous
      * task.
      */
-    @Test
-    fun issueTransactionMustHaveOneOutput() {
+//    @Test
+//    fun issueTransactionMustHaveOneOutput() {
 //        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -126,7 +126,7 @@ class IOUIssueTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 4.
@@ -147,8 +147,8 @@ class IOUIssueTests {
      * - When checking the [IOUState.amount] property is greater than zero, you need to check the
      *   [IOUState.amount.quantity] field.
      */
-    @Test
-    fun cannotCreateZeroValueIOUs() {
+//    @Test
+//    fun cannotCreateZeroValueIOUs() {
 //        ledgerServices.ledger {
 //            transaction {
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Issue())
@@ -171,7 +171,7 @@ class IOUIssueTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 5.
@@ -181,8 +181,8 @@ class IOUIssueTests {
      * - You can use the [IOUState.lender] and [IOUState.borrower] properties.
      * - This check must be made before the checking who has signed.
      */
-    @Test
-    fun lenderAndBorrowerCannotBeTheSame() {
+//    @Test
+//    fun lenderAndBorrowerCannotBeTheSame() {
 //        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
 //        val borrowerIsLenderIou = IOUState(10.POUNDS, ALICE.party, ALICE.party)
 //        ledgerServices.ledger {
@@ -197,7 +197,7 @@ class IOUIssueTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 
     /**
      * Task 6.
@@ -218,8 +218,8 @@ class IOUIssueTests {
      * [Collection] can be turned into a set using toSet()
      * - https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/to-set.html
      */
-    @Test
-    fun lenderAndBorrowerMustSignIssueTransaction() {
+//    @Test
+//    fun lenderAndBorrowerMustSignIssueTransaction() {
 //        val iou = IOUState(1.POUNDS, ALICE.party, BOB.party)
 //        ledgerServices.ledger {
 //            transaction {
@@ -258,5 +258,5 @@ class IOUIssueTests {
 //                this.verifies()
 //            }
 //        }
-    }
+//    }
 }
