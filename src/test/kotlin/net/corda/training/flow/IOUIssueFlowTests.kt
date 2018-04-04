@@ -61,7 +61,25 @@ class IOUIssueFlowTests {
      */
 //    @Test
 //    fun flowReturnsCorrectlyFormedPartiallySignedTransaction() {
-//        val lender = a.info.walIdentitiesAndCerts.first().owningKey)
+//        val lender = a.info.chooseIdentityAndCert().party
+//        val borrower = b.info.chooseIdentityAndCert().party
+//        val iou = IOUState(10.POUNDS, lender, borrower)
+//        val flow = IOUIssueFlow(iou)
+//        val future = a.startFlow(flow)
+//        mockNetwork.runNetwork()
+//        // Return the unsigned(!) SignedTransaction object from the IOUIssueFlow.
+//        val ptx: SignedTransaction = future.getOrThrow()
+//        // Print the transaction for debugging purposes.
+//        println(ptx.tx)
+//        // Check the transaction is well formed...
+//        // No outputs, one input IOUState and a command with the right properties.
+//        assert(ptx.tx.inputs.isEmpty())
+//        assert(ptx.tx.outputs.single().data is IOUState)
+//        val command = ptx.tx.commands.single()
+//        assert(command.value is IOUContract.Commands.Issue)
+//        assert(command.signers.toSet() == iou.participants.map { it.owningKey }.toSet())
+//        ptx.verifySignaturesExcept(borrower.owningKey,
+//                mockNetwork.defaultNotaryNode.info.legalIdentitiesAndCerts.first().owningKey)
 //    }
 
     /**
