@@ -65,7 +65,7 @@ class IOUStateTests {
 
     /**
      * Task 4.
-     * TODO: Add an 'paid' property of type [Amount] to the [IOUState] class to get this test to pass.
+     * TODO: Add a 'paid' property of type [Amount] to the [IOUState] class to get this test to pass.
      * Hint:
      * - We would like this property to be initialised to a zero amount of Currency upon creation of the [IOUState].
      * - You can use the [POUNDS] extension function over [Int] to create an amount of pounds e.g. '10.POUNDS'.
@@ -89,6 +89,7 @@ class IOUStateTests {
     /**
      * Task 5.
      * TODO: Add an entry to the [IOUState.participants] list for the lender.
+     * Hint: [listOf] takes any number of parameters and will add them to the list
      */
 //    @Test
 //    fun lenderIsParticipant() {
@@ -121,11 +122,13 @@ class IOUStateTests {
     /**
      * Task 8.
      * TODO: Override the [LinearState.linearId] property and assign it a value via your state's constructor.
-     * Hint: The [LinearState.linearId] property is of type [UniqueIdentifier]. You need to create a new instance of
+     * Hint:
+     * - The [LinearState.linearId] property is of type [UniqueIdentifier]. You need to create a new instance of
      * the [UniqueIdentifier] class.
-     * The [LinearState.linearId] is designed to link all [LinearState]s (which represent the state of an
+     * - The [LinearState.linearId] is designed to link all [LinearState]s (which represent the state of an
      * agreement at a specific point in time) together. All the [LinearState]s with the same [LinearState.linearId]
      * represent the complete life-cycle to date of an agreement, asset or shared fact.
+     * - Provide a default value for [linearId] for a new [IOUState]
      */
 //    @Test
 //    fun hasLinearIdFieldOfCorrectType() {
@@ -159,10 +162,13 @@ class IOUStateTests {
     /**
      * Task 10.
      * TODO: Add a helper method called [pay] that can be called from an [IOUState] to settle an amount of the IOU.
-     * Hint: You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
-     * The existing state is immutable so a new state must be created from the existing state. Kotlin provides a [copy]
+     * Hint:
+     * - You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
+     * - Add a new function called [pay] in [IOUState]. This function will need to return an [IOUState].
+     * - The existing state is immutable so a new state must be created from the existing state. Kotlin provides a [copy]
      * method which creates a new object with new values for specified fields.
-     */
+     * - [copy] returns a copy of the object instance and the fields can be changed by specifying new values as
+     * parameters to [copy]     */
 //    @Test
 //    fun checkPayHelperMethod() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)

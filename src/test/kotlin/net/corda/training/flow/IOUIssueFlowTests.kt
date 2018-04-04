@@ -50,11 +50,11 @@ class IOUIssueFlowTests {
      * - Look at the comments in the [IOUIssueFlow] object for how to complete this task as well as the unit test below.
      * - Create a [TransactionBuilder] and pass it a notary reference. A notary [Party] object can be obtained from
      *   [FlowLogic.serviceHub.networkMapCache].
-     * - Create an IOU Issue [Command].
-     * - Add the IOU state (as an output) and the [Command] to the transaction builder [addOutput].
-     * - Create a [IOUState] to be the output state
-     * - Add the [IOUState] to the transaction builder
-     * - Extra credit: use [TransactionBuilder.withItems] to create the transaction instead of
+     * -- In this training project there is only one notary
+     * - Create an [IOUContract.Commands.Issue] inside a new [Command].
+     * -- The required signers will be the same as the state's participants
+     * -- Add a [Command] to the transaction builder [addOutputState].
+     * - Use the flow's [IOUState] parameter as the output state
      * - Sign the transaction and convert it to a [SignedTransaction] using the [ServiceHub.signInitialTransaction]
      *   method.
      * - Return the [SignedTransaction].
