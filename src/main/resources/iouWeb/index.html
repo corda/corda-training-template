@@ -24,10 +24,10 @@ COMING WEEKS, WE'LL WRITE A TUTORIAL ON HOW BEST TO DO THIS.
     <ul>
         <li>GET /api/iou/ious (list IOUs)</li>
         <li>GET /api/iou/issue-iou?amount=INTEGER&currency=[GBP/USD]&party=NODE_NAME (issue an IOU to a party with a specified amount and currency)</li>
-        <li>GET /api/iou/transfer-iou?id=LINEAR_ID&party=NODE_NAME (Transfer an IOU specified by linearId to another party</li>
-        <li>GET /api/iou/settle-iou?id=LINEAR_ID&amount=INTEGER&currency=[GBP/USD] (settle an amount of an IOU specified by linearId)</li>
+        <li>PUT /api/iou/transfer-iou?id=LINEAR_ID&party=NODE_NAME (Transfer an IOU specified by linearId to another party</li>
+        <li>PUT /api/iou/settle-iou?id=LINEAR_ID&amount=INTEGER&currency=[GBP/USD] (settle an amount of an IOU specified by linearId)</li>
         <li>GET /api/iou/cash (list all cash states)</li>
-        <li>GET /api/iou/self-issue-cash?amount=INTEGER&currency=[GBP/USD] (self issues an amount of cash in the specified currency)</li>
+        <li>PUT /api/iou/self-issue-cash?amount=INTEGER&currency=[GBP/USD] (self issues an amount of cash in the specified currency)</li>
         <li>GET /api/iou/cash-balances (lists cash balances per currency)</li>
     </ul>
 

@@ -139,7 +139,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     /**
      * Transfers an IOU specified by [linearId] to a new party.
      */
-    @GET
+    @PUT
     @Path("transfer-iou")
     fun transferIOU(@QueryParam(value = "id") id: String,
                     @QueryParam(value = "party") party: String): Response {
@@ -160,7 +160,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     /**
      * Settles an IOU. Requires cash in the right currency to be able to settle.
      */
-    @GET
+    @PUT
     @Path("settle-iou")
     fun settleIOU(@QueryParam(value = "id") id: String,
                   @QueryParam(value = "amount") amount: Int,
@@ -183,7 +183,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     /**
      * Helper end-point to issue some cash to ourselves.
      */
-    @GET
+    @PUT
     @Path("self-issue-cash")
     fun selfIssueCash(@QueryParam(value = "amount") amount: Int,
                       @QueryParam(value = "currency") currency: String): Response {
