@@ -46,17 +46,16 @@ class IOUIssueFlowTests {
      * Build out the [IOUIssueFlow]!
      * TODO: Implement the [IOUIssueFlow] flow which builds and returns a partially [SignedTransaction].
      * Hint:
-     * - There's a whole bunch of things you need to do to get this unit test to pass!
-     * - Look at the comments in the [IOUIssueFlow] object for how to complete this task as well as the unit test below.
-     * - Create a [TransactionBuilder] and pass it a notary reference. A notary [Party] object can be obtained from
-     *   [FlowLogic.serviceHub.networkMapCache].
+     * - There's a lot to do to get this unit test to pass!
+     * - Create a [TransactionBuilder] and pass it a notary reference.
+     * -- A notary [Party] object can be obtained from [FlowLogic.serviceHub.networkMapCache].
      * -- In this training project there is only one notary
      * - Create an [IOUContract.Commands.Issue] inside a new [Command].
      * -- The required signers will be the same as the state's participants
-     * -- Add a [Command] to the transaction builder [addOutputState].
-     * - Use the flow's [IOUState] parameter as the output state
-     * - Sign the transaction and convert it to a [SignedTransaction] using the [ServiceHub.signInitialTransaction]
-     *   method.
+     * -- Add the [Command] to the transaction builder [addCommand].
+     * - Use the flow's [IOUState] parameter as the output state with [addOutputState]
+     * - Extra credit: use [TransactionBuilder.withItems] to create the transaction instead
+     * - Sign the transaction and convert it to a [SignedTransaction] using the [serviceHub.signInitialTransaction] method.
      * - Return the [SignedTransaction].
      */
 //    @Test
