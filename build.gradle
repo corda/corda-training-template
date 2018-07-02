@@ -1,5 +1,5 @@
 buildscript {
-    ext.corda_release_version = 'corda-3.0'
+    ext.corda_release_version = '3.1-corda'
     ext.corda_release_distribution = 'net.corda'
     ext.corda_gradle_plugins_version = '3.0.9'
     ext.kotlin_version = '1.1.60'
