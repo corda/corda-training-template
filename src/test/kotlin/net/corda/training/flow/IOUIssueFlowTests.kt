@@ -85,6 +85,8 @@ class IOUIssueFlowTests {
      * Task 2.
      * Now we have a well formed transaction, we need to properly verify it using the [IOUContract].
      * TODO: Amend the [IOUIssueFlow] to verify the transaction as well as sign it.
+     * Hint: You can verify on the builder directly prior to finalizing the transaction. This way
+     * you can confirm the transaction prior to making it immutable with the signature.
      */
 //    @Test
 //    fun flowReturnsVerifiedPartiallySignedTransaction() {
