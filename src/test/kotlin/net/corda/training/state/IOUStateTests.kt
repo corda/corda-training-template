@@ -88,7 +88,7 @@ class IOUStateTests {
 
     /**
      * Task 5.
-     * TODO: Add an entry to the [IOUState.participants] list for the lender.
+     * TODO: Include the lender within the [IOUState.participants] list
      * Hint: [listOf] takes any number of parameters and will add them to the list
      */
 //    @Test
@@ -99,7 +99,7 @@ class IOUStateTests {
 
     /**
      * Task 6.
-     * TODO: Similar to the last task, add an entry to the [IOUState.participants] list for the borrower.
+     * TODO: Similar to the last task, include the borrower within the [IOUState.participants] list
      */
 //    @Test
 //    fun borrowerIsParticipant() {
