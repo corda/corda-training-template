@@ -38,7 +38,6 @@ import javax.ws.rs.core.Response
 @Path("iou")
 class IOUApi(val rpcOps: CordaRPCOps) {
     private val me = rpcOps.nodeInfo().legalIdentities.first().name
-    private val myLegalName = me.x500Name
 
     companion object {
         private val logger: Logger = loggerFor<IOUApi>()
@@ -57,7 +56,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     @GET
     @Path("me")
     @Produces(MediaType.APPLICATION_JSON)
-    fun whoami() = mapOf("me" to myLegalName.toDisplayString())
+    fun whoami() = mapOf("me" to me.toString())
 
     /**
      * Returns all parties registered with the [NetworkMapService]. These names can be used to look up identities
