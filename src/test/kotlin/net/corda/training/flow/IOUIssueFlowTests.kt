@@ -71,7 +71,7 @@ class IOUIssueFlowTests {
 //        // Print the transaction for debugging purposes.
 //        println(ptx.tx)
 //        // Check the transaction is well formed...
-//        // No outputs, one input IOUState and a command with the right properties.
+//        // No inputs, one output IOUState and a command with the right properties.
 //        assert(ptx.tx.inputs.isEmpty())
 //        assert(ptx.tx.outputs.single().data is IOUState)
 //        val command = ptx.tx.commands.single()
