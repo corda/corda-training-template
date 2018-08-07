@@ -133,7 +133,7 @@ class IOUIssueTests {
      * Now we need to consider the properties of the [IOUState]. We need to ensure that an IOU should always have a
      * positive value.
      * TODO: Write a contract constraint that ensures newly issued IOUs always have a positive value.
-     * Hint: You will nee da number of hints to complete this task!
+     * Hint: You will need a number of hints to complete this task!
      * - Use the Kotlin keyword 'val' to create a new constant which will hold a reference to the output IOU state.
      * - You can use the Kotlin function [single] to either grab the single element from the list or throw an exception
      *   if there are 0 or more than one elements in the list. Note that we have already checked the outputs list has
