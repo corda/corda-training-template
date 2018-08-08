@@ -7,9 +7,11 @@ import net.corda.finance.*;
 import static net.corda.training.TestUtils.*;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Constructor;
 import org.junit.Test;
 import java.util.*;
 import static org.junit.Assert.*;
+
 
 
 /**
@@ -118,16 +120,17 @@ public class IOUStateTests {
 
     /**
      * Task 8.
-     * TODO: Override the [LinearState.getLinearId] method and assign it a value via your state's constructor.
+     * TODO: Override the [LinearState.getLinearId()] method and assign it a value via your state's constructor.
      * Hint:
-     * - The [linearId] property is of type [UniqueIdentifier]. You need to create a new instance of
-     * the [UniqueIdentifier] class.
+     * - [LinearState.getLinearId()] must return a [linearId] property of type [UniqueIdentifier]. You will need to create
+     * a new instance field.
      * - The [linearId] is designed to link all [LinearState]s (which represent the state of an
      * agreement at a specific point in time) together. All the [LinearState]s with the same [linearId]
      * represent the complete life-cycle to date of an agreement, asset or shared fact. 
-     * - Provide a new constructor that creates an [IOUState] with a new [linearId], as opposed to copying an existing one.
-     * - Note: With two constructors, it must be specified which one is to be used by the serialization engine to generate the class schema.
-     * To accomplish this, add an @ConstructorForDeserialization annotation to the default constructor.
+     * - Provide a new public constructor that creates an [IOUState] with a newly generated [linearId].
+     * - Note: With two constructors, it must be specified which one is to be used by the serialization engine to generate
+     * the class schema. The default constructor should be selected as it allows for recreation of all the fields. To
+     * accomplish this, add an @ConstructorForDeserialization annotation to the default constructor.
      */
     // @Test
     // public void hasLinearIdFieldOfCorrectType() throws NoSuchFieldException {
@@ -167,9 +170,9 @@ public class IOUStateTests {
      * Hint:
      * - You will need to increase the [IOUState.paid] property by the amount the borrower wishes to pay.
      * - Add a new function called [pay] in [IOUState]. This function will need to return an [IOUState].
-     * - The existing state is immutable, so a new state must be created from the existing state. As this change represents an update 
-     * in the lifecycle of an asset, it should share the same [linearId]. To enforce this distinction between updating vs creating a new state, make the default constructor
-     * private, to be used as a copy constructor.  
+     * - The existing state is immutable, so a new state must be created from the existing state. As this change represents
+     * an update in the lifecycle of an asset, it should share the same [linearId]. To enforce this distinction between
+     * updating vs creating a new state, make the default constructor private, to be used as a copy constructor.
      */
     // @Test
     // public void checkPayHelperMethod() {
@@ -181,12 +184,34 @@ public class IOUStateTests {
 
     /**
      * Task 11.
-     * TODO: Add a helper method called [withNewLender] that can be called from an [IOUState] to change the IOU's lender. This will also utilize the copy constructor.
+     * TODO: Add a helper method called [withNewLender] that can be called from an [IOUState] to change the IOU's lender.
+     * - This will also utilize the copy constructor.
      */
     // @Test
     // public void checkWithNewLenderHelperMethod() {
     //     IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
     //     assertEquals(MINICORP.getParty(), iou.withNewLender(MINICORP.getParty()).getLender());
     //     assertEquals(MEGACORP.getParty(), iou.withNewLender(MEGACORP.getParty()).getLender());
+    // }
+    
+    /**
+     * Task 12.
+     * TODO: Ensure constructors are overloaded correctly.
+     * This test serves as a sanity check that the two constructors have been implemented properly. If it fails, refer to the instructions of Tasks 8 and 10.
+     */
+    // @Test
+    // public void correctConstructorsExist() {
+    //     // Public constructor for new states
+    //     try {
+    //         Constructor<IOUState> contructor = IOUState.class.getConstructor(Amount.class, Party.class, Party.class);
+    //     } catch( NoSuchMethodException nsme ) {
+    //         fail("The correct public constructor does not exist!");
+    //     }
+    //     // Private constructor for updating states
+    //     try {
+    //         Constructor<IOUState> contructor = IOUState.class.getDeclaredConstructor(Amount.class, Party.class, Party.class, Amount.class, UniqueIdentifier.class);
+    //     } catch( NoSuchMethodException nsme ) {
+    //         fail("The correct private copy constructor does not exist!");
+    //     }
     // }
 }

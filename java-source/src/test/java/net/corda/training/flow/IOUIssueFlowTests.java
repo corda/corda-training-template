@@ -21,6 +21,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 import static org.hamcrest.core.IsInstanceOf.*;
+import java.security.PublicKey;
 
 
 /**

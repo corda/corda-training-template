@@ -144,7 +144,7 @@ public class IOUApi{
     //     Party lender = Optional.ofNullable(rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(party))).orElseThrow(() -> new IllegalArgumentException("Unknown party name."));
     //     // Create a new IOU state using the parameters given.
     //     try {
-    //         IOUState state = new IOUState(new Amount((long)amount * 100, Currency.getInstance(currency)), lender, me);
+    //         IOUState state = new IOUState(new Amount<>((long)amount * 100, Currency.getInstance(currency)), lender, me);
     //         // Start the IOUIssueFlow. We block and waits for the flow to return.
     //         SignedTransaction result = rpcOps.startTrackedFlowDynamic(IOUIssueFlow.InitiatorFlow.class, state).getReturnValue().get();
     //         // Return the response.
@@ -168,7 +168,10 @@ public class IOUApi{
     @Path("transfer-iou")
     public Response transferIOU(@QueryParam(value = "id") String id,
                     @QueryParam(value = "party") String party){
-        return null;
+        return Response
+                .status(Response.Status.NOT_IMPLEMENTED)
+                .entity("Not implemented")
+                .build();
     }
 
     /**
@@ -179,7 +182,10 @@ public class IOUApi{
     public Response settleIOU(@QueryParam(value = "id") String id,
                   @QueryParam(value = "amount") int amount,
                   @QueryParam(value = "currency") String currency){
-        return null;
+        return Response
+                .status(Response.Status.NOT_IMPLEMENTED)
+                .entity("Not implemented")
+                .build();
     }
 
     /**
@@ -189,6 +195,9 @@ public class IOUApi{
     @Path("self-issue-cash")
     public Response selfIssueCash(@QueryParam(value = "amount") int amount,
                       @QueryParam(value = "currency") String currency){
-        return null;
+        return Response
+                .status(Response.Status.NOT_IMPLEMENTED)
+                .entity("Not implemented")
+                .build();
     }
 }
