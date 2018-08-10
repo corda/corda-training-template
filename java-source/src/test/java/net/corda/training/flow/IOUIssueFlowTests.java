@@ -48,7 +48,6 @@ public class IOUIssueFlowTests {
 
         // For real nodes this happens automatically, but we have to manually register the flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IOUIssueFlow.ResponderFlow.class));
-        // startedNodes.forEach { it.registerInitiatedFlow(IOUIssueFlowResponder::class.java) }
         mockNetwork.runNetwork();
     }
 
@@ -127,7 +126,6 @@ public class IOUIssueFlowTests {
     //     Future<SignedTransaction> futureOne = a.startFlow(new IOUIssueFlow.InitiatorFlow(zeroIou));
     //     mockNetwork.runNetwork();
 
-    //     // TransactionVerificationException expectedCause = new TransactionVerificationException();
     //     exception.expectCause(instanceOf(TransactionVerificationException.class));
         
     //     futureOne.get();
@@ -211,7 +209,7 @@ public class IOUIssueFlowTests {
     //     Arrays.asList(a, b).stream().map(el ->
     //         el.getServices().getValidatedTransactions().getTransaction(stx.getId())
     //     ).forEach(el -> {
-    //         SecureHash txHash = ((SignedTransaction)el).getId();
+    //         SecureHash txHash = el.getId();
     //         System.out.printf("$txHash == %h\n", stx.getId());
     //         assertEquals(stx.getId(), txHash);
     //     });
