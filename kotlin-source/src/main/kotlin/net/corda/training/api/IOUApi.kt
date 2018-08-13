@@ -107,6 +107,8 @@ class IOUApi(val rpcOps: CordaRPCOps) {
 
     /**
      * Initiates a flow to agree an IOU between two parties.
+     * Example request:
+     * curl -X PUT 'http://localhost:10007/api/iou/issue-iou?amount=99&currency=GBP&party=O=ParticipantC,L=New%20York,C=US'
      */
 //    @GET
 //    @Path("issue-iou")
