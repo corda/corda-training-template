@@ -108,7 +108,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     /**
      * Initiates a flow to agree an IOU between two parties.
      */
-//    @PUT
+//    @GET
 //    @Path("issue-iou")
 //    fun issueIOU(@QueryParam(value = "amount") amount: Int,
 //                 @QueryParam(value = "currency") currency: String,

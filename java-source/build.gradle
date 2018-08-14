@@ -5,7 +5,6 @@ repositories {
     maven { url 'https://dl.bintray.com/kotlin/exposed' }
     maven { url 'https://jitpack.io' }
     maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
-
 }
 
 apply plugin: 'java'
@@ -30,8 +29,6 @@ sourceSets {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
     // Corda integration dependencies
@@ -54,18 +51,14 @@ dependencies {
         exclude group: "bouncycastle"
     }
 
+
     // CorDapp dependencies
-    // Specify your cordapp's dependencies below, including dependent cordapps
+    // Specify your cordapp's dependencies below, including dependent CorDapps
     cordapp "$corda_release_distribution:corda-finance:$corda_release_version"
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        languageVersion = "1.1"
-        apiVersion = "1.1"
-        jvmTarget = "1.8"
-        javaParameters = true   // Useful for reflection.
-    }
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters" // Required for shell commands.
 }
 
 def rpcUsersList = [
@@ -80,54 +73,47 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
 
     node {
         name "O=Notary,L=London,C=GB"
-        notary = [validating: true]
+        notary = [validating: false]
         p2pPort 10002
         cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
     }
     node {
         name "O=ParticipantA,L=London,C=GB"
-        p2pPort 10005
-        webPort 10007
+        p2pPort 10007
+        webPort 10009
         cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
         rpcSettings {
             useSsl false
             standAloneBroker false
-            address "0.0.0.0:10006"
-            adminAddress "0.0.0.0:10016"
+            address "0.0.0.0:10008"
+            adminAddress "0.0.0.0:10018"
         }
         rpcUsers = rpcUsersList
     }
     node {
         name "O=ParticipantB,L=New York,C=US"
-        p2pPort 10008
-        webPort 10010
+        p2pPort 10010
+        webPort 10012
         cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
         rpcSettings {
             useSsl false
             standAloneBroker false
-            address "0.0.0.0:10009"
-            adminAddress "0.0.0.0:10019"
+            address "0.0.0.0:10011"
+            adminAddress "0.0.0.0:10021"
         }
         rpcUsers = rpcUsersList
     }
     node {
-        name "O=ParticipantC,L=New York,C=US"
-        p2pPort 10011
-        webPort 10013
+        name "O=ParticipantC,L=Paris,C=FR"
+        p2pPort 10013
+        webPort 10015
         cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
         rpcSettings {
             useSsl false
             standAloneBroker false
-            address "0.0.0.0:10012"
-            adminAddress "0.0.0.0:10022"
+            address "0.0.0.0:10014"
+            adminAddress "0.0.0.0:10024"
         }
         rpcUsers = rpcUsersList
-    }
-}
-
-idea {
-    module {
-        downloadJavadoc = true // defaults to false
-        downloadSources = true
     }
 }
