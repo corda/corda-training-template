@@ -1,33 +1,118 @@
 ![Corda](https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png)
 
-# Corda Training
+# Corda Training Solutions
 
-## Pre-requrisites:
+This repo contains all of the instructions and class templates for the practical exercises of the Corda two day 
+training course.
 
+
+This repository is divided into two parts: Java templates, and Kotlin templates. You may complete the training in whichever 
+language you prefer. 
+
+# Setup
+
+### Tools 
 * JDK 1.8 latest version
-* IntelliJ latest version (2017.1)( as of writing)
+* IntelliJ latest version (2017.1 or newer)
 * git
 
-## Instructions:
+After installing the required tools, clone or download a zip of this repository, and place it in your desired 
+location.
 
-1. Clone this repo
-2. Open the repo in IntelliJ
-3. Import gradle project and wait for IntelliJ to index
-4. Navigate to the unit tests `src/test/kotlin/net/corda/training`
-5. Start with the state tests (You'll need to edit `IOUState.kt`)
-6. Move on to the contract tests (You'll need to edit `IOUContract.kt`)
-7. Move onto the flow tests (Issue, transfer, then Settle) 
+### IntelliJ setup
+* From the main menu, click `open` (not `import`!) then navigate to where you placed this repository.
+* Click `File->Project Structure`, and set the `Project SDK` to be the JDK you downloaded (by clicking `new` and 
+nagivating to where the JDK was installed). Click `Okay`.
+* Next, click `import` on the `Import Gradle Project` popup, leaving all options as they are. 
+* If you do not see the popup: Navigate back to `Project Structure->Modules`, clicking the `+ -> Import` button,
+navigate to and select the repository folder, select `Gradle` from the next menu, and finally click `Okay`, 
+again leaving all options as they are.
 
-## Troubleshooting:
+# Running the tests
+Now that you are all set-up, you can start expanding on the class templates. This project follows a test-based
+development style - the unit tests for each class contain all the information you will need to complete this CorDapp.
 
-When running the flow tests, if you get a Quasar instrumention error then add:
+All the tests are commented out by default - to complete this training, you will uncomment them one at a time, building up 
+the CorDapp until it passes everything.
 
-    -ea -javaagent:lib/quasar.jar 
-    
-To the VM args property in the default run configuration for JUnit in IntelliJ.
+### To run the tests
+* Kotlin: Select `Kotlin - Unit tests` from the dropdown run configuration menu, and click the green play button.
+* Java: Select `Java - Unit tests` from the dropdown run configuration menu, and click the green play button.
+* Individual tests can be run by clicking the green arrow in the line number column next to each test. 
 
-To run the unit tests use the Green arrow in IntelliJ next to the test definition.
+# Template Files
+Begin by opening IOUState and IOUStateTests in your language of choice and uncommenting the first test. Then, use the TODO and 
+ hints to modify IOUState to pass the test.
 
-Use the instructions above each unit test to complete the code in the required file (e.g. `IOUState.kt`) to get the unit tests to pass.
+### Kotlin
+State:
 
-Solutions are available [here](https://github.com/roger3cev/corda-training-solutions).
+* Template: `kotlin-source/src/test/kotlin/net/corda/training/state/IOUState.kt`
+* Tests: `kotlin-source/src/main/kotlin/net/corda/training/state/IOUStateTests.kt`
+
+Contract:
+
+* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kotlin`
+* Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kotlin`
+
+Flow:
+
+* Issue template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
+* Issue tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
+* Transfer template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransfer.kt`
+* Settle template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
+
+The code in the following files was already added for you:
+
+* `kotlin-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
+* `kotlin-source/src/test/kotlin/net/corda/training/Main.kt`
+* `kotling-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
+* `kotling-source/src/main/java/kotlin/corda/training/flow/SelfIssueCashFlow.kt`
+
+
+### Java
+State:
+
+* Template: `java-source/src/main/java/net/corda/training/state/IOUState.java`
+* Tests: `java-source/src/test/java/net/corda/training/state/IOUStateTests.java`
+
+Contract:
+
+* Template: `java-source/src/main/java/net/corda/training/contract/IOUContract.java`
+* Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
+
+Flow:
+
+* Issue template: `java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java`
+* Issue tests: `java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java`
+
+The code in the following files was already added for you:
+
+* `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
+* `java-source/src/test/java/net/corda/training/NodeDriver.java`
+* `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
+
+# Running the CorDapp
+Once your application passes all tests in `IOUStateTests`, `IOUIssueTests`, and `IOUIssueFlowTests`, you can run the application and 
+interact with it via a web browser. To run the finished application, you have two choices for each language: from the terminal, and from IntelliJ.
+
+###Kotlin
+* Terminal: Navigate to the root project folder and run `./gradlew kotlin-source:deployNodes`, followed by 
+`./kotlin-source/build/node/runnodes`
+* IntelliJ: With the project open, select `Kotlin - Node driver` from the dropdown run configuration menu, and click 
+the green play button.
+
+###Java
+* Terminal: Navigate to the root project folder and run `./gradlew java-source:deployNodes`, followed by 
+`./java-source/build/node/runnodes`
+* IntelliJ: With the project open, select `Java - NodeDriver` from the dropdown run configuration menu, and click 
+the green play button.
+
+###Interacting with the CorDapp
+Once all the three nodes have started up (look for `Webserver started up in XXX sec` in the terminal or IntelliJ ), you can interact
+with the app via a web browser. 
+* From a Node Driver configuration, look for `Starting webserver on address localhost:100XX` for the addresses. 
+
+* From the terminal: Node A: `localhost:10009`, Node B: `localhost:10012`, Node C: `localhost:10015`.
+
+To access the front-end gui for each node, navigate to `localhost:XXXX/web/iou/`
