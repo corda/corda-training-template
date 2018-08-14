@@ -1,0 +1,132 @@
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url 'https://dl.bintray.com/kotlin/exposed' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.publish-utils'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'maven-publish'
+
+sourceSets {
+    main {
+        resources {
+            srcDir "../config/dev"
+        }
+    }
+    test {
+        resources {
+            srcDir "../config/test"
+        }
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+
+    // Corda integration dependencies
+    cordaCompile "$corda_release_distribution:corda-core:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-finance:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-jackson:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-rpc:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-node-api:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-webserver-impl:$corda_release_version"
+    cordaRuntime "$corda_release_distribution:corda:$corda_release_version"
+    cordaRuntime "$corda_release_distribution:corda-webserver:$corda_release_version"
+
+    testCompile "$corda_release_distribution:corda-test-utils:$corda_release_version"
+    testCompile "$corda_release_distribution:corda-node-driver:$corda_release_version"
+
+
+    // GraphStream: For visualisation (required by TemplateClientRPC app)
+    compile "org.graphstream:gs-core:1.3"
+    compile("org.graphstream:gs-ui:1.3") {
+        exclude group: "bouncycastle"
+    }
+
+    // CorDapp dependencies
+    // Specify your cordapp's dependencies below, including dependent cordapps
+    cordapp "$corda_release_distribution:corda-finance:$corda_release_version"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        languageVersion = "1.1"
+        apiVersion = "1.1"
+        jvmTarget = "1.8"
+        javaParameters = true   // Useful for reflection.
+    }
+}
+
+def rpcUsersList = [
+        ['username' : "user1",
+         'password' : "password",
+         'permissions' : ["ALL"]]
+]
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+    delete "./build/nodes"
+    directory "./build/nodes"
+
+    node {
+        name "O=Notary,L=London,C=GB"
+        notary = [validating: false]
+        p2pPort 10002
+        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
+    }
+    node {
+        name "O=ParticipantA,L=London,C=GB"
+        p2pPort 10007
+        webPort 10009
+        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10008"
+            adminAddress "0.0.0.0:10018"
+        }
+        rpcUsers = rpcUsersList
+    }
+    node {
+        name "O=ParticipantB,L=New York,C=US"
+        p2pPort 10010
+        webPort 10012
+        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10011"
+            adminAddress "0.0.0.0:10021"
+        }
+        rpcUsers = rpcUsersList
+    }
+    node {
+        name "O=ParticipantC,L=Paris,C=FR"
+        p2pPort 10013
+        webPort 10015
+        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10014"
+            adminAddress "0.0.0.0:10024"
+        }
+        rpcUsers = rpcUsersList
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true // defaults to false
+        downloadSources = true
+    }
+}
