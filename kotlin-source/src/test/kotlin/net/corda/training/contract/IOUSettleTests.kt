@@ -363,15 +363,6 @@ class IOUSettleTests {
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                verifies()
 //            }
-//            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
-//                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
-//                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
-//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                verifies()
-//            }
 //        }
 //    }
 
