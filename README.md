@@ -65,6 +65,10 @@ Flow:
 * Transfer template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransfer.kt`
 * Settle template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
 
+API:
+
+* Template: `kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt`
+
 The code in the following files was already added for you:
 
 * `kotlin-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
