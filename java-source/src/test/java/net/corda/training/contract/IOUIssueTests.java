@@ -55,6 +55,7 @@ public class IOUIssueTests {
      *
      *         requireSingleCommand(tx.getCommands(), REQUIRED_COMMAND.class)
      */
+//    @Test
 //    public void mustIncludeIssueCommand() {
 //        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
 //
