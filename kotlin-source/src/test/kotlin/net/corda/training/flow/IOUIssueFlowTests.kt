@@ -17,7 +17,11 @@ import kotlin.test.assertFailsWith
 
 /**
  * Practical exercise instructions Flows part 1.
- * Uncomment the unit tests and use the hints + unit test body to complete the FLows such that the unit tests pass.
+ * Uncomment the unit tests and use the hints + unit test body to complete the Flows such that the unit tests pass.
+ * Note! These tests rely on Quasar to be loaded, set your run configuration to "-ea -javaagent:lib/quasar.jar"
+ * Run configuration can be edited in IntelliJ under Run -> Edit Configurations -> VM options
+ * On some machines/configurations you may have to provide a full path to the quasar.jar file.
+ * On some machines/configurations you may have to use the "JAR manifest" option for shortening the command line.
  */
 class IOUIssueFlowTests {
     lateinit var mockNetwork: MockNetwork
@@ -118,9 +122,9 @@ class IOUIssueFlowTests {
      * On the Initiator side:
      * - Get a set of signers required from the participants who are not the node
      * - - [ourIdentity] will give you the identity of the node you are operating as
-     * - Use [initateFlow] to get a set of [FlowSession] objects
+     * - Use [initiateFlow] to get a set of [FlowSession] objects
      * - - Using [state.participants] as a base to determine the sessions needed is recommended. [participants] is on
-     * - - the state interface so it is guaranteed to to exist where [lender] and [borrower] are not.
+     * - - the state interface so it is guaranteed to exist where [lender] and [borrower] are not.
      * - - Hint: [ourIdentity] will give you the [Party] that represents the identity of the initiating flow.
      * - Use [subFlow] to start the [CollectSignaturesFlow]
      * - Pass it a [SignedTransaction] object and [FlowSession] set
