@@ -62,7 +62,7 @@ class IOUSettleFlowTests {
     }
 
     /**
-     * Issue an some on-ledger cash to ourselves, we need to do this before we can Settle an IOU.
+     * Issue some on-ledger cash to ourselves, we need to do this before we can Settle an IOU.
      */
     private fun issueCash(amount: Amount<Currency>): Cash.State {
         val flow = SelfIssueCashFlow(amount)

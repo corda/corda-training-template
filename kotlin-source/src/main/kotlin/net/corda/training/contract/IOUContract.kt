@@ -7,7 +7,7 @@ import net.corda.core.transactions.LedgerTransaction
 import net.corda.training.state.IOUState
 
 /**
- * This is where you'll add the contract code which defines how the [IOUState] behaves. Looks at the unit tests in
+ * This is where you'll add the contract code which defines how the [IOUState] behaves. Look at the unit tests in
  * [IOUContractTests] for instructions on how to complete the [IOUContract] class.
  */
 class IOUContract : Contract {

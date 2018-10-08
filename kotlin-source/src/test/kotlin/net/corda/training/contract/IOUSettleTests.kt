@@ -84,7 +84,7 @@ class IOUSettleTests {
     /**
      * Task 2.
      * For now, we only want to settle one IOU at once. We can use the [TransactionForContract.groupStates] function
-     * to group the IOUs by their [lienarId] property. We want to make sure there is only one group of input and output
+     * to group the IOUs by their [linearId] property. We want to make sure there is only one group of input and output
      * IOUs.
      * TODO: Using [groupStates] add a constraint that checks for one group of input/output IOUs.
      * Hint:
@@ -201,7 +201,7 @@ class IOUSettleTests {
      * Task 5.
      * Not only to we need to check that [Cash] output states are present but we need to check that the payer is
      * correctly assigning us as the new owner of these states.
-     * TODO: Add a constaint to check that we are the new owner of the output cash.
+     * TODO: Add a constraint to check that we are the new owner of the output cash.
      * Hint:
      * - Not all of the cash may be assigned to us as some of the input cash may be sent back to the payer as change.
      * - We need to use the [Cash.State.owner] property to check to see that it is the value of our public key.
@@ -417,7 +417,7 @@ class IOUSettleTests {
 
     /**
      * Task 10.
-     * Both the lender and the borrower must signed an IOU issue transaction.
+     * Both the lender and the borrower must have signed an IOU issue transaction.
      * TODO: Add a constraint to the contract code that ensures this is the case.
      */
 //    @Test
