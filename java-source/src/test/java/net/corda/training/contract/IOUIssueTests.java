@@ -82,7 +82,7 @@ public class IOUIssueTests {
      * constraints:
      *
      *     requireThat(requirement -> {
-     *          requirement.using("Message when constraint fails", (boolean constraing expression));
+     *          requirement.using("Message when constraint fails", (boolean constraining expression));
      *          // passes all cases
      *          return null;
      *     });
