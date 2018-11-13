@@ -40,7 +40,7 @@ class IOUIssueTests {
      *   requireSingleCommand<REQUIRED_COMMAND>()
      *
      * - We usually encapsulate our commands around an interface inside the contract class called [Commands] which
-     *   implements the [CommandData] interface. The [Create] command itself should be defined inside the [Commands]
+     *   implements the [CommandData] interface. The [IOUContract.Commands.Issue] command itself should be defined inside the [Commands]
      *   interface as well as implement it, for example:
      *
      *     interface Commands : CommandData {
