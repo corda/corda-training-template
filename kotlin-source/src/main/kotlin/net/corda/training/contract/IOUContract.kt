@@ -28,6 +28,7 @@ class IOUContract : Contract {
     interface Commands : CommandData {
         class Issue: TypeOnlyCommandData(), Commands
         class Settle: TypeOnlyCommandData(), Commands
+        class Transfer: TypeOnlyCommandData(), Commands
     }
 
     /**
@@ -51,6 +52,22 @@ class IOUContract : Contract {
                 val signingParties = tx.commands.requireSingleCommand<Commands.Issue>().signers.toSet()
                 val participants = tx.outputStates.single().participants.map{ it -> it.owningKey }
                 "Both lender and borrower together only may sign IOU issue transaction." using(signingParties.containsAll<PublicKey>(participants) && signingParties.size == 2)
+            }
+
+            is Commands.Transfer -> requireThat {
+                "An IOU transfer transaction should only consume one input state." using (tx.inputStates.size == 1)
+                "An IOU transfer transaction should only create one output state." using (tx.outputStates.size == 1)
+
+                // Copy of input with new lender
+                val checkOutputState = tx.outputStates.single() as IOUState
+                val checkInputState = tx.inputStates.single() as IOUState
+                "Only the lender property may change." using (checkOutputState.withNewLender(checkInputState.lender) == checkInputState)
+                "The lender property must change in a transfer." using (checkOutputState.lender != checkInputState.lender)
+                val listOfPublicKeys = listOf(checkInputState.lender.owningKey, checkInputState.borrower.owningKey, checkOutputState.lender.owningKey)
+                System.out.println("HEYLOOKFORMEWHYDON'TYA")
+                System.out.println(command.signers)
+                System.out.println(command.signers.size)
+                "The borrower, old lender and new lender only must sign an IOU transfer transaction" using (command.signers.containsAll(listOfPublicKeys) && command.signers.size == 3)
             }
 
             is Commands.Settle -> requireThat {
