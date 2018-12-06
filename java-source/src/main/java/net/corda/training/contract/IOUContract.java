@@ -13,6 +13,7 @@ import net.corda.finance.contracts.asset.Cash;
 import net.corda.training.state.IOUState;
 
 import javax.swing.plaf.nimbus.State;
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Array;
 import java.security.PublicKey;
 import java.util.*;
@@ -112,16 +113,51 @@ public class IOUContract implements Contract {
                 require.using("There must be output cash.", !allOutputCash.isEmpty());
 
                 // Sum the cash states
-                Amount<Currency> inputAmount = tx.inputsOfType(IOUState.class).get(0).amount;
+                IOUState inputIOU = tx.inputsOfType(IOUState.class).get(0);
+                Amount<Currency> inputAmount = inputIOU.amount;
                 Amount<Currency> cashSum = new Amount<>(0, inputAmount.getToken());
                 for (Cash.State cash: allOutputCash) {
-                    Amount<Currency> addCash = new Amount<Currency>(cash.getAmount().getQuantity(), cash.getAmount().getToken().getProduct());
+                    Amount<Currency> addCash = new Amount<>(cash.getAmount().getQuantity(), cash.getAmount().getToken().getProduct());
                     cashSum = cashSum.plus(addCash);
                 }
 
                 require.using("The amount settled cannot be more than the amount outstanding.", inputAmount.getQuantity() > cashSum.getQuantity());
 
+                // check that the output cash is being assigned to the lender
+                Party lenderIdentity = groups.get(0).getInputs().get(0).lender;
+                List<Cash.State> acceptableCash = allOutputCash.stream().filter(cash -> cash.getOwner() == lenderIdentity).collect(Collectors.toList());
 
+                require.using("There must be output cash paid to the recipient", !acceptableCash.isEmpty());
+
+                // Sum the acceptable cash sent to the lender
+                Amount<Currency> acceptableCashSum = new Amount<>(0, inputAmount.getToken());
+                for (Cash.State cash: acceptableCash) {
+                    Amount<Currency> addCash = new Amount<>(cash.getAmount().getQuantity(), cash.getAmount().getToken().getProduct());
+                    acceptableCashSum = acceptableCashSum.plus(addCash);
+                }
+
+                Amount<Currency> amountOutstanding = inputIOU.amount.minus(inputIOU.paid);
+                require.using("The amount settled cannot be more than the amount outstanding.", amountOutstanding.getQuantity() > acceptableCashSum.getQuantity());
+
+                if (amountOutstanding == acceptableCashSum) {
+                    // If the IOU has been fully settled then there should be no IOU output state.
+                    require.using("There must be no output IOU as it has been fully settled.", groups.get(0).getOutputs().isEmpty());
+
+                } else {
+                    // If the IOU has been partially settled then it should still exist.
+                    require.using("There must be one output IOU.", groups.get(0).getOutputs().size() == 1);
+
+                    IOUState outputIOU = groups.get(0).getOutputs().get(0);
+
+                    require.using("The amount may not change when settling.", inputIOU.amount == outputIOU.amount);
+                    require.using("The lender may not change when settling.", inputIOU.lender == outputIOU.lender);
+                    require.using("The borrower may not change when settling.", inputIOU.borrower == outputIOU.borrower);
+                }
+
+                Set<PublicKey> listOfParticipantPublicKeys = inputIOU.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toSet());
+                List<PublicKey> arrayOfSigners = command.getSigners();
+                Set<PublicKey> setOfSigners = new HashSet<PublicKey>(arrayOfSigners);
+                require.using("Both lender and borrower must sign IOU settle transaction.", setOfSigners.equals(listOfParticipantPublicKeys));
 
                 return null;
             });
@@ -129,39 +165,5 @@ public class IOUContract implements Contract {
         }
 
     }
-
-//    // Check there is only one group of IOUs and that there is always an input IOU.
-//    val ious = tx.groupStates<IOUState, UniqueIdentifier> { it.linearId }.single()
-//    requireThat { "There must be one input IOU." using (ious.inputs.size == 1) }
-//    // Check there are output cash states.
-//    val cash = tx.outputsOfType<Cash.State>()
-//    requireThat { "There must be output cash." using (cash.isNotEmpty()) }
-//    // Check that the cash is being assigned to us.
-//    val inputIou = ious.inputs.single()
-//    val acceptableCash = cash.filter { it.owner == inputIou.lender }
-//    requireThat { "There must be output cash paid to the recipient." using (acceptableCash.isNotEmpty()) }
-//    // Sum the cash being sent to us (we don't care about the issuer).
-//    val sumAcceptableCash = acceptableCash.sumCash().withoutIssuer()
-//    val amountOutstanding = inputIou.amount - inputIou.paid
-//    requireThat { "The amount settled cannot be more than the amount outstanding." using (amountOutstanding >= sumAcceptableCash) }
-//    // Check to see if we need an output IOU or not.
-//                if (amountOutstanding == sumAcceptableCash) {
-//        // If the IOU has been fully settled then there should be no IOU output state.
-//        requireThat { "There must be no output IOU as it has been fully settled." using (ious.outputs.isEmpty()) }
-//    } else {
-//        // If the IOU has been partially settled then it should still exist.
-//        requireThat { "There must be one output IOU." using (ious.outputs.size == 1) }
-//        // Check only the paid property changes.
-//        val outputIou = ious.outputs.single()
-//        requireThat {
-//            "The amount may not change when settling." using (inputIou.amount == outputIou.amount)
-//            "The borrower may not change when settling." using (inputIou.borrower == outputIou.borrower)
-//            "The lender may not change when settling." using (inputIou.lender == outputIou.lender)
-//        }
-//    }
-//    requireThat {
-//        "Both lender and borrower together only must sign IOU settle transaction." using
-//                (command.signers.toSet() == inputIou.participants.map { it.owningKey }.toSet())
-//    }
 
 }
