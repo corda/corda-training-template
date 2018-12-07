@@ -3,7 +3,9 @@ package net.corda.training.flow;
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.sun.org.apache.xml.internal.security.Init;
 import javafx.util.Pair;
+import javassist.bytecode.ByteArray;
 import net.corda.confidential.IdentitySyncFlow;
 import net.corda.core.contracts.*;
 import net.corda.core.flows.*;
@@ -11,16 +13,25 @@ import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.node.ServiceHub;
 import net.corda.core.node.services.Vault;
+import net.corda.core.node.services.VaultService;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
+import net.corda.core.utilities.OpaqueBytes;
+import net.corda.core.utilities.ProgressTracker;
 import net.corda.finance.contracts.asset.Cash;
+import net.corda.finance.flows.AbstractCashFlow;
+import net.corda.finance.flows.CashIssueFlow;
 import net.corda.training.contract.IOUContract;
 import net.corda.training.state.IOUState;
+
+import javax.annotation.Signed;
+import javax.validation.constraints.NotNull;
 import java.lang.IllegalArgumentException;
 import java.security.PublicKey;
 import java.util.*;
 
+import static net.corda.core.contracts.ContractsDSL.requireThat;
 import static net.corda.finance.contracts.GetBalances.getCashBalance;
 
 import java.util.ArrayList;
@@ -118,63 +129,68 @@ public class IOUSettleFlow {
 
     }
 
-    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
-    public static class ResponderFlow extends FlowLogic {
+    /**
+     * This is the flow which signs IOU settlements.
+     * The signing is handled by the [SignTransactionFlow].
+     */
+    @InitiatedBy(InitiatorFlow.class)
+    public static class Responder extends FlowLogic<SignedTransaction> {
 
-        private final FlowSession flowSession;
+        private final FlowSession otherPartyFlow;
 
-        public ResponderFlow(FlowSession flowSession) {
-            this.flowSession = flowSession;
+        public Responder(FlowSession otherPartyFlow) {
+            this.otherPartyFlow = otherPartyFlow;
         }
 
-
+        @Suspendable
         @Override
-        public Object call() {
+        public SignedTransaction call() throws FlowException {
+            class SignTxFlow extends SignTransactionFlow {
+                private SignTxFlow(FlowSession otherPartyFlow, ProgressTracker progressTracker) {
+                    super(otherPartyFlow, progressTracker);
+                }
 
-            return null;
+                @Override
+                protected void checkTransaction(SignedTransaction stx) {
+                    requireThat(require -> {
+                        ContractState output = stx.getTx().getOutputs().get(0).getData();
+                        require.using("This must be an IOU transaction.", output instanceof IOUState);
+                        return null;
+                    });
+                }
+            }
+
+            return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
         }
     }
 
-}
+    /**
+     * Self issues the calling node an amount of cash in the desired currency.
+     * Only used for demo/sample/training purposes!
+     */
 
-///**
-// * This is the flow which signs IOU settlements.
-// * The signing is handled by the [SignTransactionFlow].
-// */
-//@InitiatedBy(IOUSettleFlow::class)
-//class IOUSettleFlowResponder(val flowSession: FlowSession): FlowLogic<Unit>() {
-//@Suspendable
-//    override fun call() {
-//
-//            // Receiving information about anonymous identities
-//            subFlow(IdentitySyncFlow.Receive(flowSession))
-//
-//            // signing transaction
-//            val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
-//            override fun checkTransaction(stx: SignedTransaction) {
-//            }
-//            }
-//
-//            subFlow(signedTransactionFlow)
-//            }
-//            }
-//
-///**
-// * Self issues the calling node an amount of cash in the desired currency.
-// * Only used for demo/sample/training purposes!
-// */
-//@InitiatingFlow
-//@StartableByRPC
-//class SelfIssueCashFlow(val amount: Amount<Currency>) : FlowLogic<Cash.State>() {
-//@Suspendable
-//    override fun call(): Cash.State {
-//            /** Create the cash issue command. */
-//            val issueRef = OpaqueBytes.of(0)
-//            /** Note: ongoing work to support multiple notary identities is still in progress. */
-//            val notary = serviceHub.networkMapCache.notaryIdentities.first()
-//            /** Create the cash issuance transaction. */
-//            val cashIssueTransaction = subFlow(CashIssueFlow(amount, issueRef, notary))
-//            /** Return the cash output. */
-//            return cashIssueTransaction.stx.tx.outputs.single().data as Cash.State
-//            }
-//            }
+    @InitiatingFlow
+    @StartableByRPC
+    public static class SelfIssueCashFlow extends FlowLogic<Cash.State> {
+
+        Amount<Currency> amount;
+
+        SelfIssueCashFlow(Amount<Currency> amount) {
+            this.amount = amount;
+        }
+
+        @Suspendable
+        @Override
+        public Cash.State call() throws FlowException {
+            // Create the cash issue command.
+            OpaqueBytes issueRef = OpaqueBytes.of(new byte[0]);
+            // Note: ongoing work to support multiple notary identities is still in progress. */
+            Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
+            // Create the cash issuance transaction.
+            AbstractCashFlow.Result cashIssueTransaction = subFlow(new CashIssueFlow(amount, issueRef, notary));
+            return (Cash.State) cashIssueTransaction.getStx().getTx().getOutput(0);
+        }
+
+    }
+
+}
