@@ -103,7 +103,7 @@ public class IOUTransferFlow{
      * This is the flow which signs IOU settlements.
      * The signing is handled by the [SignTransactionFlow].
      */
-    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
+    @InitiatedBy(IOUTransferFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyflow;

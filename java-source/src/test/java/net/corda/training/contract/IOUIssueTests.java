@@ -55,24 +55,24 @@ public class IOUIssueTests {
      *
      *         requireSingleCommand(tx.getCommands(), REQUIRED_COMMAND.class)
      */
-//    @Test
-//    public void mustIncludeIssueCommand() {
-//        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
-//
-//        ledger(ledgerServices, l -> {
-//            l.transaction(tx -> {
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new Commands.DummyCommand()); // Wrong type.
-//                return tx.failsWith("Contract verification failed");
-//            });
-//            l.transaction(tx -> {
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue()); // Correct type.
-//                return tx.verifies();
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void mustIncludeIssueCommand() {
+        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new Commands.DummyCommand()); // Wrong type.
+                return tx.failsWith("Contract verification failed");
+            });
+            l.transaction(tx -> {
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue()); // Correct type.
+                return tx.verifies();
+            });
+            return null;
+        });
+    }
 
     /**
      * Task 2.

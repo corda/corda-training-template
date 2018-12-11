@@ -58,7 +58,7 @@ class IOUSettleTests {
                 input(IOUContract.IOU_CONTRACT_ID, inputCash)
                 output(IOUContract.IOU_CONTRACT_ID, outputCash)
                 command(BOB.publicKey, Cash.Commands.Move())
-                this.fails()
+                this.failsWith("Contact Verification Failed");
             }
             transaction {
                 input(IOUContract.IOU_CONTRACT_ID, iou)
@@ -67,7 +67,7 @@ class IOUSettleTests {
                 output(IOUContract.IOU_CONTRACT_ID, outputCash)
                 command(BOB.publicKey, Cash.Commands.Move())
                 command(listOf(ALICE.publicKey, BOB.publicKey), DummyCommand()) // Wrong type.
-                this.fails()
+                this.failsWith("Contract verification failed")
             }
             transaction {
                 input(IOUContract.IOU_CONTRACT_ID, iou)

@@ -49,7 +49,7 @@ public class IOUState implements ContractState, LinearState {
     }
 
     public Party getBorrower() {
-        return lender;
+        return borrower;
     }
 
     public Amount getPaid() {
