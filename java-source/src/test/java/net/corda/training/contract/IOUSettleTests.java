@@ -283,4 +283,202 @@ public class IOUSettleTests {
      *   much.
      */
 
+    @Test
+    public void cashSettlementAmountMustBeLessThanRemainingIOUAmount() {
+        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
+        Cash.State elevenDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(11));
+        Cash.State tenDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(10));
+        Cash.State fiveDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(5));
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, elevenDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(11)));
+                tx.output(IOUContract.IOU_CONTRACT_ID, elevenDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("The amount settled cannot be more than the amount outstanding.");
+                return null;
+            });
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
+                tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.verifies();
+                return null;
+            });
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, tenDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.verifies();
+                return null;
+            });
+            return null;
+        });
+    }
+
+    /**
+     * Task 7.
+     * Kotlin's type system should handle this for you but it goes without saying that we should only be able to settle
+     * in the currency that the IOU in denominated in.
+     * TODO: You shouldn't have anything to do here but here are some tests just to make sure!
+     */
+
+    @Test
+    public void cashSettlementMustBeInTheCorrectCurrency() {
+        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
+        Cash.State tenDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(10));
+        Cash.State tenPounds = createCashState( BOB.getParty(), Currencies.POUNDS(10));
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, tenPounds);
+                tx.output(IOUContract.IOU_CONTRACT_ID, tenPounds.withNewOwner(ALICE.getParty()).getOwnableState());
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("Token mismatch: GBP vs USD");
+               return null;
+            });
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, tenDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.verifies();
+                return null;
+            });
+            return null;
+        });
+    }
+
+    /**
+     * Task 8.
+     * If we fully settle the IOU, then we are done and thus don't require one on ledgerServices.ledger anymore. However, if we only
+     * partially settle the IOU, then we want to keep the IOU on ledger with an amended [paid] property.
+     * TODO: Write a constraint that ensures the correct behaviour depending on the amount settled vs amount remaining.
+     * Hint: You can use a simple if statement and compare the total amount paid vs amount left to settle.
+     */
+
+    @Test
+    public void mustOnlyHaveOutputIOUIfNotFullySettling() {
+        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
+        Cash.State tenDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(10));
+        Cash.State fiveDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(5));
+            ledger(ledgerServices, l -> {
+                l.transaction(tx -> {
+                    tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                    tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                    tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                    tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                    tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                    tx.failsWith("There must be one output IOU.");
+                    return null;
+                });
+                l.transaction(tx -> {
+                    tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                    tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                    tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
+                    tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                    tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                    tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                    tx.verifies();
+                    return null;
+                });
+                l.transaction(tx -> {
+                    tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                    tx.input(IOUContract.IOU_CONTRACT_ID, tenDollars);
+                    tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(10)));
+                    tx.output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                    tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                    tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                    tx.failsWith("There must be no output IOU as it has been fully settled.");
+                    return null;
+                });
+                l.transaction(tx -> {
+                    tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                    tx.input(IOUContract.IOU_CONTRACT_ID, tenDollars);
+                    tx.output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                    tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                    tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                    tx.verifies();
+                    return null;
+                });
+                return null;
+            });
+    }
+
+    /**
+     * Task 9.
+     * We want to make sure that the only property of the IOU which changes when we settle, is the paid amount.
+     * TODO: Write a constraint to check only the paid property of the [IOUState] changes when settling.
+     */
+
+    @Test
+    public void onlyPaidPropertyMayChange() {
+        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
+        Cash.State fiveDollars = createCashState( BOB.getParty(), Currencies.DOLLARS(5));
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                IOUState iouCopy = new IOUState(iou.amount, iou.lender, CHARLIE.getParty()).pay(Currencies.DOLLARS(5));
+                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
+                tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("The borrower may not change when settling.");
+                return null;
+            });
+
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                IOUState iouCopy = new IOUState(iou.amount, iou.lender, iou.borrower).pay(new Amount<Currency>(0, fiveDollars.getAmount().getToken().getProduct()));
+                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("The amount may not change when settling.");
+                return null;
+            });
+
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                IOUState iouCopy = new IOUState(iou.amount, CHARLIE.getParty(), iou.borrower).pay(fiveDollars.getAmount());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("The lender may not change when settling.");
+                return null;
+            });
+
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
+                tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
+                IOUState iouCopy = new IOUState(iou.amount, iou.lender, iou.borrower).pay(fiveDollars.getAmount());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.verifies();
+                return null;
+            });
+
+            return null;
+        });
+
+    }
+
 }
