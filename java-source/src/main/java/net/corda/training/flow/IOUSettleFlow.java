@@ -7,9 +7,7 @@ import net.corda.core.contracts.*;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
-import net.corda.core.node.ServiceHub;
 import net.corda.core.node.services.Vault;
-import net.corda.core.node.services.VaultService;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
@@ -65,10 +63,10 @@ public class IOUSettleFlow {
 
             Vault.Page results = getServiceHub().getVaultService().queryBy(IOUState.class, queryCriteria);
             StateAndRef inputStateAndRefToSettle = (StateAndRef) results.component1().get(0);
-            IOUState inputStateToSettle = (IOUState) results.component1().get(0);
+            IOUState inputStateToSettle = (IOUState) ((StateAndRef) results.component1().get(0)).getState().getData();
 
             // 2. Check the party running this flow is the borrower.
-            if (inputStateToSettle.lender != getOurIdentity()) {
+            if (!inputStateToSettle.borrower.getOwningKey().equals(getOurIdentity().getOwningKey())) {
                 throw new IllegalArgumentException("The borrower must issue the flow");
             }
 
@@ -86,7 +84,7 @@ public class IOUSettleFlow {
             }
 
             // 5. Get some cash from the vault and add a spend to our transaction builder.
-            List<PublicKey> cashKeys = Cash.generateSpend(getServiceHub(), tb, amount, inputStateToSettle.lender, ImmutableSet.of()).getSecond();
+            Cash.generateSpend(getServiceHub(), tb, amount, inputStateToSettle.lender, ImmutableSet.of()).getSecond();
 
 
             // 6.
@@ -102,22 +100,28 @@ public class IOUSettleFlow {
             tb.addInputState(inputStateAndRefToSettle);
 
             // 7. Add an IOU output state for an IOU that has not been full settled.
-            if (inputStateToSettle.amount.getQuantity() < amount.getQuantity()) {
+            if (amount.getQuantity() < inputStateToSettle.amount.getQuantity()) {
                 tb.addOutputState(inputStateToSettle.pay(amount), IOUContract.IOU_CONTRACT_ID);
             }
 
+
             // 8. Verify and sign the transaction
             tb.verify(getServiceHub());
-            List<PublicKey> allKeysToSign = ImmutableList.of(getOurIdentity().getOwningKey());
-            allKeysToSign.addAll(cashKeys);
-            SignedTransaction ptx = getServiceHub().signInitialTransaction(tb, allKeysToSign);
+            SignedTransaction stx = getServiceHub().signInitialTransaction(tb, getOurIdentity().getOwningKey());
 
-            // 9. Collect other signatures
-            List<FlowSession> counterPartyFlow = Arrays.asList(initiateFlow(inputStateToSettle.lender));
-            SignedTransaction stx = subFlow(new CollectSignaturesFlow(ptx, counterPartyFlow));
+            //Collect Signatures
+            List<FlowSession> listOfFlows = new ArrayList<>();
 
-            //10. Finalize the transaction
-            return subFlow(new FinalityFlow(stx));
+            for (AbstractParty participant: inputStateToSettle.getParticipants()) {
+                Party partyToInitiateFlow = (Party) participant;
+                if (!partyToInitiateFlow.getOwningKey().equals(getOurIdentity().getOwningKey())) {
+                    listOfFlows.add(initiateFlow(partyToInitiateFlow));
+                }
+            }
+
+            SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(stx, listOfFlows));
+
+            return subFlow(new FinalityFlow(fullySignedTransaction));
 
         }
 
@@ -127,7 +131,7 @@ public class IOUSettleFlow {
      * This is the flow which signs IOU settlements.
      * The signing is handled by the [SignTransactionFlow].
      */
-    @InitiatedBy(InitiatorFlow.class)
+    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;
@@ -148,7 +152,7 @@ public class IOUSettleFlow {
                 protected void checkTransaction(SignedTransaction stx) {
                     requireThat(require -> {
                         ContractState output = stx.getTx().getOutputs().get(0).getData();
-                        require.using("This must be an IOU transaction.", output instanceof IOUState);
+                        require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
                 }

@@ -80,21 +80,24 @@ public class IOUContract implements Contract {
                 require.using("An IOU transfer transaction should only create one output state.", tx.getOutputStates().size() == 1);
 
                 // Copy of input with new lender;
-                IOUState inputState = (IOUState) tx.getInputStates().get(0);
-                IOUState outputState = (IOUState) tx.getOutputStates().get(0);
+                IOUState inputState = tx.inputsOfType(IOUState.class).get(0);
+                IOUState outputState = tx.outputsOfType(IOUState.class).get(0);
                 IOUState checkOutputState = outputState.withNewLender(inputState.getLender());
 
-
-                require.using("Only the lender property may change.", checkOutputState.equals(inputState));
-                require.using("The lender property must change in a transfer.", outputState.lender != inputState.lender);
+                require.using("Only the lender property may change.",
+                        checkOutputState.amount.equals(inputState.amount) && checkOutputState.getLinearId().equals(inputState.getLinearId()) && checkOutputState.borrower.equals(inputState.borrower) && checkOutputState.paid.equals(inputState.paid));
+                require.using("The lender property must change in a transfer.", !outputState.lender.getOwningKey().equals(inputState.lender.getOwningKey()));
 
                 List<PublicKey> listOfPublicKeys = new ArrayList<>();
                 listOfPublicKeys.add(inputState.lender.getOwningKey());
                 listOfPublicKeys.add(inputState.borrower.getOwningKey());
                 listOfPublicKeys.add(checkOutputState.lender.getOwningKey());
 
-                require.using("The borrower, old lender and new lender only must sign an IOU transfer transaction", listOfPublicKeys.containsAll(command.getSigners()) && command.getSigners().size() == 3);
-
+                Set<PublicKey> listOfParticipantPublicKeys = inputState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toSet());
+                listOfParticipantPublicKeys.add(outputState.lender.getOwningKey());
+                List<PublicKey> arrayOfSigners = command.getSigners();
+                Set<PublicKey> setOfSigners = new HashSet<PublicKey>(arrayOfSigners);
+                require.using("The borrower, old lender and new lender only must sign an IOU transfer transaction", setOfSigners.equals(listOfParticipantPublicKeys) && setOfSigners.size() == 3);
                 return null;
 
             });

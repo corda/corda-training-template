@@ -6,7 +6,6 @@ import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.PartyAndReference;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.Party;
 import net.corda.core.utilities.OpaqueBytes;
 import net.corda.finance.Currencies;
 import net.corda.finance.contracts.asset.Cash;
@@ -45,7 +44,7 @@ public class IOUSettleTests {
 	    return new Cash.State(partyAndReference, amount, owner);
     }
 
-    /*
+    /**
      * Task 1.
      * We need to add another case to deal with settling in the [IOUContract.verify] function.
      * TODO: Add the [IOUContract.Commands.Settle] case to the verify function.
@@ -64,7 +63,7 @@ public class IOUSettleTests {
                 tx.input(IOUContract.IOU_CONTRACT_ID, inputCash);
                 tx.output(IOUContract.IOU_CONTRACT_ID, outputCash);
                 tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
-                return tx.failsWith("Contract verification failed");
+                return tx.failsWith("Contract Verification Failed");
             });
             l.transaction(tx -> {
                 tx.input(IOUContract.IOU_CONTRACT_ID, iou);
@@ -431,7 +430,7 @@ public class IOUSettleTests {
             l.transaction(tx -> {
                 tx.input(IOUContract.IOU_CONTRACT_ID, iou);
                 tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
-                IOUState iouCopy = new IOUState(iou.amount, iou.lender, CHARLIE.getParty()).pay(Currencies.DOLLARS(5));
+                IOUState iouCopy = iou.copy(iou.amount, iou.lender, CHARLIE.getParty(), iou.paid).pay(Currencies.DOLLARS(5));
                 tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
                 tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
                 tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
@@ -444,7 +443,7 @@ public class IOUSettleTests {
                 tx.input(IOUContract.IOU_CONTRACT_ID, iou);
                 tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
                 tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
-                IOUState iouCopy = new IOUState(iou.amount, iou.lender, iou.borrower).pay(new Amount<Currency>(0, fiveDollars.getAmount().getToken().getProduct()));
+                IOUState iouCopy = iou.copy(Currencies.DOLLARS(0), iou.lender, CHARLIE.getParty(), iou.paid).pay(Currencies.DOLLARS(5));
                 tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
                 tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
                 tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
@@ -456,7 +455,7 @@ public class IOUSettleTests {
                 tx.input(IOUContract.IOU_CONTRACT_ID, iou);
                 tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
                 tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
-                IOUState iouCopy = new IOUState(iou.amount, CHARLIE.getParty(), iou.borrower).pay(fiveDollars.getAmount());
+                IOUState iouCopy = iou.copy(iou.amount, CHARLIE.getParty(), iou.borrower, iou.paid).pay(Currencies.DOLLARS(5));
                 tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
                 tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
                 tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
@@ -468,7 +467,7 @@ public class IOUSettleTests {
                 tx.input(IOUContract.IOU_CONTRACT_ID, iou);
                 tx.input(IOUContract.IOU_CONTRACT_ID, fiveDollars);
                 tx.output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(ALICE.getParty()).getOwnableState());
-                IOUState iouCopy = new IOUState(iou.amount, iou.lender, iou.borrower).pay(fiveDollars.getAmount());
+                IOUState iouCopy = iou.copy(iou.amount, iou.lender, iou.borrower, iou.paid).pay(Currencies.DOLLARS(5));
                 tx.output(IOUContract.IOU_CONTRACT_ID, iouCopy);
                 tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
                 tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
@@ -476,6 +475,53 @@ public class IOUSettleTests {
                 return null;
             });
 
+            return null;
+        });
+
+    }
+
+    /**
+     * Task 10.
+     * Both the lender and the borrower must have signed an IOU issue transaction.
+     * TODO: Add a constraint to the contract code that ensures this is the case.
+     */
+
+    public void mustBeSignedByAllParticipants() {
+        IOUState iou = new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty());
+        Cash.State cash = createCashState(BOB.getParty(), Currencies.DOLLARS(5));
+        CommandAndState cashPayment = cash.withNewOwner(ALICE.getParty());
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, cash);
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.output(IOUContract.IOU_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(ALICE.getPublicKey(), CHARLIE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("Both lender and borrower together only must sign IOU settle transaction.");
+                return null;
+            });
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, cash);
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.output(IOUContract.IOU_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(BOB.getPublicKey(), new IOUContract.Commands.Settle());
+                tx.failsWith("Both lender and borrower together only must sign IOU settle transaction.");
+                return null;
+            });
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, cash);
+                tx.input(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.output(IOUContract.IOU_CONTRACT_ID, cashPayment.getOwnableState());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou.pay(Currencies.DOLLARS(5)));
+                tx.command(BOB.getPublicKey(), new Cash.Commands.Move());
+                tx.command(Arrays.asList(BOB.getPublicKey(), ALICE.getPublicKey()), new IOUContract.Commands.Settle());
+                tx.failsWith("Both lender and borrower together only must sign IOU settle transaction.");
+                return null;
+            });
             return null;
         });
 

@@ -18,6 +18,8 @@ import net.corda.training.contract.IOUContract;
 import net.corda.training.state.IOUState;
 
 import javax.annotation.Signed;
+import javax.validation.constraints.NotNull;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,35 +46,36 @@ public class IOUTransferFlow{
 
             // Get query criteria
             List<UUID> listOfLinearIds = new ArrayList<>();
-            listOfLinearIds.add(stateLinearId.component2());
+            listOfLinearIds.add(stateLinearId.getId());
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, listOfLinearIds);
 
             // Get flow components
             Vault.Page results = getServiceHub().getVaultService().queryBy(IOUState.class, queryCriteria);
-            StateAndRef inputStateAndRefToTransfer = (StateAndRef) results.component1().get(0);
-            IOUState inputStateToTransfer = (IOUState) results.component1().get(0);
+            StateAndRef inputStateAndRefToTransfer = (StateAndRef) results.getStates().get(0);
+            IOUState inputStateToTransfer = (IOUState) inputStateAndRefToTransfer.getState().getData();
 
             Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             TransactionBuilder tb = new TransactionBuilder(notary);
 
             // Add command to the flow
+            List<PublicKey> listOfRequiredSigners = inputStateToTransfer.getParticipants()
+                    .stream().map(AbstractParty::getOwningKey)
+                    .collect(Collectors.toList());
+            listOfRequiredSigners.add(newLender.getOwningKey());
+
             Command<Transfer> command = new Command<>(
                     new Transfer(),
-                    inputStateToTransfer.getParticipants()
-                    .stream().map(AbstractParty::getOwningKey)
-                    .collect(Collectors.toList())
+                    listOfRequiredSigners
             );
-
             tb.addCommand(command);
 
             // Add states to flow
             tb.addInputState(inputStateAndRefToTransfer);
             tb.addOutputState(inputStateToTransfer.withNewLender(newLender), IOUContract.IOU_CONTRACT_ID);
 
-            if (inputStateToTransfer.lender != getOurIdentity()) {
-                throw new IllegalArgumentException("THis flow must be run by the current lender.");
+            if (!inputStateToTransfer.lender.getOwningKey().equals(getOurIdentity().getOwningKey())) {
+                throw new IllegalArgumentException("This flow must be run by the current lender.");
             }
-
 
             // Verify the transaction
             tb.verify(getServiceHub());
@@ -85,7 +88,7 @@ public class IOUTransferFlow{
 
             for (AbstractParty participant: inputStateToTransfer.getParticipants()) {
                 Party partyToInitiateFlow = (Party) participant;
-                if (partyToInitiateFlow != getOurIdentity()) {
+                if (!partyToInitiateFlow.getOwningKey().equals(getOurIdentity().getOwningKey())) {
                     listOfFlows.add(initiateFlow(partyToInitiateFlow));
                 }
             }
@@ -106,10 +109,10 @@ public class IOUTransferFlow{
     @InitiatedBy(IOUTransferFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
 
-        private final FlowSession otherPartyflow;
+        private final FlowSession otherPartyFlow;
 
-        public Responder(FlowSession otherPartyflow) {
-            this.otherPartyflow = otherPartyflow;
+        public Responder(FlowSession otherPartyFlow) {
+            this.otherPartyFlow = otherPartyFlow;
         }
 
         @Suspendable
@@ -121,6 +124,7 @@ public class IOUTransferFlow{
                 }
 
                 @Override
+                @NotNull
                 protected void checkTransaction(SignedTransaction stx) {
                     requireThat(require -> {
                         ContractState output = stx.getTx().getOutputs().get(0).getData();
@@ -130,7 +134,7 @@ public class IOUTransferFlow{
                 }
             }
 
-            return subFlow(new SignTxFlow(otherPartyflow, SignTransactionFlow.Companion.tracker()));
+            return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
         }
 
     }
