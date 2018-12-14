@@ -60,23 +60,19 @@ public class IOUTransferTests {
      * - Again, we only care about the existence of the [Transfer] command in a transaction, therefore it should
      *   subclass the [TypeOnlyCommandData].
      * - You can use the [requireSingleCommand] function to check for the existence of a command which implements a
-     *   specified interface. Instead of using
+     *   specified interface:
      *
-     *       tx.commands.requireSingleCommand<Commands.Issue>()
-     *
-     *   You can instead use:
-     *
-     *       tx.commands.requireSingleCommand<Commands>()
+     *       final CommandWithParties<Commands> command = requireSingleCommand(tx.getCommands(), Commands.class);
+     *       final Commands commandData = command.getValue();
      *
      *   To match any command that implements [IOUContract.Commands]
-     * - We then need to switch on the type of [Command.value], in Kotlin you can do this using a "when" block
-     * - For each "when" block case, you can check the type of [Command.value] using the "is" keyword:
+     * - We then need conditional logic based on the type of [Command.value], in Java you can do this using an "if-else" statement
+     * - For each "if", or "elseIf" block, you can check the type of [Command.value]:
      *
-     *       val command = ...
-     *       when (command.value) {
-     *           is Commands.X -> doSomething()
-     *           is Commands.Y -> doSomethingElse()
-     *       }
+     *        if (commandData.equals(new Commands.Issue())) {
+     *        requireThat(require -> {...})
+     *        } else if (...) {}
+     *
      * - The [requireSingleCommand] function will handle unrecognised types for you (see first unit test).
      */
 
@@ -154,8 +150,8 @@ public class IOUTransferTests {
      * Task 3.
      * TODO: Add a constraint to the contract code to ensure only the lender property can change when transferring IOUs.
      * Hint:
-     * - You can use the [IOUState.copy] method.
-     * - You can compare a copy of the input to the output with the lender of the output as the lender of the input.
+     * - You should create a private internal copy constructor, accessible via a copy method on your IOUState.
+     * - You can then compare a copy of the input to the output with the lender of the output as the lender of the input.
      * - You'll need references to the input and output ious.
      * - Remember you need to cast the [ContractState]s to [IOUState]s.
      * - It's easier to take this approach then check all properties other than the lender haven't changed, including

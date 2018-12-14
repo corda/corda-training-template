@@ -38,12 +38,16 @@ the CorDapp until it passes everything.
 You will begin by opening `IOUState` and `IOUStateTests` in your language of choice and uncommenting the first test. Then, use the TODO and 
 hints to modify `IOUState` to pass the test. 
 
-You will first fix `IOUState`, then `IOUContract`, and lastly `IOUIssueFlow`
+In order to issue IOU's using Corda - You will first fix `IOUState`, then `IOUContract`, and lastly `IOUIssueFlow`. Then you can move on to
+more challenging exercises specified in Transfer and Settle testing files.
 
 ### Running the tests
 * Kotlin: Select `Kotlin - Unit tests` from the dropdown run configuration menu, and click the green play button.
 * Java: Select `Java - Unit tests` from the dropdown run configuration menu, and click the green play button.
-* Individual tests can be run by clicking the green arrow in the line number column next to each test. 
+* Individual tests can be run by clicking the green arrow in the line number column next to each test.
+* When running flow tests you must add the following to your run / debug configuration in the VM options field. This enables us to use
+* Quasar - a library that provides high-performance, lightweight threads.
+* "-javaagent: /PATH_TO_FILE_FROM_ROOT_DIR/quasar.jar"
 
 # Template Files
 
@@ -56,14 +60,18 @@ State:
 Contract:
 
 * Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kotlin`
-* Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kotlin`
+* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kotlin`
+* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kotlin`
+* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kotlin`
 
 Flow:
 
 * Issue template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
 * Issue tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
 * Transfer template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransfer.kt`
+* Transfer tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
 * Settle template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
+* Settle tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
 
 The code in the following files was already added for you:
 
@@ -82,18 +90,26 @@ State:
 Contract:
 
 * Template: `java-source/src/main/java/net/corda/training/contract/IOUContract.java`
-* Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
+* Issue Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
+* Transfer Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
+* Settle Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
 
 Flow:
 
 * Issue template: `java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java`
 * Issue tests: `java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java`
+* Transfer template: `java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java`
+* Transfer tests: `java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java`
+* Settle template: `java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java`
+* Settle tests: `java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java`
 
 The code in the following files was already added for you:
 
 * `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
 * `java-source/src/test/java/net/corda/training/NodeDriver.java`
 * `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
+* `java-source/src/main/java/net/corda/training/flow/SelfIssueCashFlow.java`
+
 
 # Running the CorDapp
 Once your application passes all tests in `IOUStateTests`, `IOUIssueTests`, and `IOUIssueFlowTests`, you can run the application and 

@@ -94,15 +94,11 @@ public class IOUSettleTests {
      * IOUs.
      * TODO: Using [groupStates] add a constraint that checks for one group of input/output IOUs.
      * Hint:
-     * - The [single] function enforces a single element in a list or throws an exception.
-     * - The [groupStates] function takes two type parameters: the type of the state you wish to group by and the type
-     *   of the grouping key used, in this case as you need to use the [linearId] and it is a [UniqueIdentifier].
-     * - The [groupStates] also takes a lambda function which selects a property of the state to decide the groups.
-     * - In Kotlin if the last argument of a function is a lambda, you can call it like this:
+     * - The [groupStates] method on a Transaction takes two type parameters: the type of the state you wish to group by and the type
+     *   of the grouping key used (indicated by a method reference), in this case as you need to use the [linearId] and it is a [UniqueIdentifier].
      *
-     *       fun functionWithLambda() { it.property }
+     *       tx.groupStates(State.class, State::getLinearId)
      *
-     *   This is exactly how map / filter are used in Kotlin.
      */
     @Test
     public void mustBeOneGroupOfIOUs() {
@@ -226,11 +222,11 @@ public class IOUSettleTests {
     /**
      * Task 5.
      * Not only to we need to check that [Cash] output states are present but we need to check that the payer is
-     * correctly assigning us as the new owner of these states.
-     * TODO: Add a constraint to check that we are the new owner of the output cash.
+     * correctly assigning the lender as the new owner of these states.
+     * TODO: Add a constraint to check that the lender is the new owner of at least some output cash.
      * Hint:
-     * - Not all of the cash may be assigned to us as some of the input cash may be sent back to the payer as change.
-     * - We need to use the [Cash.State.owner] property to check to see that it is the value of our public key.
+     * - Not all of the cash may be assigned to the lender as some of the input cash may be sent back to the borrower as change.
+     * - We need to use the [Cash.State.getOwner()] method to check to see that it is the value of our public key.
      * - Use [filter] to filter over the list of cash states to get the ones which are being assigned to us.
      * - Once we have this filtered list, we can sum the cash being paid to us so we know how much is being settled.
      */
@@ -270,16 +266,14 @@ public class IOUSettleTests {
 
     /**
      * Task 6.
-     * Now we need to sum the cash which is being assigned to us and compare this total against how much of the iou is
+     * Now we need to sum the cash which is being assigned to the lender and compare this total against how much of the iou is
      * left to pay.
-     * TODO: Add a constraint that checks we cannot be paid more than the remaining IOU amount left to pay.
+     * TODO: Add a constraint that checks the lender cannot be paid more than the remaining IOU amount left to pay.
      * Hint:
      * - The remaining amount of the IOU is the amount less the paid property.
-     * - To sum a list of [Cash.State]s use the [sumCash] function.
-     * - The [sumCash] function returns an [Issued<Amount<Currency>>] type. We don't care about the issuer so we can
-     *   apply [withoutIssuer] to unwrap the [Amount] from [Issuer].
-     * - We can compare the amount left paid to the amount being paid to use, ensuring the amount being paid isn't too
-     *   much.
+     * - To sum a list of [Cash.State]s, collect all [Cash.States] assigned to the lender and use a reduce method or
+     * = explicitly loop through the list to sum the individual states.
+     * - We can compare the amount left paid to the amount being paid to use, ensuring the amount being paid isn't too much.
      */
 
     @Test
@@ -325,7 +319,7 @@ public class IOUSettleTests {
 
     /**
      * Task 7.
-     * Kotlin's type system should handle this for you but it goes without saying that we should only be able to settle
+     * Your Java implementation should handle this for you but it goes without saying that we should only be able to settle
      * in the currency that the IOU in denominated in.
      * TODO: You shouldn't have anything to do here but here are some tests just to make sure!
      */

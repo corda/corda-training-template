@@ -58,7 +58,7 @@ public class IOUSettleFlow {
 
             // 1. Retrieve the IOU State from the vault.
             List<UUID> listOfLinearIds = new ArrayList<>();
-            listOfLinearIds.add(stateLinearId.component2());
+            listOfLinearIds.add(stateLinearId.getId());
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, listOfLinearIds);
 
             Vault.Page results = getServiceHub().getVaultService().queryBy(IOUState.class, queryCriteria);
@@ -151,7 +151,7 @@ public class IOUSettleFlow {
                 @Override
                 protected void checkTransaction(SignedTransaction stx) {
                     requireThat(require -> {
-                        ContractState output = stx.getTx().getOutputs().get(0).getData();
+                        ContractState output = stx.getTx().outputsOfType(IOUState.class).get(0);
                         require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });

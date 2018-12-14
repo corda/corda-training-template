@@ -46,7 +46,7 @@ public class IOUTransferFlowTests {
         startedNodes.add(c);
 
         // For real nodes this happens automatically, but we have to manually register the flow for tests
-        startedNodes.forEach(el -> el.registerInitiatedFlow(IOUIssueFlow.ResponderFlow.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(IOUTransferFlow.Responder.class));
         mockNetwork.runNetwork();
     }
 
@@ -72,9 +72,9 @@ public class IOUTransferFlowTests {
      * Hint:
      * - This flow will look similar to the [IOUIssueFlow].
      * - This time our transaction has an input state, so we need to retrieve it from the vault!
-     * - You can use the [serviceHub.vaultService.queryBy] method to get the latest linear states of a particular
+     * - You can use the [getServiceHub().getVaultService().queryBy(Class, queryCriteria)] method to get the latest linear states of a particular
      *   type from the vault. It returns a list of states matching your query.
-     * - Use the [UniqueIdentifier] which is passed into the flow to retrieve the correct [IOUState].
+     * - Use the [UniqueIdentifier] which is passed into the flow to create the appropriate Query Criteria.
      * - Use the [IOUState.withNewLender] method to create a copy of the state with a new lender.
      * - Create a Command - we will need to use the Transfer command.
      * - Remember, as we are involving three parties we will need to collect three signatures, so need to add three
@@ -116,7 +116,7 @@ public class IOUTransferFlowTests {
      * We need to make sure that only the current lender can execute this flow.
      * TODO: Amend the [IOUTransferFlow] to only allow the current lender to execute the flow.
      * Hint:
-     * - Remember: You can use the node's identity and compare it to the [Party] object within the [IOUstate] you
+     * - Remember: You can use the node's identity and compare it to the [Party] object within the [IOUState] you
      *   retrieved from the vault.
      * - Throw an [IllegalArgumentException] if the wrong party attempts to run the flow!
      */

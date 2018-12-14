@@ -12,8 +12,6 @@ import org.junit.Test;
 import java.util.*;
 import static org.junit.Assert.*;
 
-
-
 /**
  * Practical exercise instructions.
  * Uncomment the first unit test [hasIOUAmountFieldOfCorrectType()] then run the unit test using the green arrow
@@ -88,7 +86,7 @@ public class IOUStateTests {
     /**
      * Task 5.
      * TODO: Include the lender within the {@link IOUState#getParticipants()} list
-     * Hint: [ImmutableList.of] takes any number of parameters and will add them to the list
+     * Hint: [Arrays.asList()] takes any number of parameters and will add them to the list
      */
     @Test
     public void lenderIsParticipant() {

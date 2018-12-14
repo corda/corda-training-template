@@ -58,14 +58,18 @@ public class IOUContract implements Contract {
                 require.using( "The lender and borrower cannot have the same identity.", outputState.lender.getOwningKey() != outputState.borrower.getOwningKey());
 
                 List<PublicKey> signers = tx.getCommands().get(0).getSigners();
-                List<AbstractParty> participants = tx.getOutputStates().get(0).getParticipants();
-                List<PublicKey> participantKeys = new ArrayList<>();
+                HashSet<PublicKey> signersSet = new HashSet<>();
+                for (PublicKey key: signers) {
+                    signersSet.add(key);
+                }
 
+                List<AbstractParty> participants = tx.getOutputStates().get(0).getParticipants();
+                HashSet<PublicKey> participantKeys = new HashSet<>();
                 for (AbstractParty party: participants) {
                     participantKeys.add(party.getOwningKey());
                 }
 
-                require.using(signers.toString(), signers.containsAll(participantKeys) && signers.size() == 2);
+                require.using("Both lender and borrower together only may sign IOU issue transaction.", signersSet.containsAll(participantKeys) && signersSet.size() == 2);
 
                 return null;
             });
