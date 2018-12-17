@@ -42,96 +42,16 @@ public class IOUSettleFlow {
      */
     @InitiatingFlow
     @StartableByRPC
-    public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
-
-        private final UniqueIdentifier stateLinearId;
-        private final Amount<Currency> amount;
-
-        public InitiatorFlow(UniqueIdentifier stateLinearId, Amount<Currency> amount) {
-            this.stateLinearId = stateLinearId;
-            this.amount = amount;
+    public static class InitiatorFlow {
+        public InitiatorFlow() {
         }
-
-        @Suspendable
-        @Override
-        public SignedTransaction call() throws FlowException {
-
-            // 1. Retrieve the IOU State from the vault.
-            List<UUID> listOfLinearIds = new ArrayList<>();
-            listOfLinearIds.add(stateLinearId.getId());
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, listOfLinearIds);
-
-            Vault.Page results = getServiceHub().getVaultService().queryBy(IOUState.class, queryCriteria);
-            StateAndRef inputStateAndRefToSettle = (StateAndRef) results.component1().get(0);
-            IOUState inputStateToSettle = (IOUState) ((StateAndRef) results.component1().get(0)).getState().getData();
-
-            // 2. Check the party running this flow is the borrower.
-            if (!inputStateToSettle.borrower.getOwningKey().equals(getOurIdentity().getOwningKey())) {
-                throw new IllegalArgumentException("The borrower must issue the flow");
-            }
-
-            // 3. Create a transaction builder
-            Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
-            TransactionBuilder tb = new TransactionBuilder(notary);
-
-            // 4. Check we have enough cash to settle the requested amount
-            final Amount<Currency> cashBalance = getCashBalance(getServiceHub(), (Currency) amount.getToken());
-
-            if (cashBalance.getQuantity() < amount.getQuantity()) {
-                throw new IllegalArgumentException("Borrower doesn't have enough cash to settle with the amount specified.");
-            } else if (amount.getQuantity() > (inputStateToSettle.amount.getQuantity() - inputStateToSettle.paid.getQuantity())) {
-                throw new IllegalArgumentException("Borrow tried to settle with more than was required for the obligation.");
-            }
-
-            // 5. Get some cash from the vault and add a spend to our transaction builder.
-            Cash.generateSpend(getServiceHub(), tb, amount, inputStateToSettle.lender, ImmutableSet.of()).getSecond();
-
-
-            // 6.
-            Command<IOUContract.Commands.Settle> command = new Command<>(
-                    new IOUContract.Commands.Settle(),
-                    inputStateToSettle.getParticipants()
-                            .stream().map(AbstractParty::getOwningKey)
-                            .collect(Collectors.toList())
-            );
-
-
-            tb.addCommand(command);
-            tb.addInputState(inputStateAndRefToSettle);
-
-            // 7. Add an IOU output state for an IOU that has not been full settled.
-            if (amount.getQuantity() < inputStateToSettle.amount.getQuantity()) {
-                tb.addOutputState(inputStateToSettle.pay(amount), IOUContract.IOU_CONTRACT_ID);
-            }
-
-
-            // 8. Verify and sign the transaction
-            tb.verify(getServiceHub());
-            SignedTransaction stx = getServiceHub().signInitialTransaction(tb, getOurIdentity().getOwningKey());
-
-            //Collect Signatures
-            List<FlowSession> listOfFlows = new ArrayList<>();
-
-            for (AbstractParty participant: inputStateToSettle.getParticipants()) {
-                Party partyToInitiateFlow = (Party) participant;
-                if (!partyToInitiateFlow.getOwningKey().equals(getOurIdentity().getOwningKey())) {
-                    listOfFlows.add(initiateFlow(partyToInitiateFlow));
-                }
-            }
-
-            SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(stx, listOfFlows));
-
-            return subFlow(new FinalityFlow(fullySignedTransaction));
-
-        }
-
     }
 
     /**
      * This is the flow which signs IOU settlements.
      * The signing is handled by the [SignTransactionFlow].
      */
-    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
+//    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;
@@ -151,8 +71,8 @@ public class IOUSettleFlow {
                 @Override
                 protected void checkTransaction(SignedTransaction stx) {
                     requireThat(require -> {
-                        ContractState output = stx.getTx().outputsOfType(IOUState.class).get(0);
-                        require.using("This must be an IOU transaction", output instanceof IOUState);
+//                        ContractState output = stx.getTx().outputsOfType(IOUState.class).get(0);
+//                        require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
                 }

@@ -18,65 +18,6 @@ import javax.validation.constraints.NotNull;
  * instructions on how to complete the [IOUState] class.
  *
  */
-public class IOUState implements ContractState, LinearState {
-
-    public final Amount<Currency> amount;
-    public final Party lender;
-    public final Party borrower;
-    public final Amount<Currency> paid;
-    private final UniqueIdentifier linearId;
-
-    // Private constructor used only for copying a State object
-    @ConstructorForDeserialization
-    public IOUState(Amount<Currency> amount, Party lender, Party borrower, Amount<Currency> paid, UniqueIdentifier linearId){
-       this.amount = amount;
-       this.lender = lender;
-       this.borrower = borrower;
-       this.paid = paid;
-       this.linearId = linearId;
-	}
-
-	public IOUState(Amount<Currency> amount, Party lender, Party borrower) {
-        this(amount, lender, borrower, new Amount<>(0, amount.getToken()), new UniqueIdentifier());
-    }
-
-    public Amount<Currency> getAmount() {
-        return amount;
-    }
-
-    public Party getLender() {
-	    return lender;
-    }
-
-    public Party getBorrower() {
-        return borrower;
-    }
-
-    public Amount getPaid() {
-	    return paid;
-    }
-
-    @Override
-    public UniqueIdentifier getLinearId() {
-	    return linearId;
-    }
-
-   	@Override
-    public List<AbstractParty> getParticipants() {
-        return ImmutableList.of(borrower, lender);
-    }
-
-    public IOUState pay(Amount paidAmount) {
-        Amount<Currency> newAmountPaid = this.paid.plus(paidAmount);
-        return new IOUState(amount, lender, borrower, newAmountPaid, linearId);
-    }
-
-    public IOUState withNewLender(Party newLender) {
-        return new IOUState(amount, newLender, borrower, paid, linearId);
-    }
-
-    public IOUState copy(Amount<Currency> amount, Party lender, Party borrower, Amount<Currency> paid) {
-        return new IOUState(amount, lender, borrower, paid, this.getLinearId());
-    }
+public class IOUState {
 
 }
