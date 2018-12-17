@@ -1,7 +1,9 @@
 package net.corda.training.flow
 
 import co.paralleluniverse.fibers.Suspendable
-import net.corda.core.contracts.*
+import net.corda.core.contracts.Amount
+import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.contracts.requireThat
 import net.corda.core.flows.CollectSignaturesFlow
 import net.corda.core.flows.FinalityFlow
 import net.corda.core.flows.FlowLogic
@@ -10,17 +12,12 @@ import net.corda.core.flows.InitiatedBy
 import net.corda.core.flows.InitiatingFlow
 import net.corda.core.flows.SignTransactionFlow
 import net.corda.core.flows.StartableByRPC
-import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.OpaqueBytes
 import net.corda.finance.contracts.asset.Cash
-import net.corda.finance.contracts.asset.PartyAndAmount
-import net.corda.finance.contracts.getCashBalance
 import net.corda.finance.flows.CashIssueFlow
-import net.corda.training.contract.IOUContract
 import net.corda.training.state.IOUState
-import java.lang.IllegalArgumentException
 import java.util.*
 
 /**
@@ -34,47 +31,10 @@ import java.util.*
 class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>): FlowLogic<SignedTransaction>() {
     @Suspendable
     override fun call(): SignedTransaction {
-
-        // Get all components for building transaction
-        val customQueryCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(linearId))
-        val stateAndRefToSettle = serviceHub.vaultService.queryBy(IOUState::class.java, customQueryCriteria ).states.single()
-        val notary = serviceHub.networkMapCache.notaryIdentities[0]
-
-        // Throw exception if borrower is not running the flow
-        if (stateAndRefToSettle.state.data.borrower != ourIdentity) {
-            throw IllegalArgumentException("The borrower must issue the flow")
-        }
-
-        // Throw exception if borrower has no cash
-        if (serviceHub.getCashBalance(stateAndRefToSettle.state.data.amount.token).quantity <= 0) {
-            throw IllegalArgumentException("The borrower must have some cash")
-        }
-
-        // Throw exception if borrower has no cash
-        if (serviceHub.getCashBalance(stateAndRefToSettle.state.data.amount.token).quantity < amount.quantity) {
-            throw IllegalArgumentException("The borrower must have enough cash")
-        }
-
-        // Create a settled output state
-        val settledState = stateAndRefToSettle.state.data.pay(amount)
-
-        // Add a command to the flow
-        val tb = TransactionBuilder(notary)
-        val command = Command(IOUContract.Commands.Settle(), listOf(ourIdentity.owningKey, stateAndRefToSettle.state.data.lender.owningKey))
-        tb.addCommand(command)
-
-        // Add states to transaction
-        val tx = tb.withItems(stateAndRefToSettle, StateAndContract(settledState, IOUContract.IOU_CONTRACT_ID))
-
-        //generateSpend(services, tx, amount, to, ourIdentity, onlyFromParties
-        Cash.generateSpend(serviceHub, tx, amount, ourIdentityAndCert, settledState.lender, setOf(ourIdentity))
-
-        val ptx = serviceHub.signInitialTransaction(tx)
-
-        val listOfFlows = (stateAndRefToSettle.state.data.participants - ourIdentity).map{ it -> initiateFlow(it) }
-        val stx = subFlow(CollectSignaturesFlow(ptx, listOfFlows))
-
-        return subFlow(FinalityFlow(stx))
+        // Placeholder code to avoid type error when running the tests. Remove before starting the flow task!
+        return serviceHub.signInitialTransaction(
+                TransactionBuilder(notary = null)
+        )
     }
 }
 
