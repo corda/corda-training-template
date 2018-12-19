@@ -18,11 +18,10 @@ import javax.validation.constraints.NotNull;
  * instructions on how to complete the [IOUState] class.
  *
  */
-public class IOUState implements ContractState, LinearState {
+public class IOUState implements ContractState {
 
     public IOUState() {}
 
-    @Override
     public UniqueIdentifier getLinearId() {
         return new UniqueIdentifier();
     }
