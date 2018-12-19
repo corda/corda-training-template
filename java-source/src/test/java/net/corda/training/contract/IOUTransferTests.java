@@ -48,8 +48,7 @@ public class IOUTransferTests {
 //        OpaqueBytes defaultBytes = new OpaqueBytes(new byte[1]);
 //        PartyAndReference partyAndReference = new PartyAndReference(owner, defaultBytes);
 //        return new Cash.State(partyAndReference, amount, owner);
-    }
-
+//    }
 
     /**
      * Task 1.
