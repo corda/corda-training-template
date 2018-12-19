@@ -22,10 +22,6 @@ public class IOUState implements ContractState {
 
     public IOUState() {}
 
-    public UniqueIdentifier getLinearId() {
-        return new UniqueIdentifier();
-    }
-
     /**
      *  This method will return a list of the nodes which can "use" this state in a valid transaction. In this case, the
      *  lender or the borrower.
