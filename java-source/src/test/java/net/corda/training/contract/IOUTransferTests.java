@@ -37,15 +37,17 @@ public class IOUTransferTests {
     }
 
     static private final MockServices ledgerServices = new MockServices(Arrays.asList("net.corda.training"));
-
-    // A dummy state
-    IOUState dummyState = new IOUState(Currencies.DOLLARS(0), CHARLIE.getParty(), CHARLIE.getParty());
-
-    // function to create new Cash states.
-    private Cash.State createCashState(AbstractParty owner, Amount<Currency> amount) {
-        OpaqueBytes defaultBytes = new OpaqueBytes(new byte[1]);
-        PartyAndReference partyAndReference = new PartyAndReference(owner, defaultBytes);
-        return new Cash.State(partyAndReference, amount, owner);
+    /**
+     * Uncomment the testing setup below.
+     */
+//    // A dummy state
+//    IOUState dummyState = new IOUState(Currencies.DOLLARS(0), CHARLIE.getParty(), CHARLIE.getParty());
+//
+//    // function to create new Cash states.
+//    private Cash.State createCashState(AbstractParty owner, Amount<Currency> amount) {
+//        OpaqueBytes defaultBytes = new OpaqueBytes(new byte[1]);
+//        PartyAndReference partyAndReference = new PartyAndReference(owner, defaultBytes);
+//        return new Cash.State(partyAndReference, amount, owner);
     }
 
 
