@@ -24,7 +24,7 @@ import static net.corda.training.TestUtils.CHARLIE;
 /**
  * Practical exercise instructions for Contracts Part 3.
  * The objective here is to write some contract code that verifies a transaction to settle an [IOUState].
- * Settling is more complicated than transfering and issuing as it requires you to use multiple state types in a
+ * Settling is more complicated than transferring and issuing as it requires you to use multiple state types in a
  * transaction.
  * As with the [IOUIssueTests] and [IOUTransferTests] uncomment each unit test and run them one at a time. Use the body
  * of the tests and the task description to determine how to get the tests to pass.

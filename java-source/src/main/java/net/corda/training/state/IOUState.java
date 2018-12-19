@@ -19,5 +19,5 @@ import javax.validation.constraints.NotNull;
  *
  */
 public class IOUState {
-
+    public IOUState() {}
 }

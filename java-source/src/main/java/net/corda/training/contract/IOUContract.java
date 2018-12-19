@@ -32,6 +32,9 @@ public class IOUContract implements Contract {
      * function to check for a number of commands which implement this interface.
      */
     public interface Commands extends CommandData {
+        // Add commands here.
+        // E.g
+        // class DoSomething extends TypeOnlyCommandData implements Commands{}
     }
 
     /**
@@ -40,6 +43,6 @@ public class IOUContract implements Contract {
      */
     @Override
     public void verify(LedgerTransaction tx) {
-
+        // Add contract code here.
     }
 }

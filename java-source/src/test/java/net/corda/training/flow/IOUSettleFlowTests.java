@@ -97,8 +97,9 @@ public class IOUSettleFlowTests{
      * Hints:
      * - Use the code from the [IOUTransferFlow] to get the correct [IOUState] from the vault.
      * - You will need to use the [Cash.generateSpend] functionality of the vault to add the cash states and cash command
-     *   to your transaction. The API is quite simple. It takes a reference to a [TransactionBuilder], an [Amount] and
-     *   the [Party] object for the recipient. The function will mutate your builder by adding the states and commands.
+     *   to your transaction. The API is quite simple. It takes a reference to a [ServiceHub], [TransactionBuilder], an [Amount],
+     *   our Identity as a [PartyAndCertificate], the [Party] object for the recipient, and a set of the spending parties.
+     *   The function will mutate your builder by adding the states and commands.
      * - You then need to produce the output [IOUState] by using the [IOUState.pay] function.
      * - Add the input [IOUState] [StateAndRef] and the new output [IOUState] to the transaction.
      * - Sign the transaction and return it.
@@ -188,7 +189,7 @@ public class IOUSettleFlowTests{
      * The borrower must have at least SOME cash in the right currency to pay the lender.
      * TODO: Add a check in the flow to ensure that the borrower has a balance of cash in the right currency.
      * Hint:
-     * - Use [serviceHub.getCashBalances] - it is a map which can be queried by [Currency].
+     * - Use [getCashBalance(getServiceHub(), (Currency) amount.getToken())].
      * - Use an if statement to check there is cash in the right currency present.
      */
 //    @Test
