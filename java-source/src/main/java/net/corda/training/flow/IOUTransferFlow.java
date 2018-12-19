@@ -50,7 +50,7 @@ public class IOUTransferFlow{
      * The signing is handled by the [SignTransactionFlow].
      * Uncomment the initiatedBy annotation to facilitate the responder flow.
      */
-    //    @InitiatedBy(IOUTransferFlow.InitiatorFlow.class)
+    @InitiatedBy(IOUTransferFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;

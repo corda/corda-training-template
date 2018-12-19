@@ -44,5 +44,8 @@ public class IOUContract implements Contract {
     @Override
     public void verify(LedgerTransaction tx) {
         // Add contract code here.
+        // requireThat(req -> {
+        //     ...
+        // });
     }
 }

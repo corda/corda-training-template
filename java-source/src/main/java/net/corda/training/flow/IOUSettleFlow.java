@@ -61,7 +61,7 @@ public class IOUSettleFlow {
      * The signing is handled by the [SignTransactionFlow].
      * Uncomment the initiatedBy annotation to facilitate the responder flow.
      */
-    //    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
+    @InitiatedBy(IOUSettleFlow.InitiatorFlow.class)
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;
@@ -81,8 +81,8 @@ public class IOUSettleFlow {
                 @Override
                 protected void checkTransaction(SignedTransaction stx) {
                     requireThat(require -> {
-//                        ContractState output = stx.getTx().outputsOfType(IOUState.class).get(0);
-//                        require.using("This must be an IOU transaction", output instanceof IOUState);
+                        ContractState output = stx.getTx().outputsOfType(IOUState.class).get(0);
+                        require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
                 }

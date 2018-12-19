@@ -51,7 +51,7 @@ public class IOUIssueFlow {
      * Uncomment the initiatedBy annotation to facilitate the responder flow.
 	 */
 
-    //	@InitiatedBy(IOUIssueFlow.InitiatorFlow.class)
+	@InitiatedBy(IOUIssueFlow.InitiatorFlow.class)
 	public static class ResponderFlow extends FlowLogic<SignedTransaction>{
 		private final FlowSession flowSession;
 
