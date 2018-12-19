@@ -51,7 +51,7 @@ public class IOUIssueTests {
      * - We can check for the existence of any command that implements [IOUContract.Commands] by using the
      *   [requireSingleCommand] function which takes a {@link Class} argument.
      * - You can use the [requireSingleCommand] function on [tx.getCommands()] to check for the existence and type of the specified command
-     * in the transaction. [requireSingleCommand] requires a Class argument to identify the type of command required.
+     *   in the transaction. [requireSingleCommand] requires a Class argument to identify the type of command required.
      *
      *         requireSingleCommand(tx.getCommands(), REQUIRED_COMMAND.class)
      */

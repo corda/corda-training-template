@@ -3,11 +3,10 @@ package net.corda.training.flow;
 import co.paralleluniverse.fibers.Suspendable;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import net.corda.core.contracts.Command;
-import net.corda.core.contracts.StateAndContract;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.flows.*;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
@@ -16,6 +15,10 @@ import net.corda.core.utilities.ProgressTracker;
 
 import net.corda.training.contract.IOUContract;
 import net.corda.training.state.IOUState;
+import org.intellij.lang.annotations.Flow;
+
+import javax.annotation.Signed;
+
 import static net.corda.training.contract.IOUContract.Commands.*;
 
 /**
@@ -24,30 +27,31 @@ import static net.corda.training.contract.IOUContract.Commands.*;
  * Notarisation (if required) and commitment to the ledger is handled by the [FinalityFlow].
  * The flow returns the [SignedTransaction] that was committed to the ledger.
  */
-public class IOUIssueFlow{
-	
-	@InitiatingFlow
-	@StartableByRPC
-	public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
-		private final IOUState state;
+public class IOUIssueFlow {
 
-		public InitiatorFlow(IOUState state){
-			this.state = state;
-		}
+    @InitiatingFlow
+    @StartableByRPC
+    public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
 
-		@Suspendable
-		@Override
-		public SignedTransaction call() {
-			// Placeholder code to avoid type error when running the tests. Remove before starting the flow task!
-			return getServiceHub().signInitialTransaction(new TransactionBuilder());
-		}
-	}
+        public InitiatorFlow(IOUState state) {
+        }
+
+        // This is a mock function to prevent errors. Delete the body of the function before starting development.
+        public SignedTransaction call() throws FlowException {
+            final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
+            final TransactionBuilder builder = new TransactionBuilder(notary);
+            final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
+            return subFlow(new FinalityFlow(ptx));
+        }
+    }
 
 	/**
 	 * This is the flow which signs IOU issuances.
 	 * The signing is handled by the [SignTransactionFlow].
+     * Uncomment the initiatedBy annotation to facilitate the responder flow.
 	 */
-	@InitiatedBy(InitiatorFlow.class)
+
+	@InitiatedBy(IOUIssueFlow.InitiatorFlow.class)
 	public static class ResponderFlow extends FlowLogic<SignedTransaction>{
 		private final FlowSession flowSession;
 
