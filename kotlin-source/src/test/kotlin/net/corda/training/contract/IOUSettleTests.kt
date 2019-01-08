@@ -376,11 +376,6 @@ class IOUSettleTests {
      */
 //    @Test
 //    fun onlyPaidPropertyMayChange() {
-//
-//        System.out.println(Cash.PROGRAM_ID)
-//        System.out.println(Cash.javaClass.toString())
-//        // net.corda.finance.contracts.asset.Cash
-//        // net.corda.finance.contracts.asset.Cash
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        val fiveDollars = createCashState(5.DOLLARS, BOB.party)
 //        ledgerServices.ledger {
