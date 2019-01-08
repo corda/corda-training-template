@@ -1,14 +1,13 @@
 buildscript {
-    ext.corda_release_version = '3.2-corda'
+    ext.corda_release_version = '4.0-SNAPSHOT'
     ext.corda_release_distribution = 'net.corda'
-    ext.corda_gradle_plugins_version = '3.0.9'
-    ext.kotlin_version = '1.2.70'
+    ext.corda_gradle_plugins_version = '4.0.37'
+    ext.kotlin_version = '1.2.71'
     ext.junit_version = '4.12'
-    ext.quasar_version = '0.7.9'
+    ext.quasar_version = '0.7.10'
     ext.jolokia_version = '1.3.7'
 
     repositories {
-        mavenLocal()
         mavenCentral()
         jcenter()
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
