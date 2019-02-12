@@ -27,7 +27,9 @@ public class IOUIssueTests {
         class DummyCommand extends TypeOnlyCommandData implements Commands{}
     }
 
-    static private final MockServices ledgerServices = new MockServices(Arrays.asList("net.corda.training"));
+    static private final MockServices ledgerServices = new MockServices(
+            Arrays.asList("net.corda.training", "net.corda.finance.contracts")
+    );
 
     /**
      * Task 1.

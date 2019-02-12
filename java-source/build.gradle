@@ -117,3 +117,19 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         rpcUsers = rpcUsersList
     }
 }
+
+cordapp {
+    targetPlatformVersion 4
+    minimumPlatformVersion 4
+    contract {
+        name "Corda Training Material"
+        vendor "R3"
+        licence "Contact R3"
+        versionId 1
+    }
+    workflow {
+        name "Corda Training Material"
+        vendor "R3"
+        licence "Contact R3"
+    }
+}

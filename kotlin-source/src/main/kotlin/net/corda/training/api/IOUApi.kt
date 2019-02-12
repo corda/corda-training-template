@@ -5,16 +5,14 @@ import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.CordaX500Name
-import net.corda.core.internal.x500Name
+import net.corda.core.internal.toX500Name
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.startFlow
-import net.corda.core.messaging.startTrackedFlow
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.node.NodeInfo
 import net.corda.core.utilities.loggerFor
 import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.contracts.getCashBalances
-import net.corda.training.flow.IOUIssueFlow
 import net.corda.training.flow.IOUSettleFlow
 import net.corda.training.flow.IOUTransferFlow
 import net.corda.training.flow.SelfIssueCashFlow
@@ -24,7 +22,6 @@ import org.bouncycastle.asn1.x500.style.BCStyle
 import org.slf4j.Logger
 import java.util.Currency
 import javax.ws.rs.GET
-import javax.ws.rs.PUT
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
@@ -68,7 +65,7 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     fun getPeers(): Map<String, List<String>> {
         return mapOf("peers" to rpcOps.networkMapSnapshot()
                 .filter { isNotary(it).not() && isMe(it).not() && isNetworkMap(it).not() }
-                .map { it.legalIdentities.first().name.x500Name.toDisplayString() })
+                .map { it.legalIdentities.first().name.toX500Name().toDisplayString() })
     }
 
     /**
