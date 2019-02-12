@@ -58,7 +58,7 @@ class IOUSettleTests {
 //                input(IOUContract.IOU_CONTRACT_ID, inputCash)
 //                output(IOUContract.IOU_CONTRACT_ID, outputCash)
 //                command(BOB.publicKey, Cash.Commands.Move())
-//                this.failsWith("Contact Verification Failed");
+//                this.failsWith("Contact verification failed");
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
