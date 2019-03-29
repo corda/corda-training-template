@@ -6,10 +6,12 @@ import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.contracts.withoutIssuer
 import net.corda.core.identity.AbstractParty
 import net.corda.core.identity.CordaX500Name
+import net.corda.core.internal.packageName
 import net.corda.finance.DOLLARS
 import net.corda.finance.POUNDS
 import net.corda.finance.`issued by`
 import net.corda.finance.contracts.asset.Cash
+import net.corda.finance.schemas.CashSchemaV1
 import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
@@ -38,7 +40,8 @@ class IOUSettleTests {
 
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
-    var ledgerServices = MockServices(listOf("net.corda.training"))
+
+    var ledgerServices = MockServices(listOf("net.corda.training", "net.corda.finance.contracts.asset", CashSchemaV1::class.packageName))
 
     /**
      * Task 1.
@@ -55,25 +58,25 @@ class IOUSettleTests {
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.POUNDS))
-//                input(IOUContract.IOU_CONTRACT_ID, inputCash)
-//                output(IOUContract.IOU_CONTRACT_ID, outputCash)
+//                input(Cash.PROGRAM_ID, inputCash)
+//                output(Cash.PROGRAM_ID, outputCash)
 //                command(BOB.publicKey, Cash.Commands.Move())
-//                this.failsWith("Contact verification failed");
+//                this.failsWith("Contract verification failed");
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.POUNDS))
-//                input(IOUContract.IOU_CONTRACT_ID, inputCash)
-//                output(IOUContract.IOU_CONTRACT_ID, outputCash)
+//                input(Cash.PROGRAM_ID, inputCash)
+//                output(Cash.PROGRAM_ID, outputCash)
 //                command(BOB.publicKey, Cash.Commands.Move())
 //                command(listOf(ALICE.publicKey, BOB.publicKey), DummyCommand()) // Wrong type.
-//                this.failsWith("Contract verification failed")
+//                this.failsWith("Contract verification failed");
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.POUNDS))
-//                input(IOUContract.IOU_CONTRACT_ID, inputCash)
-//                output(IOUContract.IOU_CONTRACT_ID, outputCash)
+//                input(Cash.PROGRAM_ID, inputCash)
+//                output(Cash.PROGRAM_ID, outputCash)
 //                command(BOB.publicKey, Cash.Commands.Move())
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle()) // Correct Type.
 //                this.verifies()
@@ -110,8 +113,8 @@ class IOUSettleTests {
 //                input(IOUContract.IOU_CONTRACT_ID, iouTwo)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                output(IOUContract.IOU_CONTRACT_ID, iouOne.pay(5.POUNDS))
-//                input(IOUContract.IOU_CONTRACT_ID, inputCash)
-//                output(IOUContract.IOU_CONTRACT_ID, outputCash.ownableState)
+//                input(Cash.PROGRAM_ID, inputCash)
+//                output(Cash.PROGRAM_ID, outputCash.ownableState)
 //                command(BOB.publicKey, Cash.Commands.Move())
 //                this `fails with` "List has more than one element."
 //            }
@@ -119,8 +122,8 @@ class IOUSettleTests {
 //                input(IOUContract.IOU_CONTRACT_ID, iouOne)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                output(IOUContract.IOU_CONTRACT_ID, iouOne.pay(5.POUNDS))
-//                input(IOUContract.IOU_CONTRACT_ID, inputCash)
-//                output(IOUContract.IOU_CONTRACT_ID, outputCash.ownableState)
+//                input(Cash.PROGRAM_ID, inputCash)
+//                output(Cash.PROGRAM_ID, outputCash.ownableState)
 //                command(BOB.publicKey, Cash.Commands.Move())
 //                this.verifies()
 //            }
@@ -148,16 +151,16 @@ class IOUSettleTests {
 //                input(IOUContract.IOU_CONTRACT_ID, iouOne)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                output(IOUContract.IOU_CONTRACT_ID, iouOne.pay(5.POUNDS))
-//                input(IOUContract.IOU_CONTRACT_ID, fivePounds)
-//                output(IOUContract.IOU_CONTRACT_ID, fivePounds.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fivePounds)
+//                output(Cash.PROGRAM_ID, fivePounds.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, Cash.Commands.Move())
 //                this.verifies()
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iouOne)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                input(IOUContract.IOU_CONTRACT_ID, tenPounds)
-//                output(IOUContract.IOU_CONTRACT_ID, tenPounds.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, tenPounds)
+//                output(Cash.PROGRAM_ID, tenPounds.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, Cash.Commands.Move())
 //                this.verifies()
 //            }
@@ -187,9 +190,9 @@ class IOUSettleTests {
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, cash)
+//                input(Cash.PROGRAM_ID, cash)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
-//                output(IOUContract.IOU_CONTRACT_ID, cashPayment.ownableState)
+//                output(Cash.PROGRAM_ID, cashPayment.ownableState)
 //                command(BOB.publicKey, cashPayment.command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this.verifies()
@@ -217,18 +220,18 @@ class IOUSettleTests {
 //        ledgerServices.ledger {
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, cash)
+//                input(Cash.PROGRAM_ID, cash)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.POUNDS))
-//                output(IOUContract.IOU_CONTRACT_ID, "outputs cash", invalidCashPayment.ownableState)
+//                output(Cash.PROGRAM_ID, "outputs cash", invalidCashPayment.ownableState)
 //                command(BOB.publicKey, invalidCashPayment.command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this `fails with` "There must be output cash paid to the recipient."
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, cash)
+//                input(Cash.PROGRAM_ID, cash)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.POUNDS))
-//                output(IOUContract.IOU_CONTRACT_ID, validCashPayment.ownableState)
+//                output(Cash.PROGRAM_ID, validCashPayment.ownableState)
 //                command(BOB.publicKey, validCashPayment.command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this.verifies()
@@ -258,26 +261,26 @@ class IOUSettleTests {
 //        ledgerServices.ledger {
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, elevenDollars)
+//                input(Cash.PROGRAM_ID, elevenDollars)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(11.DOLLARS))
-//                output(IOUContract.IOU_CONTRACT_ID, elevenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                output(Cash.PROGRAM_ID, elevenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, elevenDollars.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this `fails with` "The amount settled cannot be more than the amount outstanding."
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
+//                input(Cash.PROGRAM_ID, fiveDollars)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this.verifies()
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, tenDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, tenDollars)
+//                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenDollars.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this.verifies()
@@ -299,16 +302,16 @@ class IOUSettleTests {
 //        ledgerServices.ledger {
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, tenPounds)
-//                output(IOUContract.IOU_CONTRACT_ID, tenPounds.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, tenPounds)
+//                output(Cash.PROGRAM_ID, tenPounds.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenPounds.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this `fails with` "Token mismatch: GBP vs USD"
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, tenDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, tenDollars)
+//                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenDollars.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this.verifies()
@@ -331,34 +334,34 @@ class IOUSettleTests {
 //        ledgerServices.ledger {
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fiveDollars)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this `fails with` "There must be one output IOU."
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fiveDollars)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                verifies()
 //            }
 //            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, tenDollars)
+//                input(Cash.PROGRAM_ID, tenDollars)
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(10.DOLLARS))
-//                output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                this `fails with` "There must be no output IOU as it has been fully settled."
 //            }
 //            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, tenDollars)
+//                input(Cash.PROGRAM_ID, tenDollars)
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                output(IOUContract.IOU_CONTRACT_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                output(Cash.PROGRAM_ID, tenDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
 //                verifies()
@@ -378,8 +381,8 @@ class IOUSettleTests {
 //        ledgerServices.ledger {
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fiveDollars)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.copy(borrower = ALICE.party, paid = 5.DOLLARS))
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
@@ -387,8 +390,8 @@ class IOUSettleTests {
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fiveDollars)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.copy(amount = 0.DOLLARS, paid = 5.DOLLARS))
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
@@ -396,8 +399,8 @@ class IOUSettleTests {
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fiveDollars)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.copy(lender = CHARLIE.party, paid = 5.DOLLARS))
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
@@ -405,8 +408,8 @@ class IOUSettleTests {
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(IOUContract.IOU_CONTRACT_ID, fiveDollars)
-//                output(IOUContract.IOU_CONTRACT_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
+//                input(Cash.PROGRAM_ID, fiveDollars)
+//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
@@ -427,27 +430,27 @@ class IOUSettleTests {
 //        val cashPayment = cash.withNewOwner(newOwner = ALICE.party)
 //        ledgerServices.ledger {
 //            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, cash)
+//                input(Cash.PROGRAM_ID, cash)
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                output(IOUContract.IOU_CONTRACT_ID, cashPayment.ownableState)
+//                output(Cash.PROGRAM_ID, cashPayment.ownableState)
 //                command(BOB.publicKey, cashPayment.command)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(listOf(ALICE.publicKey, CHARLIE.publicKey), IOUContract.Commands.Settle())
 //                failsWith("Both lender and borrower together only must sign IOU settle transaction.")
 //            }
 //            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, cash)
+//                input(Cash.PROGRAM_ID, cash)
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                output(IOUContract.IOU_CONTRACT_ID, cashPayment.ownableState)
+//                output(Cash.PROGRAM_ID, cashPayment.ownableState)
 //                command(BOB.publicKey, cashPayment.command)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(BOB.publicKey, IOUContract.Commands.Settle())
 //                failsWith("Both lender and borrower together only must sign IOU settle transaction.")
 //            }
 //            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, cash)
+//                input(Cash.PROGRAM_ID, cash)
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                output(IOUContract.IOU_CONTRACT_ID, cashPayment.ownableState)
+//                output(Cash.PROGRAM_ID, cashPayment.ownableState)
 //                command(BOB.publicKey, cashPayment.command)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())

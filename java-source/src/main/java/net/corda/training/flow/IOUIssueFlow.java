@@ -1,6 +1,8 @@
 package net.corda.training.flow;
 
 import co.paralleluniverse.fibers.Suspendable;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.corda.core.contracts.Command;
@@ -41,7 +43,8 @@ public class IOUIssueFlow {
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             final TransactionBuilder builder = new TransactionBuilder(notary);
             final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-            return subFlow(new FinalityFlow(ptx));
+			final List<FlowSession> sessions = Arrays.asList(initiateFlow(getOurIdentity()));
+			return subFlow(new FinalityFlow(ptx, sessions));
         }
     }
 

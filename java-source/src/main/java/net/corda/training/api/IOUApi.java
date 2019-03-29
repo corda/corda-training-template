@@ -8,10 +8,10 @@ import net.corda.core.node.NodeInfo;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.internal.InternalUtils;
 import net.corda.core.internal.FetchDataFlow.Result;
-import net.corda.finance.contracts.GetBalances;
 import net.corda.finance.contracts.asset.Cash;
 import net.corda.finance.flows.CashIssueFlow;
 
+import net.corda.finance.workflows.GetBalances;
 import net.corda.training.flow.IOUIssueFlow;
 import net.corda.training.flow.IOUSettleFlow;
 import net.corda.training.flow.IOUTransferFlow;

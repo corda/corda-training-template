@@ -6,8 +6,10 @@ import net.corda.core.contracts.ContractState
 import net.corda.core.contracts.TypeOnlyCommandData
 import net.corda.core.contracts.requireSingleCommand
 import net.corda.core.identity.AbstractParty
+import net.corda.core.internal.packageName
 import net.corda.finance.DOLLARS
 import net.corda.finance.POUNDS
+import net.corda.finance.schemas.CashSchemaV1
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
 import net.corda.training.ALICE
@@ -30,7 +32,7 @@ class IOUTransferTests {
     }
     // A dummy command.
     class DummyCommand : CommandData
-    var ledgerServices = MockServices(listOf("net.corda.training"))
+    var ledgerServices = MockServices(listOf("net.corda.training", "net.corda.finance.contracts.asset", CashSchemaV1::class.packageName))
 
     /**
      * Task 1.
