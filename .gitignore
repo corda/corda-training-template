@@ -21,9 +21,13 @@ lib/dokka.jar
 
 *.iml
 
+## Directory-based project format:
+.idea
+
 # if you remove the above rule, at least ignore the following:
 
 # Specific files to avoid churn
+.idea/*.xml
 .idea/copyright
 .idea/jsLibraryMappings.xml
 
