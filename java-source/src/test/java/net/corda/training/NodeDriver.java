@@ -5,6 +5,7 @@ import net.corda.testing.driver.DriverParameters;
 import net.corda.testing.driver.NodeParameters;
 import net.corda.testing.node.NotarySpec;
 import net.corda.testing.driver.NodeHandle;
+import net.corda.testing.node.TestCordapp;
 import net.corda.testing.node.User;
 import net.corda.testing.driver.VerifierType;
 import static net.corda.testing.driver.Driver.driver;
@@ -35,7 +36,7 @@ public class NodeDriver{
         driver(new DriverParameters()
                 .withIsDebug(true)
                 .withWaitForAllNodesToFinish(true)
-                .withExtraCordappPackagesToScan(ImmutableList.of("net.corda.finance"))
+                .withCordappsForAllNodes(Arrays.asList(TestCordapp.findCordapp("net.corda.finance")))
                 .withNotarySpecs(Arrays.asList(new NotarySpec(new CordaX500Name("Notary", "London","GB"), true,  Arrays.asList(user), VerifierType.InMemory, null))), dsl -> {
             CordaFuture<NodeHandle> partyAFuture = dsl.startNode(new NodeParameters()
                     .withProvidedName(new CordaX500Name("ParticipantA", "London", "GB"))

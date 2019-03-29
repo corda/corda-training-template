@@ -20,6 +20,7 @@ import javax.annotation.Signed;
 import javax.validation.constraints.NotNull;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,7 +41,8 @@ public class IOUTransferFlow{
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             final TransactionBuilder builder = new TransactionBuilder(notary);
             final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-            return subFlow(new FinalityFlow(ptx));
+            final List<FlowSession> sessions = Arrays.asList(initiateFlow(getOurIdentity()));
+            return subFlow(new FinalityFlow(ptx, sessions));
         }
     }
 

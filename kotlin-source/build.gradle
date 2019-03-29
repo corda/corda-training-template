@@ -15,6 +15,26 @@ apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 apply plugin: 'maven-publish'
 
+cordapp {
+    signing {
+        enabled false
+    }
+    targetPlatformVersion 4
+    minimumPlatformVersion 3
+    contract {
+        name "Corda Training Material"
+        vendor "R3"
+        licence "Contact R3 for Kotlin Source Contract License."
+        versionId 1
+    }
+    workflow {
+        name "Corda Training Material"
+        vendor "R3"
+        licence "Contact R3 for Kotlin Source Workflow License."
+        versionId 1
+    }
+}
+
 sourceSets {
     main {
         resources {
@@ -30,13 +50,13 @@ sourceSets {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 
     // Corda integration dependencies
     cordaCompile "$corda_release_distribution:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_distribution:corda-finance:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-finance-contracts:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-finance-workflows:$corda_release_version"
     cordaCompile "$corda_release_distribution:corda-jackson:$corda_release_version"
     cordaCompile "$corda_release_distribution:corda-rpc:$corda_release_version"
     cordaCompile "$corda_release_distribution:corda-node-api:$corda_release_version"
@@ -56,7 +76,9 @@ dependencies {
 
     // CorDapp dependencies
     // Specify your cordapp's dependencies below, including dependent cordapps
-    cordapp "$corda_release_distribution:corda-finance:$corda_release_version"
+    cordapp "$corda_release_distribution:corda-finance-contracts:$corda_release_version"
+    cordapp "$corda_release_distribution:corda-finance-workflows:$corda_release_version"
+    cordapp "$corda_release_distribution:corda-confidential-identities:$corda_release_version"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -68,60 +90,64 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-def rpcUsersList = [
-        ['username' : "user1",
-         'password' : "password",
-         'permissions' : ["ALL"]]
-]
-
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     delete "./build/nodes"
     directory "./build/nodes"
+
+    signing {
+        enabled false
+    }
+
+    nodeDefaults {
+        cordapp("$corda_release_distribution:corda-finance-contracts:$corda_release_version")
+        cordapp("$corda_release_distribution:corda-finance-workflows:$corda_release_version")
+        cordapp("$corda_release_distribution:corda-confidential-identities:$corda_release_version")
+        rpcUsers = [[ user: "user1", "password": "password", "permissions": ["ALL"]]]
+    }
 
     node {
         name "O=Notary,L=London,C=GB"
         notary = [validating: false]
         p2pPort 10002
-        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10003"
+            adminAddress "0.0.0.0:10103"
+        }
     }
     node {
         name "O=ParticipantA,L=London,C=GB"
         p2pPort 10007
         webPort 10009
-        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
         rpcSettings {
             useSsl false
             standAloneBroker false
             address "0.0.0.0:10008"
-            adminAddress "0.0.0.0:10018"
+            adminAddress "0.0.0.0:10108"
         }
-        rpcUsers = rpcUsersList
     }
     node {
         name "O=ParticipantB,L=New York,C=US"
         p2pPort 10010
         webPort 10012
-        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
         rpcSettings {
             useSsl false
             standAloneBroker false
             address "0.0.0.0:10011"
-            adminAddress "0.0.0.0:10021"
+            adminAddress "0.0.0.0:10111"
         }
-        rpcUsers = rpcUsersList
     }
     node {
         name "O=ParticipantC,L=Paris,C=FR"
         p2pPort 10013
         webPort 10015
-        cordapps = ["$corda_release_distribution:corda-finance:$corda_release_version"]
         rpcSettings {
             useSsl false
             standAloneBroker false
             address "0.0.0.0:10014"
-            adminAddress "0.0.0.0:10024"
+            adminAddress "0.0.0.0:10114"
         }
-        rpcUsers = rpcUsersList
     }
 }
 
@@ -129,21 +155,5 @@ idea {
     module {
         downloadJavadoc = true // defaults to false
         downloadSources = true
-    }
-}
-
-cordapp {
-    targetPlatformVersion 4
-    minimumPlatformVersion 4
-    contract {
-        name "Corda Training Material"
-        vendor "R3"
-        licence "Contact R3"
-        versionId 1
-    }
-    workflow {
-        name "Corda Training Material"
-        vendor "R3"
-        licence "Contact R3"
     }
 }

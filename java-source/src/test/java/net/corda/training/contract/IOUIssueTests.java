@@ -1,19 +1,17 @@
 package net.corda.training.contract;
 
 import net.corda.core.contracts.*;
-import net.corda.finance.*;
-import net.corda.testing.contracts.DummyState;
+import net.corda.finance.Currencies;
 import net.corda.testing.node.MockServices;
-import net.corda.testing.node.*;
-import static net.corda.testing.node.NodeTestUtils.ledger;
 import net.corda.core.transactions.LedgerTransaction;
-
-import static net.corda.training.TestUtils.*;
 import net.corda.training.state.IOUState;
 import net.corda.training.state.IOUStateTests;
 
 import java.util.Arrays;
 import org.junit.*;
+
+import static net.corda.testing.node.NodeTestUtils.*;
+import static net.corda.training.TestUtils.*;
 
 /**
  * Practical exercise instructions for Contracts Part 1.

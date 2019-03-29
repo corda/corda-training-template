@@ -11,8 +11,8 @@ import net.corda.training.state.IOUState
 import net.corda.core.identity.Party
 import net.corda.core.internal.packageName
 import net.corda.core.utilities.getOrThrow
+import net.corda.finance.contracts.utils.sumCash
 import net.corda.finance.schemas.CashSchemaV1
-import net.corda.finance.utils.sumCash
 import net.corda.testing.internal.chooseIdentityAndCert
 import net.corda.testing.node.MockNetworkNotarySpec
 import net.corda.testing.node.MockNodeParameters

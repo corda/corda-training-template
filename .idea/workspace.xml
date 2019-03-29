@@ -2,7 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0a90a67c-1828-4667-b267-2277d56984e9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Java_Unit_Tests.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Unit_Tests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Java_Source_Tests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Java_Source_Tests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Source_Tests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Source_Tests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/api/IOUApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/api/IOUApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/NodeDriver.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/NodeDriver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-source/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-source/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -33,88 +53,70 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java">
+        <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="32" selection-start-line="32" selection-end-line="32" />
+            <state relative-caret-position="211">
+              <caret line="43" selection-start-line="43" selection-end-line="44" selection-end-column="60" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kotlin-source/build.gradle">
+        <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2220">
-              <caret line="148" column="1" selection-start-line="148" selection-start-column="1" selection-end-line="148" selection-end-column="1" />
+            <state relative-caret-position="158">
+              <caret line="44" column="74" selection-start-line="44" selection-start-column="74" selection-end-line="44" selection-end-column="74" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt">
+        <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1215">
-              <caret line="107" column="10" selection-start-line="107" selection-start-column="10" selection-end-line="107" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="377" column="39" selection-start-line="377" selection-start-column="39" selection-end-line="377" selection-end-column="39" />
+            <state relative-caret-position="231">
+              <caret line="56" column="9" lean-forward="true" selection-start-line="56" selection-start-column="9" selection-end-line="56" selection-end-column="9" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
+        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+            <state relative-caret-position="199">
+              <caret line="53" column="70" lean-forward="true" selection-start-line="53" selection-start-column="70" selection-end-line="53" selection-end-column="70" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kt">
+        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/NodeDriver.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="57" column="34" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/state/IOUState.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="13" column="26" selection-start-line="13" selection-start-column="26" selection-end-line="13" selection-end-column="26" />
-              <folding>
-                <element signature="e#34#213#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUSettleTests.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="40" column="6" selection-start-line="40" selection-start-column="6" selection-end-line="40" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUTransferTests.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="46" column="29" selection-start-line="46" selection-start-column="29" selection-end-line="46" selection-end-column="29" />
+            <state relative-caret-position="314">
+              <caret line="42" column="59" lean-forward="true" selection-start-line="42" selection-start-column="59" selection-end-line="42" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="314">
+              <caret line="40" column="30" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="319">
+              <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
             </state>
           </provider>
         </entry>
@@ -123,8 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>stx</find>
-      <find>subFlow</find>
       <find>.transaction(</find>
       <find>settleResult</find>
       <find>CordaFuture</find>
@@ -153,6 +153,8 @@
       <find>ledgerServ</find>
       <find>static private</find>
       <find>cash</find>
+      <find>getCash</find>
+      <find>sumCash</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -163,41 +165,50 @@
       <list>
         <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/SelfIssueCashFlow.java" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java" />
         <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransferFlow.kt" />
-        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java" />
         <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt" />
-        <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/state/IOUStateTests.kt" />
         <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/contract/IOUContract.java" />
-        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java" />
-        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java" />
-        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java" />
         <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/state/IOUStateTests.java" />
         <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/state/IOUState.java" />
-        <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/java-source/build.gradle" />
-        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java" />
         <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUSettleTests.java" />
         <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUTransferTests.java" />
-        <option value="$PROJECT_DIR$/kotlin-source/build.gradle" />
         <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/state/IOUState.kt" />
-        <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kt" />
         <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/.idea/runConfigurations/Java_Source_Tests.xml" />
+        <option value="$PROJECT_DIR$/.idea/runConfigurations/Java_Unit_Tests.xml" />
+        <option value="$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Source_Tests.xml" />
+        <option value="$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Unit_Tests.xml" />
+        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/kotlin-source/build.gradle" />
+        <option value="$PROJECT_DIR$/java-source/build.gradle" />
+        <option value="$PROJECT_DIR$/.idea/compiler.xml" />
+        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/api/IOUApi.java" />
+        <option value="$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt" />
+        <option value="$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt" />
+        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java" />
+        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java" />
+        <option value="$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java" />
+        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/NodeDriver.java" />
+        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java" />
+        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java" />
+        <option value="$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="14" />
     <option name="y" value="23" />
-    <option name="width" value="1680" />
-    <option name="height" value="955" />
+    <option name="width" value="1637" />
+    <option name="height" value="959" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -220,24 +231,7 @@
             <path>
               <item name="corda-training-template" type="b2602c69:ProjectViewProjectNode" />
               <item name="corda-training-template" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java-source" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="corda-training-template" type="b2602c69:ProjectViewProjectNode" />
-              <item name="corda-training-template" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java-source" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="corda-training-template" type="b2602c69:ProjectViewProjectNode" />
-              <item name="corda-training-template" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
               <item name="kotlin-source" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="corda-training-template" type="b2602c69:ProjectViewProjectNode" />
-              <item name="corda-training-template" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="kotlin-source" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -252,7 +246,7 @@
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/nicholasrogers/IdeaProjects/corda-training-template/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java&#10;Dumm&#9;null&#9;null&#10;dumm&#9;PSI&#9;JAVA://net.corda.training.contract.IOUSettleTests.Commands.DummyCommand&#10;kotlin&#9;FILE&#9;file:///Users/nicholasrogers/IdeaProjects/corda-training-template/.idea/modules/kotlin-source/kotlin-source.iml" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1548174233119" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553871056071" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
@@ -276,7 +270,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.Kotlin Source Tests">
+  <component name="RunManager" selected="Gradle.Java Unit Tests">
     <configuration name="All in java-source_test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="java-source_test" />
       <option name="PACKAGE_NAME" value="" />
@@ -295,6 +289,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="net.corda.training.contract" />
       <option name="MAIN_CLASS_NAME" value="net.corda.training.contract.IOUIssueTests" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -310,6 +305,7 @@
       <option name="PACKAGE_NAME" value="net.corda.training.flow" />
       <option name="MAIN_CLASS_NAME" value="net.corda.training.flow.IOUSettleFlowTests" />
       <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea -javaagent:$PROJECT_DIR$/lib/quasar.jar" />
       <option name="PARAMETERS" value="" />
       <method v="2">
@@ -345,6 +341,7 @@
       <option name="PACKAGE_NAME" value="net.corda.training.flow" />
       <option name="MAIN_CLASS_NAME" value="net.corda.training.flow.IOUTransferFlowTests" />
       <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea -javaagent:$PROJECT_DIR$/lib/quasar.jar" />
       <option name="PARAMETERS" value="" />
       <method v="2">
@@ -401,10 +398,13 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Gradle.Java Unit Tests" />
+      <item itemvalue="Gradle.Kotlin Unit Tests" />
       <item itemvalue="JUnit.net.corda.training.flow in kotlin-source_test" />
       <item itemvalue="JUnit.IOUIssueTests" />
       <item itemvalue="JUnit.Java Source Tests" />
       <item itemvalue="JUnit.Kotlin Source Tests" />
+      <item itemvalue="JUnit.IOUSettleFlowTests.flowReturnsCorrectlyFormedPartiallySignedTransaction" />
       <item itemvalue="JUnit.IOUTransferFlowTests" />
       <item itemvalue="JUnit.IOUSettleFlowTests" />
       <item itemvalue="JUnit.net.corda.training in java-source_test" />
@@ -412,8 +412,6 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.Kotlin Source Tests" />
-        <item itemvalue="JUnit.Java Source Tests" />
         <item itemvalue="JUnit.All in java-source_test" />
         <item itemvalue="JUnit.net.corda.training in java-source_test" />
         <item itemvalue="JUnit.IOUSettleFlowTests" />
@@ -434,9 +432,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="IOUIssueTests - 2018.12.14 at 18h 01m 04s.xml">
-      <configuration name="IOUIssueTests" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="IOUIssueTests - 2018.12.14 at 18h 02m 50s.xml">
       <configuration name="IOUIssueTests" configurationId="JUnit" />
     </history-entry>
@@ -464,6 +459,9 @@
     <history-entry file="Kotlin_Source_Tests - 2019.01.22 at 11h 23m 57s.xml">
       <configuration name="Kotlin Source Tests" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="Java_Unit_Tests - 2019.03.29 at 12h 18m 41s.xml">
+      <configuration name="Java Unit Tests" configurationId="GradleRunConfiguration" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -475,10 +473,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="955" extended-state="6" />
-    <editor active="true" />
+    <frame x="14" y="23" width="1637" height="959" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25213677" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26394984" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -487,17 +484,16 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3298731" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32908458" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32871974" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39745075" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.329849" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.329849" />
-      <window_info anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3221321" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32871974" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32871974" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32871974" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Build" order="10" weight="0.329849" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.3244496" />
-      <window_info anchor="right" id="Maven" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32295272" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -507,6 +503,7 @@
       <window_info anchor="right" id="Theme Preview" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" id="Maven Projects" order="8" />
+      <window_info anchor="right" id="Maven" order="9" />
     </layout>
     <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24175824" />
@@ -543,12 +540,6 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.md" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.corda/corda-core/3.2-corda/70014bc708023d8eb59d55a0931fe1ea86d7bbce/corda-core-3.2-corda-sources.jar!/net/corda/core/contracts/UniqueIdentifier.kt" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.corda/corda-core/3.2-corda/70014bc708023d8eb59d55a0931fe1ea86d7bbce/corda-core-3.2-corda-sources.jar!/net/corda/core/node/services/vault/QueryCriteria.kt" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.corda/corda-core/3.2-corda/70014bc708023d8eb59d55a0931fe1ea86d7bbce/corda-core-3.2-corda-sources.jar!/net/corda/core/flows/FlowLogic.kt" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/co.paralleluniverse/quasar-core/0.7.9/2e7622b68e0d982c4025765480b0d826239117e8/quasar-core-0.7.9-sources.jar!/co/paralleluniverse/fibers/instrument/MethodDatabase.java" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/co.paralleluniverse/quasar-core/0.7.9/2e7622b68e0d982c4025765480b0d826239117e8/quasar-core-0.7.9-sources.jar!/co/paralleluniverse/fibers/instrument/QuasarInstrumentor.java" />
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/co.paralleluniverse/quasar-core/0.7.9/2e7622b68e0d982c4025765480b0d826239117e8/quasar-core-0.7.9-sources.jar!/co/paralleluniverse/fibers/instrument/JavaAgent.java" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.corda/corda-core/3.2-corda/70014bc708023d8eb59d55a0931fe1ea86d7bbce/corda-core-3.2-corda-sources.jar!/net/corda/core/node/services/VaultService.kt" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.corda/corda-node/3.2-corda/3b2c6be15e350d5b4ebb3eec8431b3c7d5ce127e/corda-node-3.2-corda.jar!/net/corda/node/services/api/VaultServiceInternal.class" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.corda/corda-core/3.2-corda/70014bc708023d8eb59d55a0931fe1ea86d7bbce/corda-core-3.2-corda-sources.jar!/net/corda/core/contracts/TransactionState.kt" />
@@ -609,24 +600,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="220" selection-start-line="220" selection-start-column="2" selection-end-line="260" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1623">
           <caret line="25" column="25" lean-forward="true" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="87" selection-start-line="87" selection-start-column="2" selection-end-line="124" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -644,20 +621,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2715">
-          <caret line="218" column="17" selection-start-line="218" selection-start-column="17" selection-end-line="218" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2040">
-          <caret line="161" column="7" selection-start-line="161" selection-start-column="7" selection-end-line="161" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/state/IOUStateTests.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3045">
@@ -665,94 +628,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="52" column="4" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/NodeDriver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="30" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/state/IOUState.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/contract/IOUContract.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="31" column="81" selection-start-line="31" selection-start-column="81" selection-end-line="31" selection-end-column="81" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/api/IOUApi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1155">
-          <caret line="108" column="28" selection-start-line="108" selection-start-column="28" selection-end-line="108" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="795">
-          <caret line="85" column="30" selection-start-line="85" selection-start-column="30" selection-end-line="85" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="34" column="40" selection-start-line="34" selection-start-column="40" selection-end-line="34" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="17" selection-start-line="11" selection-start-column="17" selection-end-line="11" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="113" column="23" selection-start-line="113" selection-start-column="23" selection-end-line="113" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="32" selection-start-line="32" selection-end-line="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kotlin-source/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2220">
-          <caret line="148" column="1" selection-start-line="148" selection-start-column="1" selection-end-line="148" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1215">
-          <caret line="107" column="10" selection-start-line="107" selection-start-column="10" selection-end-line="107" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -790,17 +669,186 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="377" column="39" selection-start-line="377" selection-start-column="39" selection-end-line="377" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
           <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/runConfigurations/Java_Unit_Tests.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="21" column="12" selection-start-line="21" selection-start-column="12" selection-end-line="21" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Unit_Tests.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="19" column="18" selection-start-line="19" selection-start-column="18" selection-end-line="19" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1034">
+          <caret line="58" column="21" selection-start-line="58" selection-start-column="21" selection-end-line="58" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="14" column="3" selection-start-line="14" selection-start-column="3" selection-end-line="14" selection-end-column="3" />
+          <folding>
+            <element signature="e#37#412#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="20" column="32" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kotlin-source/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3498">
+          <caret line="159" selection-start-line="159" selection-end-line="159" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="139">
+          <caret line="131" column="30" selection-start-line="131" selection-start-column="30" selection-end-line="131" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/runConfigurations/Java_Source_Tests.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/runConfigurations/Kotlin_Source_Tests.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="13" column="10" selection-start-line="13" selection-start-column="10" selection-end-line="13" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2332">
+          <caret line="106" column="7" selection-start-line="106" selection-start-column="7" selection-end-line="106" selection-end-column="7" />
+          <folding>
+            <element signature="e#32#1097#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="14" column="25" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/api/IOUApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
+          <folding>
+            <element signature="e#4480#4481#0" expanded="true" />
+            <element signature="e#4538#4539#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/contract/IOUContract.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="38" selection-start-line="38" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="43" selection-start-line="43" selection-end-line="44" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="44" column="74" selection-start-line="44" selection-start-column="74" selection-end-line="44" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="56" column="9" lean-forward="true" selection-start-line="56" selection-start-column="9" selection-end-line="56" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/NodeDriver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="42" column="59" lean-forward="true" selection-start-line="42" selection-start-column="59" selection-end-line="42" selection-end-column="59" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="40" column="30" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="53" column="70" lean-forward="true" selection-start-line="53" selection-start-column="70" selection-end-line="53" selection-end-column="70" />
         </state>
       </provider>
     </entry>

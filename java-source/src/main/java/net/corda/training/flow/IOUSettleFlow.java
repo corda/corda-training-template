@@ -24,7 +24,7 @@ import java.security.PublicKey;
 import java.util.*;
 
 import static net.corda.core.contracts.ContractsDSL.requireThat;
-import static net.corda.finance.contracts.GetBalances.getCashBalance;
+import static net.corda.finance.workflows.GetBalances.getCashBalance;
 
 import java.util.ArrayList;
 import java.util.Currency;
@@ -52,7 +52,8 @@ public class IOUSettleFlow {
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             final TransactionBuilder builder = new TransactionBuilder(notary);
             final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-            return subFlow(new FinalityFlow(ptx));
+            final List<FlowSession> sessions = Arrays.asList(initiateFlow(getOurIdentity()));
+            return subFlow(new FinalityFlow(ptx, sessions));
         }
     }
 
