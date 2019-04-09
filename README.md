@@ -117,7 +117,7 @@ interact with it via a web browser. To run the finished application, you have tw
 
 ### Kotlin
 * Terminal: Navigate to the root project folder and run `./gradlew kotlin-source:deployNodes`, followed by 
-`./kotlin-source/build/node/runnodes`
+`./kotlin-source/build/nodes/runnodes`
 * IntelliJ: With the project open, select `Kotlin - Node driver` from the dropdown run configuration menu, and click 
 the green play button.
 
