@@ -2,11 +2,11 @@ package net.corda.training.flow;
 
 import co.paralleluniverse.fibers.Suspendable;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.ContractState;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -16,12 +16,8 @@ import static net.corda.core.contracts.ContractsDSL.requireThat;
 import net.corda.core.utilities.ProgressTracker;
 
 import net.corda.training.contract.IOUContract;
+import net.corda.training.contract.IOUContract.Commands.Issue;
 import net.corda.training.state.IOUState;
-import org.intellij.lang.annotations.Flow;
-
-import javax.annotation.Signed;
-
-import static net.corda.training.contract.IOUContract.Commands.*;
 
 /**
  * This is the flow which handles issuance of new IOUs on the ledger.
@@ -35,16 +31,33 @@ public class IOUIssueFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
 
+    	private final IOUState state;
         public InitiatorFlow(IOUState state) {
+        	this.state = state;
         }
 
-        // This is a mock function to prevent errors. Delete the body of the function before starting development.
-        public SignedTransaction call() throws FlowException {
+        @Suspendable
+		public SignedTransaction call() throws FlowException {
+
+        	// Task 1
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
-            final TransactionBuilder builder = new TransactionBuilder(notary);
-            final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-			final List<FlowSession> sessions = Arrays.asList(initiateFlow(getOurIdentity()));
-			return subFlow(new FinalityFlow(ptx, sessions));
+            final TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
+			final Command<Issue> issueCommand = new Command<>(new Issue(), state.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+			transactionBuilder.addCommand(issueCommand);
+			transactionBuilder.addOutputState(state, IOUContract.IOU_CONTRACT_ID);
+
+			// Task 2
+			transactionBuilder.verify(getServiceHub());
+			SignedTransaction partiallySignedTransaction = getServiceHub().signInitialTransaction(transactionBuilder);
+			
+			// Task 3
+			Set<Party> participants = state.getParticipants().stream().map(p -> (Party)p).collect(Collectors.toSet());
+			participants.remove(getOurIdentity());
+			Set<FlowSession> flowSessions = participants.stream().map(this::initiateFlow).collect(Collectors.toSet());
+			SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partiallySignedTransaction, flowSessions));
+
+			// Task 4
+			return subFlow(new FinalityFlow(signedTransaction, flowSessions));
         }
     }
 
@@ -56,7 +69,9 @@ public class IOUIssueFlow {
 
 	@InitiatedBy(IOUIssueFlow.InitiatorFlow.class)
 	public static class ResponderFlow extends FlowLogic<SignedTransaction>{
+
 		private final FlowSession flowSession;
+		private SecureHash txWeJustSigned;
 
 		public ResponderFlow(FlowSession flowSession){
 			this.flowSession = flowSession;
@@ -78,9 +93,20 @@ public class IOUIssueFlow {
 						req.using("This must be an IOU transaction", output instanceof IOUState);
 						return null;
 					});
+					txWeJustSigned = stx.getId();
 				}
 			}
-			return subFlow(new SignTxFlow(flowSession, SignTransactionFlow.Companion.tracker()));
+
+			flowSession.getCounterpartyFlowInfo().getFlowVersion();
+
+			// Create a sign transaction flow
+			SignTxFlow signTxFlow = new SignTxFlow(flowSession, SignTransactionFlow.Companion.tracker());
+
+			// Run the sign transaction flow to sign the transaction
+			subFlow(signTxFlow);
+
+			// Run the ReceiveFinalityFlow to finalize the transaction and persist it to the vault.
+			return subFlow(new ReceiveFinalityFlow(flowSession, txWeJustSigned));
 		}
 	}
 }

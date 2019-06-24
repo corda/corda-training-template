@@ -3,10 +3,14 @@ package net.corda.training.flow;
 import co.paralleluniverse.fibers.Suspendable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import kotlin.Pair;
 import net.corda.core.contracts.*;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
+import net.corda.core.identity.PartyAndCertificate;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
@@ -14,8 +18,10 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.OpaqueBytes;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.finance.contracts.asset.Cash;
+import net.corda.finance.contracts.asset.PartyAndAmount;
 import net.corda.finance.flows.AbstractCashFlow;
 import net.corda.finance.flows.CashIssueFlow;
+import net.corda.finance.workflows.asset.CashUtils;
 import net.corda.training.contract.IOUContract;
 import net.corda.training.state.IOUState;
 
@@ -44,16 +50,62 @@ public class IOUSettleFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
 
-        public InitiatorFlow(IOUState state) {
+        private final UniqueIdentifier linearId;
+        private final Amount<Currency> amount;
+
+        public InitiatorFlow(UniqueIdentifier linearId, Amount<Currency> amount) {
+            this.linearId = linearId;
+            this.amount = amount;
         }
 
-        // This is a mock function to prevent errors. Delete the body of the function before starting development.
+        @Suspendable
         public SignedTransaction call() throws FlowException {
+
+            // Task 1
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(linearId.getId()));
+            Vault.Page<IOUState> query = getServiceHub().getVaultService().queryBy(IOUState.class, queryCriteria);
+            IOUState iouState = query.getStates().get(0).getState().getData();
+
+            // Task 2
+            if (!iouState.getBorrower().equals(getOurIdentity())) throw new IllegalArgumentException("The borrower must issue the flow.");
+
+            // Task 3
+            Amount<Currency> cashBalance = getCashBalance(getServiceHub(), amount.getToken());
+            if (cashBalance.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Borrower has no " + amount.getToken().getSymbol() + " to settle.");
+            }
+
+            // Task 4
+            if (cashBalance.getQuantity() < amount.getQuantity()) {
+                throw new IllegalArgumentException("Borrower doesn't have enough cash to settle with the amount specified.");
+            }
+
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
-            final TransactionBuilder builder = new TransactionBuilder(notary);
-            final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-            final List<FlowSession> sessions = Arrays.asList(initiateFlow(getOurIdentity()));
-            return subFlow(new FinalityFlow(ptx, sessions));
+            final TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
+            final PartyAndCertificate ourIdentity = getOurIdentityAndCert();
+            final AbstractParty recipientParty = iouState.getLender();
+            final Set<AbstractParty> spendingParties = new HashSet<>(iouState.getParticipants());
+
+            CashUtils.generateSpend(getServiceHub(), transactionBuilder, amount, ourIdentity, recipientParty, spendingParties);
+
+            List<PublicKey> requiredKeys = Arrays.asList(iouState.getLender().getOwningKey(), iouState.getBorrower().getOwningKey());
+            final Command<IOUContract.Commands.Settle> settleCommand = new Command<>(new IOUContract.Commands.Settle(), requiredKeys);
+
+            IOUState outputState = iouState.pay(amount);
+
+            transactionBuilder.addCommand(settleCommand);
+            transactionBuilder.addInputState(query.component1().get(0));
+            transactionBuilder.addOutputState(outputState);
+            transactionBuilder.verify(getServiceHub());
+
+            SignedTransaction partiallySignedTransaction = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
+
+            // Task 5
+            Set<Party> participants = Sets.newHashSet(iouState.getLender());
+            Set<FlowSession> flowSessions = participants.stream().map(this::initiateFlow).collect(Collectors.toSet());
+            SignedTransaction fullySignedTransaction = subFlow(new CollectSignaturesFlow(partiallySignedTransaction, flowSessions));
+
+            return subFlow(new FinalityFlow(fullySignedTransaction, flowSessions));
         }
     }
 
@@ -66,7 +118,7 @@ public class IOUSettleFlow {
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;
-
+        private SecureHash txWeJustSigned;
         public Responder(FlowSession otherPartyFlow) {
             this.otherPartyFlow = otherPartyFlow;
         }
@@ -86,10 +138,15 @@ public class IOUSettleFlow {
                         require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
+                    txWeJustSigned = stx.getId();
                 }
             }
 
-            return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
+            SignTxFlow signTxFlow = new SignTxFlow(otherPartyFlow, SignTxFlow.tracker());
+
+            subFlow(signTxFlow);
+
+            return subFlow(new ReceiveFinalityFlow(otherPartyFlow, txWeJustSigned));
         }
     }
 

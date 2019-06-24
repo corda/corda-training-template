@@ -123,7 +123,7 @@ the green play button.
 
 ### Java
 * Terminal: Navigate to the root project folder and run `./gradlew java-source:deployNodes`, followed by 
-`./java-source/build/node/runnodes`
+`./java-source/build/nodes/runnodes`
 * IntelliJ: With the project open, select `Java - NodeDriver` from the dropdown run configuration menu, and click 
 the green play button.
 

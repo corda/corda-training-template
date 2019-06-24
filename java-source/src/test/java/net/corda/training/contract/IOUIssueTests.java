@@ -2,6 +2,7 @@ package net.corda.training.contract;
 
 import net.corda.core.contracts.*;
 import net.corda.finance.Currencies;
+import net.corda.testing.contracts.DummyState;
 import net.corda.testing.node.MockServices;
 import net.corda.core.transactions.LedgerTransaction;
 import net.corda.training.state.IOUState;
@@ -55,24 +56,24 @@ public class IOUIssueTests {
      *
      *         requireSingleCommand(tx.getCommands(), REQUIRED_COMMAND.class)
      */
-//    @Test
-//    public void mustIncludeIssueCommand() {
-//        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
-//
-//        ledger(ledgerServices, l -> {
-//            l.transaction(tx -> {
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new Commands.DummyCommand()); // Wrong type.
-//                return tx.failsWith("Contract verification failed");
-//            });
-//            l.transaction(tx -> {
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue()); // Correct type.
-//                return tx.verifies();
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void mustIncludeIssueCommand() {
+        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new Commands.DummyCommand()); // Wrong type.
+                return tx.failsWith("Contract verification failed");
+            });
+            l.transaction(tx -> {
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue()); // Correct type.
+                return tx.verifies();
+            });
+            return null;
+        });
+    }
 
     /**
      * Task 2.
@@ -94,25 +95,25 @@ public class IOUIssueTests {
      * You can access the list of inputs via the {@link LedgerTransaction} object which is passed into
      * [IOUContract.verify].
      */
-//    @Test
-//    public void issueTransactionMustHaveNoInputs() {
-//        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
-//
-//        ledger(ledgerServices, l -> {
-//            l.transaction(tx -> {
-//                tx.input(IOUContract.IOU_CONTRACT_ID, new DummyState());
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("No inputs should be consumed when issuing an IOU");
-//            });
-//            l.transaction(tx -> {
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                return tx.verifies(); // As there are no input sates
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void issueTransactionMustHaveNoInputs() {
+        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
+
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.input(IOUContract.IOU_CONTRACT_ID, new DummyState());
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("No inputs should be consumed when issuing an IOU");
+            });
+            l.transaction(tx -> {
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                return tx.verifies(); // As there are no input sates
+            });
+            return null;
+        });
+    }
 
     /**
      * Task 3.
@@ -121,24 +122,24 @@ public class IOUIssueTests {
      * Hint: Write an additional constraint within the existing [requireThat] block which you created in the previous
      * task.
      */
-//    @Test
-//    public void issueTransactionMustHaveOneOutput() {
-//        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
-//        ledger(ledgerServices, l -> {
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou); // Two outputs fails.
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("Only one output state should be created when issuing an IOU.");
-//            });
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou); // One output passes.
-//                return tx.verifies();
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void issueTransactionMustHaveOneOutput() {
+        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou); // Two outputs fails.
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("Only one output state should be created when issuing an IOU.");
+            });
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou); // One output passes.
+                return tx.verifies();
+            });
+            return null;
+        });
+    }
 
     /**
      * Task 4.
@@ -157,32 +158,32 @@ public class IOUIssueTests {
      * - When checking the [IOUState.getAmount()] property is greater than zero, you need to check the
      *   [IOUState.getAmount().getQuantity()] field.
      */
-//    @Test
-//    public void cannotCreateZeroValueIOUs() {
-//        ledger(ledgerServices, l -> {
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.POUNDS(0), ALICE.getParty(), BOB.getParty())); // Zero amount fails.
-//                return tx.failsWith("A newly issued IOU must have a positive amount.");
-//            });
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.SWISS_FRANCS(100), ALICE.getParty(), BOB.getParty()));
-//                return tx.verifies();
-//            });
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty()));
-//                return tx.verifies();
-//            });
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty()));
-//                return tx.verifies();
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void cannotCreateZeroValueIOUs() {
+        ledger(ledgerServices, l -> {
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.POUNDS(0), ALICE.getParty(), BOB.getParty())); // Zero amount fails.
+                return tx.failsWith("A newly issued IOU must have a positive amount.");
+            });
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.SWISS_FRANCS(100), ALICE.getParty(), BOB.getParty()));
+                return tx.verifies();
+            });
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty()));
+                return tx.verifies();
+            });
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, new IOUState(Currencies.DOLLARS(10), ALICE.getParty(), BOB.getParty()));
+                return tx.verifies();
+            });
+            return null;
+        });
+    }
 
     /**
      * Task 5.
@@ -192,24 +193,24 @@ public class IOUIssueTests {
      * - You can use the [IOUState.getLender()] and [IOUState.getBorrower()] properties.
      * - This check must be made before the checking who has signed.
      */
-//    @Test
-//    public void lenderAndBorrowerCannotBeTheSame() {
-//        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
-//        IOUState borrowerIsLenderIou = new IOUState(Currencies.POUNDS(10), ALICE.getParty(), ALICE.getParty());
-//        ledger(ledgerServices, l-> {
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, borrowerIsLenderIou);
-//                return tx.failsWith("The lender and borrower cannot have the same identity.");
-//            });
-//            l.transaction(tx -> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.verifies();
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void lenderAndBorrowerCannotBeTheSame() {
+        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
+        IOUState borrowerIsLenderIou = new IOUState(Currencies.POUNDS(10), ALICE.getParty(), ALICE.getParty());
+        ledger(ledgerServices, l-> {
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, borrowerIsLenderIou);
+                return tx.failsWith("The lender and borrower cannot have the same identity.");
+            });
+            l.transaction(tx -> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.verifies();
+            });
+            return null;
+        });
+    }
 
     /**
      * Task 6.
@@ -235,46 +236,46 @@ public class IOUIssueTests {
      * - https://zeroturnaround.com/rebellabs/java-8-explained-applying-lambdas-to-java-collections/
      * - A Collection can be turned into a set using: new HashSet<>(collection)
      */
-//    @Test
-//    public void lenderAndBorrowerMustSignIssueTransaction() {
-//        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
-//        ledger(ledgerServices, l->{
-//            l.transaction(tx-> {
-//                tx.command(DUMMY.getPublicKey(),  new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
-//            });
-//            l.transaction(tx-> {
-//                tx.command(ALICE.getPublicKey(),  new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
-//            });
-//            l.transaction(tx-> {
-//                tx.command(BOB.getPublicKey(),  new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
-//            });
-//            l.transaction(tx-> {
-//                tx.command(Arrays.asList(BOB.getPublicKey(), BOB.getPublicKey(), BOB.getPublicKey()),  new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
-//            });
-//            l.transaction(tx-> {
-//                tx.command(Arrays.asList(BOB.getPublicKey(), BOB.getPublicKey(), MINICORP.getPublicKey(), ALICE.getPublicKey()),  new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
-//            });
-//            l.transaction(tx-> {
-//                tx.command(Arrays.asList(BOB.getPublicKey(), BOB.getPublicKey(), BOB.getPublicKey(), ALICE.getPublicKey()),  new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.verifies();
-//            });
-//            l.transaction(tx-> {
-//                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
-//                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
-//                return tx.verifies();
-//            });
-//            return null;
-//        });
-//    }
+    @Test
+    public void lenderAndBorrowerMustSignIssueTransaction() {
+        IOUState iou = new IOUState(Currencies.POUNDS(1), ALICE.getParty(), BOB.getParty());
+        ledger(ledgerServices, l->{
+            l.transaction(tx-> {
+                tx.command(DUMMY.getPublicKey(),  new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
+            });
+            l.transaction(tx-> {
+                tx.command(ALICE.getPublicKey(),  new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
+            });
+            l.transaction(tx-> {
+                tx.command(BOB.getPublicKey(),  new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
+            });
+            l.transaction(tx-> {
+                tx.command(Arrays.asList(BOB.getPublicKey(), BOB.getPublicKey(), BOB.getPublicKey()),  new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
+            });
+            l.transaction(tx-> {
+                tx.command(Arrays.asList(BOB.getPublicKey(), BOB.getPublicKey(), MINICORP.getPublicKey(), ALICE.getPublicKey()),  new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.failsWith("Both lender and borrower together only may sign IOU issue transaction.");
+            });
+            l.transaction(tx-> {
+                tx.command(Arrays.asList(BOB.getPublicKey(), BOB.getPublicKey(), BOB.getPublicKey(), ALICE.getPublicKey()),  new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.verifies();
+            });
+            l.transaction(tx-> {
+                tx.command(Arrays.asList(ALICE.getPublicKey(), BOB.getPublicKey()), new IOUContract.Commands.Issue());
+                tx.output(IOUContract.IOU_CONTRACT_ID, iou);
+                return tx.verifies();
+            });
+            return null;
+        });
+    }
 }

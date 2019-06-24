@@ -4,7 +4,10 @@ import co.paralleluniverse.fibers.Suspendable;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
+import net.corda.core.node.services.vault.Builder;
+import net.corda.core.node.services.vault.CriteriaExpression;
 import net.corda.core.utilities.ProgressTracker;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -19,10 +22,7 @@ import net.corda.training.state.IOUState;
 import javax.annotation.Signed;
 import javax.validation.constraints.NotNull;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.corda.core.contracts.ContractsDSL.requireThat;
@@ -33,16 +33,55 @@ public class IOUTransferFlow{
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
 
-        public InitiatorFlow(IOUState state) {
+        private final UniqueIdentifier stateLinearId;
+        private final Party newLender;
+
+        public InitiatorFlow(UniqueIdentifier stateLinearId, Party newLender) {
+            this.stateLinearId = stateLinearId;
+            this.newLender = newLender;
         }
 
-        // This is a mock function to prevent errors. Delete the body of the function before starting development.
+        @Suspendable
         public SignedTransaction call() throws FlowException {
+
+            // Task 1
+
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, new ArrayList<>(Arrays.asList(stateLinearId.getId())));
+            Vault.Page<IOUState> query = getServiceHub().getVaultService().queryBy(IOUState.class, queryCriteria);
+            IOUState iouState = query.getStates().get(0).getState().getData();
+
+            IOUState iouStateCopy = iouState.withNewLender(newLender);
+
+            List<PublicKey> requiredKeys = new ArrayList<>();
+            requiredKeys.addAll(iouState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            requiredKeys.add(newLender.getOwningKey());
+
+            final Command<IOUContract.Commands.Transfer> transferCommand = new Command<>(new IOUContract.Commands.Transfer(), requiredKeys);
+
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
-            final TransactionBuilder builder = new TransactionBuilder(notary);
-            final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-            final List<FlowSession> sessions = Arrays.asList(initiateFlow(getOurIdentity()));
-            return subFlow(new FinalityFlow(ptx, sessions));
+            final TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
+            transactionBuilder.addCommand(transferCommand);
+            StateAndRef stateAndRef = query.getStates().get(0);
+            transactionBuilder.addInputState(stateAndRef);
+            transactionBuilder.addOutputState(iouStateCopy);
+
+            transactionBuilder.verify(getServiceHub());
+            SignedTransaction partiallySignedTransaction = getServiceHub().signInitialTransaction(transactionBuilder);
+
+            // Task 2
+            if (!getOurIdentity().equals(iouState.getLender())) throw new IllegalArgumentException("This flow must be run by the current lender.");
+
+            // Task 3
+
+            // Task 4
+            Set<Party> participants = new HashSet<>();
+            participants.add(iouState.getBorrower());
+            participants.add(newLender);
+            Set<FlowSession> flowSessions = participants.stream().map(this::initiateFlow).collect(Collectors.toSet());
+            SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partiallySignedTransaction, flowSessions));
+
+            // Task 5
+            return subFlow(new FinalityFlow(signedTransaction, flowSessions));
         }
     }
 
@@ -56,6 +95,7 @@ public class IOUTransferFlow{
     public static class Responder extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartyFlow;
+        private SecureHash txWeJustSigned;
         public Responder(FlowSession otherPartyFlow) {
             this.otherPartyFlow = otherPartyFlow;
         }
@@ -75,9 +115,15 @@ public class IOUTransferFlow{
                         require.using("This must be an IOU transaction", output instanceof IOUState);
                         return null;
                     });
+                    txWeJustSigned = stx.getId();
                 }
             }
-            return subFlow(new SignTxFlow(otherPartyFlow, SignTransactionFlow.Companion.tracker()));
+
+            SignTxFlow signTxFlow = new SignTxFlow(otherPartyFlow, SignTxFlow.tracker());
+
+            subFlow(signTxFlow);
+
+            return subFlow(new ReceiveFinalityFlow(otherPartyFlow, txWeJustSigned));
         }
 
     }
