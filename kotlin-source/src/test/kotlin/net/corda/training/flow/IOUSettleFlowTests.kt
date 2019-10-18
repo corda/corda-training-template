@@ -78,9 +78,10 @@ class IOUSettleFlowTests {
      * TODO: Grab the IOU for the given [linearId] from the vault, build and sign the settle transaction.
      * Hints:
      * - Use the code from the [IOUTransferFlow] to get the correct [IOUState] from the vault.
-     * - You will need to use the [Cash.generateSpend] functionality of the vault to add the cash states and cash command
-     *   to your transaction. The API is quite simple. It takes a reference to a [TransactionBuilder], an [Amount] and
-     *   the [Party] object for the recipient. The function will mutate your builder by adding the states and commands.
+     * - You will need to use the [CashUtils.generateSpend] functionality of the vault to add the cash states and cash command
+     *   to your transaction. The API is quite simple. It takes a reference to a [ServiceHub], the [TransactionBuilder],
+     *   an [Amount], [PartyAndCertificate] representing out identity (sender) and the [Party] object for the recipient.
+     *   The function will mutate your builder by adding the states and commands.
      * - You then need to produce the output [IOUState] by using the [IOUState.pay] function.
      * - Add the input [IOUState] [StateAndRef] and the new output [IOUState] to the transaction.
      * - Sign the transaction and return it.
