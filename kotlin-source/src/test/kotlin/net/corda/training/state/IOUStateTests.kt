@@ -11,6 +11,7 @@ import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 /**
  * Practical exercise instructions.
@@ -136,6 +137,9 @@ class IOUStateTests {
 //        IOUState::class.java.getDeclaredField("linearId")
 //        // Is the linearId field of the correct type?
 //        assertEquals(IOUState::class.java.getDeclaredField("linearId").type, UniqueIdentifier::class.java)
+//        // Check field is set to a not null value
+//        val iouState = IOUState(1.POUNDS, ALICE.party, BOB.party)
+//        assertNotNull(iouState.linearId)
 //    }
 
     /**
@@ -174,7 +178,7 @@ class IOUStateTests {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        assertEquals(5.DOLLARS, iou.pay(5.DOLLARS).paid)
 //        assertEquals(3.DOLLARS, iou.pay(1.DOLLARS).pay(2.DOLLARS).paid)
-//        assertEquals(10.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.DOLLARS).paid)
+//        assertEquals(10.5.DOLLARS, iou.pay(5.DOLLARS).pay(3.DOLLARS).pay(2.5.DOLLARS).paid)
 //    }
 
     /**
@@ -185,6 +189,6 @@ class IOUStateTests {
 //    fun checkWithNewLenderHelperMethod() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)
 //        assertEquals(MINICORP.party, iou.withNewLender(MINICORP.party).lender)
-//        assertEquals(MEGACORP.party, iou.withNewLender(MEGACORP.party).lender)
+//        assertEquals(MEGACORP.party, iou.withNewLender(MINICORP.party).withNewLender(MEGACORP.party).lender)
 //    }
 }
