@@ -25,14 +25,14 @@ import java.util.*
 /**
  * Practical exercise instructions for Contracts Part 3.
  * The objective here is to write some contract code that verifies a transaction to settle an [IOUState].
- * Settling is more complicated than transfering and issuing as it requires you to use multiple state types in a
+ * Settling is more complicated than transferring and issuing as it requires you to use multiple state types in a
  * transaction.
  * As with the [IOUIssueTests] and [IOUTransferTests] uncomment each unit test and run them one at a time. Use the body
  * of the tests and the task description to determine how to get the tests to pass.
  */
 class IOUSettleTests {
     private fun createCashState(amount: Amount<Currency>, owner: AbstractParty): Cash.State {
-        val defaultRef = ByteArray(1, { 1 })
+        val defaultRef = ByteArray(1) { 1 }
         return Cash.State(amount = amount `issued by`
                 TestIdentity(CordaX500Name(organisation = "MegaCorp", locality = "MegaPlanet", country = "US")).ref(defaultRef.first()),
                 owner = owner)
@@ -91,7 +91,8 @@ class IOUSettleTests {
      * IOUs.
      * TODO: Using [groupStates] add a constraint that checks for one group of input/output IOUs.
      * Hint:
-     * - The [single] function enforces a single element in a list or throws an exception.
+     * - The [single] function enforces a single element in a list or throws an exception. The test checks the
+     *   thrown exception so you do not have to define the exception message specifically in the code.
      * - The [groupStates] function takes two type parameters: the type of the state you wish to group by and the type
      *   of the grouping key used, in this case as you need to use the [linearId] and it is a [UniqueIdentifier].
      * - The [groupStates] also takes a lambda function which selects a property of the state to decide the groups.
@@ -202,14 +203,14 @@ class IOUSettleTests {
 
     /**
      * Task 5.
-     * Not only to we need to check that [Cash] output states are present but we need to check that the payer is
-     * correctly assigning us as the new owner of these states.
+     * Not only do we need to check that [Cash] output states are present but we need to check that the payer is
+     * correctly assigning the lender as the new owner of these states.
      * TODO: Add a constraint to check that we are the new owner of the output cash.
      * Hint:
-     * - Not all of the cash may be assigned to us as some of the input cash may be sent back to the payer as change.
-     * - We need to use the [Cash.State.owner] property to check to see that it is the value of our public key.
-     * - Use [filter] to filter over the list of cash states to get the ones which are being assigned to us.
-     * - Once we have this filtered list, we can sum the cash being paid to us so we know how much is being settled.
+     * - Not all of the input cash may be assigned to the lender. Some of it may be sent back to the payer as change.
+     * - We need to use the [Cash.State.owner] property to check to see that it is the value of the lender public key.
+     * - Use [filter] to filter over the list of cash states to get the ones which are being assigned to the lender.
+     * - Once we have this filtered list, we can sum the cash being paid so we know how much is being settled.
      */
 //    @Test
 //    fun mustBeCashOutputStatesWithRecipientAsOwner() {
@@ -225,7 +226,7 @@ class IOUSettleTests {
 //                output(Cash.PROGRAM_ID, "outputs cash", invalidCashPayment.ownableState)
 //                command(BOB.publicKey, invalidCashPayment.command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                this `fails with` "There must be output cash paid to the recipient."
+//                this `fails with` "Output cash must be paid to the lender."
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
@@ -241,16 +242,16 @@ class IOUSettleTests {
 
     /**
      * Task 6.
-     * Now we need to sum the cash which is being assigned to us and compare this total against how much of the iou is
-     * left to pay.
+     * Now we need to sum the cash that is being assigned to the lender and compare this total against how much of the
+     * IOU is left to pay.
      * TODO: Add a constraint that checks we cannot be paid more than the remaining IOU amount left to pay.
      * Hint:
      * - The remaining amount of the IOU is the amount less the paid property.
      * - To sum a list of [Cash.State]s use the [sumCash] function.
      * - The [sumCash] function returns an [Issued<Amount<Currency>>] type. We don't care about the issuer so we can
      *   apply [withoutIssuer] to unwrap the [Amount] from [Issuer].
-     * - We can compare the amount left paid to the amount being paid to use, ensuring the amount being paid isn't too
-     *   much.
+     * - We can compare the amount left to be paid on the input IOU to the amount of cash being used,
+     *   ensuring the amount being paid isn't too much.
      */
 //    @Test
 //    fun cashSettlementAmountMustBeLessThanRemainingIOUAmount() {
@@ -306,7 +307,7 @@ class IOUSettleTests {
 //                output(Cash.PROGRAM_ID, tenPounds.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenPounds.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                this `fails with` "Token mismatch: GBP vs USD"
+//                this `fails with` "Token mismatch: USD vs GBP"
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
@@ -386,25 +387,7 @@ class IOUSettleTests {
 //                output(IOUContract.IOU_CONTRACT_ID, iou.copy(borrower = ALICE.party, paid = 5.DOLLARS))
 //                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                this `fails with` "The borrower may not change when settling."
-//            }
-//            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(Cash.PROGRAM_ID, fiveDollars)
-//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
-//                output(IOUContract.IOU_CONTRACT_ID, iou.copy(amount = 0.DOLLARS, paid = 5.DOLLARS))
-//                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
-//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                this `fails with` "The amount may not change when settling."
-//            }
-//            transaction {
-//                input(IOUContract.IOU_CONTRACT_ID, iou)
-//                input(Cash.PROGRAM_ID, fiveDollars)
-//                output(Cash.PROGRAM_ID, fiveDollars.withNewOwner(newOwner = ALICE.party).ownableState)
-//                output(IOUContract.IOU_CONTRACT_ID, iou.copy(lender = CHARLIE.party, paid = 5.DOLLARS))
-//                command(BOB.publicKey, fiveDollars.withNewOwner(newOwner = BOB.party).command)
-//                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                this `fails with` "The lender may not change when settling."
+//                this `fails with` "Only the paid amount can change."
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
@@ -436,7 +419,7 @@ class IOUSettleTests {
 //                command(BOB.publicKey, cashPayment.command)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(listOf(ALICE.publicKey, CHARLIE.publicKey), IOUContract.Commands.Settle())
-//                failsWith("Both lender and borrower together only must sign IOU settle transaction.")
+//                failsWith("Both lender and borrower together only must sign the IOU settle transaction.")
 //            }
 //            transaction {
 //                input(Cash.PROGRAM_ID, cash)
@@ -445,7 +428,7 @@ class IOUSettleTests {
 //                command(BOB.publicKey, cashPayment.command)
 //                output(IOUContract.IOU_CONTRACT_ID, iou.pay(5.DOLLARS))
 //                command(BOB.publicKey, IOUContract.Commands.Settle())
-//                failsWith("Both lender and borrower together only must sign IOU settle transaction.")
+//                failsWith("Both lender and borrower together only must sign the IOU settle transaction.")
 //            }
 //            transaction {
 //                input(Cash.PROGRAM_ID, cash)
