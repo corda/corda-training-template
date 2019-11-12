@@ -8,11 +8,13 @@ import net.corda.core.identity.CordaX500Name
 import net.corda.core.internal.toX500Name
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.startFlow
+import net.corda.core.messaging.startTrackedFlow
 import net.corda.core.messaging.vaultQueryBy
 import net.corda.core.node.NodeInfo
 import net.corda.core.utilities.loggerFor
 import net.corda.finance.contracts.asset.Cash
 import net.corda.finance.workflows.getCashBalances
+import net.corda.training.flow.IOUIssueFlow
 import net.corda.training.flow.IOUSettleFlow
 import net.corda.training.flow.IOUTransferFlow
 import net.corda.training.flow.SelfIssueCashFlow
@@ -105,32 +107,32 @@ class IOUApi(val rpcOps: CordaRPCOps) {
     /**
      * Initiates a flow to agree an IOU between two parties.
      */
-//    @GET
-//    @Path("issue-iou")
-//    fun issueIOU(@QueryParam(value = "amount") amount: Int,
-//                 @QueryParam(value = "currency") currency: String,
-//                 @QueryParam(value = "party") party: String): Response {
-//        // Get party objects for myself and the counterparty.
-//        val me = rpcOps.nodeInfo().legalIdentities.first()
-//        val lender = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(party)) ?: throw IllegalArgumentException("Unknown party name.")
-//        // Create a new IOU state using the parameters given.
-//        try {
-//            val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
-//            // Start the IOUIssueFlow. We block and waits for the flow to return.
-//            val result = rpcOps.startTrackedFlow(::IOUIssueFlow, state).returnValue.get()
-//            // Return the response.
-//            return Response
-//                    .status(Response.Status.CREATED)
-//                    .entity("Transaction id ${result.id} committed to ledger.\n${result.tx.outputs.single()}")
-//                    .build()
-//            // For the purposes of this demo app, we do not differentiate by exception type.
-//        } catch (e: Exception) {
-//            return Response
-//                    .status(Response.Status.BAD_REQUEST)
-//                    .entity(e.message)
-//                    .build()
-//        }
-//    }
+    @GET
+    @Path("issue-iou")
+    fun issueIOU(@QueryParam(value = "amount") amount: Int,
+                 @QueryParam(value = "currency") currency: String,
+                 @QueryParam(value = "party") party: String): Response {
+        // Get party objects for myself and the counterparty.
+        val me = rpcOps.nodeInfo().legalIdentities.first()
+        val lender = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(party)) ?: throw IllegalArgumentException("Unknown party name.")
+        // Create a new IOU state using the parameters given.
+        try {
+            val state = IOUState(Amount(amount.toLong() * 100, Currency.getInstance(currency)), lender, me)
+            // Start the IOUIssueFlow. We block and waits for the flow to return.
+            val result = rpcOps.startTrackedFlow(::IOUIssueFlow, state).returnValue.get()
+            // Return the response.
+            return Response
+                    .status(Response.Status.CREATED)
+                    .entity("Transaction id ${result.id} committed to ledger.\n${result.tx.outputs.single()}")
+                    .build()
+            // For the purposes of this demo app, we do not differentiate by exception type.
+        } catch (e: Exception) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.message)
+                    .build()
+        }
+    }
 
     /**
      * Transfers an IOU specified by [linearId] to a new party.
