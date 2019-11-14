@@ -307,7 +307,7 @@ class IOUSettleTests {
 //                output(Cash.PROGRAM_ID, tenPounds.withNewOwner(newOwner = ALICE.party).ownableState)
 //                command(BOB.publicKey, tenPounds.withNewOwner(newOwner = ALICE.party).command)
 //                command(listOf(ALICE.publicKey, BOB.publicKey), IOUContract.Commands.Settle())
-//                this `fails with` "Token mismatch: USD vs GBP"
+//                this `fails with` "Token mismatch: GBP vs USD"
 //            }
 //            transaction {
 //                input(IOUContract.IOU_CONTRACT_ID, iou)
