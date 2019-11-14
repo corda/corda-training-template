@@ -172,7 +172,8 @@ class IOUStateTests {
      * - The existing state is immutable so a new state must be created from the existing state. Kotlin provides a [copy]
      * method which creates a new object with new values for specified fields.
      * - [copy] returns a copy of the object instance and the fields can be changed by specifying new values as
-     * parameters to [copy]     */
+     * parameters to [copy]
+     */
 //    @Test
 //    fun checkPayHelperMethod() {
 //        val iou = IOUState(10.DOLLARS, ALICE.party, BOB.party)

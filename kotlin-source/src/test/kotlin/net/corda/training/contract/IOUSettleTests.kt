@@ -40,7 +40,6 @@ class IOUSettleTests {
 
     // A pre-defined dummy command.
     class DummyCommand : TypeOnlyCommandData()
-
     var ledgerServices = MockServices(listOf("net.corda.training", "net.corda.finance.contracts.asset", CashSchemaV1::class.packageName))
 
     /**
