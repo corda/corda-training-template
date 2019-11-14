@@ -30,8 +30,10 @@ class IOUIssueFlowTests {
 
     @Before
     fun setup() {
-        mockNetwork = MockNetwork(listOf("net.corda.training"),
-                notarySpecs = listOf(MockNetworkNotarySpec(CordaX500Name("Notary","London","GB"))))
+        mockNetwork = MockNetwork(
+            listOf("net.corda.training"),
+            notarySpecs = listOf(MockNetworkNotarySpec(CordaX500Name("Notary", "London", "GB")))
+        )
         a = mockNetwork.createNode(MockNodeParameters())
         b = mockNetwork.createNode(MockNodeParameters())
         val startedNodes = arrayListOf(a, b)
@@ -81,8 +83,10 @@ class IOUIssueFlowTests {
         val command = ptx.tx.commands.single()
         assert(command.value is IOUContract.Commands.Issue)
         assert(command.signers.toSet() == iou.participants.map { it.owningKey }.toSet())
-        ptx.verifySignaturesExcept(borrower.owningKey,
-                mockNetwork.defaultNotaryNode.info.legalIdentitiesAndCerts.first().owningKey)
+        ptx.verifySignaturesExcept(
+            borrower.owningKey,
+            mockNetwork.defaultNotaryNode.info.legalIdentitiesAndCerts.first().owningKey
+        )
     }
 
     /**
@@ -175,9 +179,9 @@ class IOUIssueFlowTests {
         listOf(a, b).map {
             it.services.validatedTransactions.getTransaction(stx.id)
         }.forEach {
-                    val txHash = (it as SignedTransaction).id
-                    println("$txHash == ${stx.id}")
-                    assertEquals(stx.id, txHash)
-                }
+            val txHash = (it as SignedTransaction).id
+            println("$txHash == ${stx.id}")
+            assertEquals(stx.id, txHash)
+        }
     }
 }
