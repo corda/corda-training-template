@@ -59,19 +59,19 @@ State:
 
 Contract:
 
-* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kotlin`
-* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kotlin`
-* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kotlin`
-* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kotlin`
+* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kt`
+* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt`
+* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kt`
+* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt`
 
 Flow:
 
-* Issue template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
-* Issue tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
-* Transfer template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransfer.kt`
-* Transfer tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
-* Settle template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
-* Settle tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
+* Issue flow template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
+* Issue flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
+* Transfer flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransferFlow.kt`
+* Transfer flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
+* Settle flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
+* Settle flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
 
 The code in the following files was already added for you:
 

@@ -140,9 +140,10 @@ class IOUIssueTests {
      *   only one element in the previous task.
      * - We need to obtain a reference to the proposed IOU for issuance from the [LedgerTransaction.outputs] list.
      *   This list is typed as a list of [ContractState]s, therefore we need to cast the [ContractState] which we return
-     *   from [single] to an [IOUState]. You can use the Kotlin keyword 'as' to cast a class. E.g.
+     *   from [single] to an [IOUState]. [BaseTransaction.outputsOfType] is a helper function that finds states
+     *   of a specific type and casts the results to that type.
      *
-     *       val state = tx.outputStates.single() as XState
+     *       val state = tx.outputsOfType<X>().single()
      *
      * - When checking the [IOUState.amount] property is greater than zero, you need to check the
      *   [IOUState.amount.quantity] field.
