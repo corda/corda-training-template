@@ -26,10 +26,7 @@ class IOUContract : Contract {
         // Add commands here.
         // E.g
         // class DoSomething : TypeOnlyCommandData(), Commands
-
-//        class Issue : TypeOnlyCommandData(), Commands
-//        class Transfer : TypeOnlyCommandData(), Commands
-//        class Settle : TypeOnlyCommandData(), Commands
+        
     }
 
     /**
