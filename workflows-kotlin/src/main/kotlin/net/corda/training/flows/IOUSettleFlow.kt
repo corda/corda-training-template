@@ -33,65 +33,6 @@ class IOUSettleFlow(val linearId: UniqueIdentifier, val amount: Amount<Currency>
         return serviceHub.signInitialTransaction(
                 TransactionBuilder(notary = null)
         )
-//
-//        // Step 1. Retrieve the IOU state from the vault.
-//        val queryCriteria = QueryCriteria.LinearStateQueryCriteria(linearId = listOf(linearId))
-//        val iouToSettle = serviceHub.vaultService.queryBy<IOUState>(queryCriteria).states.single()
-//        val counterparty = iouToSettle.state.data.lender
-//
-//        // Step 2. Check the party running this flow is the borrower.
-//        if (ourIdentity != iouToSettle.state.data.borrower) {
-//            throw IllegalArgumentException("IOU settlement flow must be initiated by the borrower.")
-//        }
-//
-//        // Step 3. Create a transaction builder.
-//        val notary = iouToSettle.state.notary
-//        val builder = TransactionBuilder(notary = notary)
-//
-//        // Step 4. Check we have enough cash to settle the requested amount.
-//        val cashBalance = serviceHub.getCashBalance(amount.token)
-//
-//        if (cashBalance < amount) {
-//            throw IllegalArgumentException("Borrower has only $cashBalance but needs $amount to settle.")
-//        } else if (amount > (iouToSettle.state.data.amount - iouToSettle.state.data.paid)) {
-//            throw IllegalArgumentException("Borrower tried to settle with $amount but only needs ${ (iouToSettle.state.data.amount - iouToSettle.state.data.paid) }")
-//        }
-//
-//        // Step 5. Get some cash from the vault and add a spend to our transaction builder.
-//        // Vault might contain states "owned" by anonymous parties. This is one of techniques to anonymize transactions
-//        // generateSpend returns all public keys which have to be used to sign transaction
-//        val (_, cashKeys) = CashUtils.generateSpend(serviceHub, builder, amount, ourIdentityAndCert, counterparty)
-//
-//        // Step 6. Add the IOU input state and settle command to the transaction builder.
-//        val settleCommand = Command(IOUContract.Commands.Settle(), listOf(counterparty.owningKey, ourIdentity.owningKey))
-//        // Add the input IOU and IOU settle command.
-//        builder.addCommand(settleCommand)
-//        builder.addInputState(iouToSettle)
-//
-//        // Step 7. Only add an output IOU state of the IOU has not been fully settled.
-//        val amountRemaining = iouToSettle.state.data.amount - iouToSettle.state.data.paid - amount
-//        if (amountRemaining > Amount(0, amount.token)) {
-//            val settledIOU: IOUState = iouToSettle.state.data.pay(amount)
-//            builder.addOutputState(settledIOU, IOUContract.IOU_CONTRACT_ID)
-//        }
-//
-//        // Step 8. Verify and sign the transaction.
-//        builder.verify(serviceHub)
-//        // We need to sign transaction with all keys referred from Cash input states + our public key
-//        val myKeysToSign = (cashKeys.toSet() + ourIdentity.owningKey).toList()
-//        val ptx = serviceHub.signInitialTransaction(builder, myKeysToSign)
-//
-//        // Initialising session with other party
-//        val counterpartySession = initiateFlow(counterparty)
-//
-//        // Sending other party our identities so they are aware of anonymous public keys
-//        subFlow(IdentitySyncFlow.Send(counterpartySession, ptx.tx))
-//
-//        // Step 9. Collecting missing signatures
-//        val stx = subFlow(CollectSignaturesFlow(ptx, listOf(counterpartySession), myOptionalKeys = myKeysToSign))
-//
-//        // Step 10. Finalize the transaction.
-//        return subFlow(FinalityFlow(stx, counterpartySession))
     }
 }
 
