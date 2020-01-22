@@ -1,2 +1,3 @@
-include 'kotlin-source'
-include 'java-source'
+include 'workflows-kotlin'
+include 'contracts-kotlin'
+include 'clients'
