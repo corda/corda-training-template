@@ -1,0 +1,93 @@
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url 'https://dl.bintray.com/kotlin/exposed' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+}
+
+apply plugin: 'java'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+
+jar.baseName = "hello-corda-java"
+
+cordapp {
+    targetPlatformVersion 4
+    minimumPlatformVersion 3
+    workflow {
+        name "Corda Training Material"
+        vendor "R3"
+        licence "Contact R3 for Java Source Workflow License."
+        versionId 1
+    }
+}
+
+dependencies {
+    testCompile "junit:junit:$junit_version"
+
+    // Corda integration dependencies
+    cordaCompile "$corda_release_distribution:corda-core:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-jackson:$corda_release_version"
+    cordaCompile "$corda_release_distribution:corda-rpc:$corda_release_version"
+    cordaRuntime "$corda_release_distribution:corda:$corda_release_version"
+
+    testCompile "$corda_release_distribution:corda-test-utils:$corda_release_version"
+    testCompile "$corda_release_distribution:corda-node-driver:$corda_release_version"
+
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters" // Required for shell commands.
+}
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+
+    nodeDefaults {
+        rpcUsers = [[ user: "user1", "password": "password", "permissions": ["ALL"]]]
+    }
+
+    node {
+        name "O=Notary,L=London,C=GB"
+        notary = [validating: false]
+        p2pPort 10002
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10003"
+            adminAddress "0.0.0.0:10103"
+        }
+    }
+    node {
+        name "O=PartyA,L=London,C=GB"
+        p2pPort 10007
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10008"
+            adminAddress "0.0.0.0:10108"
+        }
+    }
+    node {
+        name "O=PartyB,L=New York,C=US"
+        p2pPort 10010
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10011"
+            adminAddress "0.0.0.0:10111"
+        }
+    }
+    node {
+        name "O=PartyC,L=Paris,C=FR"
+        p2pPort 10013
+        rpcSettings {
+            useSsl false
+            standAloneBroker false
+            address "0.0.0.0:10014"
+            adminAddress "0.0.0.0:10114"
+        }
+    }
+}
