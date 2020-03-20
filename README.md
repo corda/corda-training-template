@@ -9,6 +9,13 @@ training course.
 This repository is divided into two parts: Java templates, and Kotlin templates. You may complete the training in whichever 
 language you prefer. 
 
+# To all external trainers:
+This repo will have a major upgrade on March 26th. The primary changes will be 
+1. Corda version bump
+2. Cordapp structural changes: seperate flows and contracts/states
+3. Spring server rewrite. 
+
+The upgraded code is done and you can see the preview at branch[ 4.4-update ](https://github.com/corda/corda-training-template/tree/4.4-update)
 # Setup
 
 ### Tools 
