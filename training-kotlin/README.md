@@ -1,10 +1,10 @@
 ![Corda](https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png)
 
-# Corda Training Template
-This repo contains material for the Corda two day training course. This course can be optionally prefaced by the content found in the hello-corda directory in the root of this repository.
+# Corda Training Template - Kotlin 
+You had chosen to continue the training using the kotlin language. 
 
-This repository is divided into two parts: Java templates, and Kotlin templates. You may complete the training in whichever 
-language you prefer. 
+Please make sure that you had correctly open the `training-kotlin` 
+folder in your IDE. The project will not successfully built if you have your project set to the parent folder `corda-training-template`
 
 # Setup
 
@@ -40,7 +40,6 @@ more challenging exercises specified in Transfer and Settle testing files.
 
 ### Running the tests
 * Kotlin: Select `Kotlin - Unit tests` from the dropdown run configuration menu, and click the green play button.
-* Java: Select `Java - Unit tests` from the dropdown run configuration menu, and click the green play button.
 * Individual tests can be run by clicking the green arrow in the line number column next to each test.
 * When running flow tests you must add the following to your run / debug configuration in the VM options field. This enables us to use
 * Quasar - a library that provides high-performance, lightweight threads.
@@ -56,19 +55,19 @@ State:
 
 Contract:
 
-* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kotlin`
-* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kotlin`
-* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kotlin`
-* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kotlin`
+* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kt`
+* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt`
+* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kt`
+* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt`
 
 Flow:
 
-* Issue template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
-* Issue tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
-* Transfer template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransfer.kt`
-* Transfer tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
-* Settle template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
-* Settle tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
+* Issue flow template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
+* Issue flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
+* Transfer flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransferFlow.kt`
+* Transfer flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
+* Settle flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
+* Settle flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
 
 The code in the following files was already added for you:
 
@@ -76,37 +75,6 @@ The code in the following files was already added for you:
 * `kotlin-source/src/test/kotlin/net/corda/training/Main.kt`
 * `kotling-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
 * `kotling-source/src/main/java/kotlin/corda/training/flow/SelfIssueCashFlow.kt`
-
-
-### Java
-State:
-
-* Template: `java-source/src/main/java/net/corda/training/state/IOUState.java`
-* Tests: `java-source/src/test/java/net/corda/training/state/IOUStateTests.java`
-
-Contract:
-
-* Template: `java-source/src/main/java/net/corda/training/contract/IOUContract.java`
-* Issue Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
-* Transfer Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
-* Settle Tests: `java-source/src/test/java/net/corda/training/contract/IOUIssueTests.java`
-
-Flow:
-
-* Issue template: `java-source/src/main/java/net/corda/training/flow/IOUIssueFlow.java`
-* Issue tests: `java-source/src/test/java/net/corda/training/flow/IOUIssueFlowTests.java`
-* Transfer template: `java-source/src/main/java/net/corda/training/flow/IOUTransferFlow.java`
-* Transfer tests: `java-source/src/test/java/net/corda/training/flow/IOUTransferFlowTests.java`
-* Settle template: `java-source/src/main/java/net/corda/training/flow/IOUSettleFlow.java`
-* Settle tests: `java-source/src/test/java/net/corda/training/flow/IOUSettleFlowTests.java`
-
-The code in the following files was already added for you:
-
-* `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
-* `java-source/src/test/java/net/corda/training/NodeDriver.java`
-* `java-source/src/main/java/net/corda/training/plugin/IOUPlugin.java`
-* `java-source/src/main/java/net/corda/training/flow/SelfIssueCashFlow.java`
-
 
 # Running the CorDapp
 Once your application passes all tests in `IOUStateTests`, `IOUIssueTests`, and `IOUIssueFlowTests`, you can run the application and 
@@ -116,12 +84,6 @@ interact with it via a web browser. To run the finished application, you have tw
 * Terminal: Navigate to the root project folder and run `./gradlew kotlin-source:deployNodes`, followed by 
 `./kotlin-source/build/node/runnodes`
 * IntelliJ: With the project open, select `Kotlin - Node driver` from the dropdown run configuration menu, and click 
-the green play button.
-
-### Java
-* Terminal: Navigate to the root project folder and run `./gradlew java-source:deployNodes`, followed by 
-`./java-source/build/node/runnodes`
-* IntelliJ: With the project open, select `Java - NodeDriver` from the dropdown run configuration menu, and click 
 the green play button.
 
 ### Interacting with the CorDapp
