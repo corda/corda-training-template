@@ -6,13 +6,6 @@ This repo contains material for the Corda two day training course. This course c
 This repository is divided into two parts: Java templates, and Kotlin templates. You may complete the training in whichever 
 language you prefer. 
 
-# To all external trainers:
-This repo will have a major upgrade on March 26th. The primary changes will be 
-1. Corda version bump
-2. Cordapp structural changes: separate flows and contracts/states
-3. Spring server rewrite. 
-
-The upgraded code is done and you can see the preview at branch[ 4.4-update ](https://github.com/corda/corda-training-template/tree/4.4-update)
 # Setup
 
 ### Tools 
@@ -63,19 +56,19 @@ State:
 
 Contract:
 
-* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kt`
-* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kt`
-* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kt`
-* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kt`
+* Template: `kotlin-source/src/main/kotlin/net/corda/training/contract/IOUContract.kotlin`
+* Issue Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUIssueTests.kotlin`
+* Transfer Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUTransferTests.kotlin`
+* Settle Tests: `kotlin-source/src/test/kotlin/net/corda/training/contract/IOUSettleTests.kotlin`
 
 Flow:
 
-* Issue flow template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
-* Issue flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
-* Transfer flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransferFlow.kt`
-* Transfer flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
-* Settle flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
-* Settle flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
+* Issue template: `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUIssueFlow.kt`
+* Issue tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUIssueFlowTests.kt`
+* Transfer template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUTransfer.kt`
+* Transfer tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUTransferFlowTests.kt`
+* Settle template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
+* Settle tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
 
 The code in the following files was already added for you:
 
