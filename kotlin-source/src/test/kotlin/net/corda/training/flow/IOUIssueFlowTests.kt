@@ -165,6 +165,8 @@ class IOUIssueFlowTests {
      * - We don't need the notary's signature as this is an issuance transaction without a timestamp. There are no
      *   inputs in the transaction that could be double spent! If we added a timestamp to this transaction then we
      *   would require the notary's signature as notaries act as a timestamping authority.
+     * - You will also need to add a call to [ReceiveFinalityFlow] in [IOUIssueFlowResponder].
+     *   You can obtain the transaction id from [SignedTransaction.id].
      */
 //    @Test
 //    fun flowRecordsTheSameTransactionInBothPartyVaults() {
