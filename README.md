@@ -80,6 +80,10 @@ Flow:
 * Settle flow template `kotlin-source/src/main/kotlin/net/corda/training/flow/IOUSettleFlow.kt`
 * Settle flow tests: `kotlin-source/src/test/kotlin/net/corda/training/flow/IOUSettleFlowTests.kt`
 
+API:
+
+* Template: `kotlin-source/src/main/kotlin/net/corda/training/api/IOUApi.kt`
+
 The code in the following files was already added for you:
 
 * `kotlin-source/src/main/kotlin/net/corda/training/plugin/IOUPlugin.kt`
